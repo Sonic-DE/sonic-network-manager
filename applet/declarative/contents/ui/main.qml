@@ -19,6 +19,7 @@
 */
 
 import QtQuick 1.1
+import org.kde.qtextracomponents 0.1
 import org.kde.plasma.components 0.1 as PlasmaComponents
 import org.kde.plasma.core 0.1 as PlasmaCore
 import org.kde.networkmanagement 0.1 as PlasmaNM
@@ -77,6 +78,57 @@ Item {
         anchors.fill: parent
     }
 
+    PlasmaCore.FrameSvgItem {
+        id : testViewBackground;
+        imagePath: "widgets/listitem"
+        prefix: "normal"
+
+        width: theme.mediumIconSize;
+        anchors {
+            left: parent.left;
+            top: parent.top;
+            bottom: toolbarSeparator.top;
+            topMargin: padding.margins.top;
+            bottomMargin: padding.margins.bottom;
+        }
+
+        ListView {
+            id: testView;
+
+            anchors.fill: parent;
+
+            clip: true;
+            model: testModel;
+            interactive: true;
+            boundsBehavior: Flickable.StopAtBounds;
+            currentIndex: 0;
+            highlight: PlasmaComponents.Highlight{}
+            delegate: PlasmaComponents.ListItem {
+                sectionDelegate: true;
+                enabled: true;
+                anchors {
+                    left: parent.left;
+                    right: parent.right;
+                }
+                QIconItem {
+                    anchors {
+                        left: parent.left;
+                        right: parent.right;
+                    }
+                    height: theme.mediumIconSize;
+                    width: theme.mediumIconSize;
+                    icon: QIcon(iconName);
+                }
+                onClicked: {
+                    testView.currentIndex = index;
+                    connectionSortModel.filterType = type;
+//                     connectionView.model = null;
+//                     connectionView.model = connectionSortModel;
+                }
+            }
+        }
+    }
+
     ListView {
         id: connectionView;
 
@@ -88,12 +140,13 @@ Item {
         property bool unknownExpanded: true;
 
         anchors {
-            left: parent.left;
+            left: testViewBackground.right;
             right: parent.right;
             top: parent.top;
             bottom: toolbarSeparator.top;
             topMargin: padding.margins.top;
-            bottomMargin: padding.margins.bottom
+            bottomMargin: padding.margins.bottom;
+            leftMargin: padding.margins.left;
         }
         clip: true
         model: connectionSortModel;
@@ -189,5 +242,18 @@ Item {
         speedUnit = plasmoid.readConfig("networkSpeedUnit");
         globalConfig.setNetworkSpeedUnit(speedUnit);
         autoHideOptions = plasmoid.readConfig("autoHideOptions");
+    }
+
+    ListModel {
+        id: testModel;
+
+        Component.onCompleted: {
+            append({"iconName":"network-defaultroute", "type":PlasmaNM.Enums.Unknown})
+            append({"iconName":"network-wired", "type":PlasmaNM.Enums.Wired})
+            append({"iconName":"network-wireless-100", "type":PlasmaNM.Enums.Wireless})
+            append({"iconName":"phone", "type":PlasmaNM.Enums.Gsm})
+            append({"iconName":"bluetooth", "type":PlasmaNM.Enums.Bluetooth})
+            append({"iconName":"secure-card", "type":PlasmaNM.Enums.Vpn})
+        }
     }
 }

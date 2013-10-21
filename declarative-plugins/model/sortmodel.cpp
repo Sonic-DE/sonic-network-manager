@@ -86,6 +86,18 @@ SortModel::~SortModel()
 {
 }
 
+int SortModel::filteredConnectionType() const
+{
+    return m_type;
+}
+
+void SortModel::setFilteredConnectionType(int type)
+{
+    m_type = type;
+    invalidateFilter();
+    sort(0, Qt::DescendingOrder);
+}
+
 void SortModel::setSourceModel(QAbstractItemModel* sourceModel)
 {
     QSortFilterProxyModel::setSourceModel(sourceModel);
@@ -130,6 +142,25 @@ bool SortModel::lessThan(const QModelIndex& left, const QModelIndex& right) cons
         return true;
     } else {
         return false;
+    }
+
+    return false;
+}
+
+bool SortModel::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
+{
+    QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
+
+    NetworkManager::ConnectionSettings::ConnectionType type = (NetworkManager::ConnectionSettings::ConnectionType) m_type;
+
+    if (type == NetworkManager::ConnectionSettings::Unknown) {
+        return true;
+    }
+
+    const NetworkManager::ConnectionSettings::ConnectionType sourceType = (NetworkManager::ConnectionSettings::ConnectionType) sourceModel()->data(index, Model::TypeRole).toInt();
+
+    if (type == sourceType) {
+        return true;
     }
 
     return false;
