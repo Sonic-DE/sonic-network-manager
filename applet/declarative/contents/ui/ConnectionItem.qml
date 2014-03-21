@@ -89,11 +89,12 @@ PlasmaComponents.ListItem {
             font.weight: ConnectionState == PlasmaNM.Enums.Activated ? Font.DemiBold : Font.Normal;
             font.italic: ConnectionState == PlasmaNM.Enums.Activating ? true : false;
         }
+        Item {
+            id: infoRow
+            property int mSize: theme.mSize(theme.smallestFont).width
 
-        PlasmaComponents.Label {
-            id: connectionStatusLabel;
+            height: childrenRect.height
 
-            height: paintedHeight;
             anchors {
                 left: connectionSvgIcon.right;
                 leftMargin: padding.margins.left;
@@ -101,17 +102,63 @@ PlasmaComponents.ListItem {
                 top: connectionNameLabel.bottom;
             }
 
-            font.pointSize: theme.smallestFont.pointSize;
-            opacity: 0.6
-            text: itemText();
+            PlasmaComponents.Label {
+                id: connectionStatusLabel;
 
-            elide: Text.ElideRight;
+                anchors {
+                    top: parent.top
+                    left: parent.left
+                    right: parent.right
+                }
+                height: paintedHeight;
+
+                font.pointSize: theme.smallestFont.pointSize;
+                opacity: 0.6
+                text: itemText();
+
+                elide: Text.ElideRight;
+            }
+            PlasmaComponents.Label {
+                id: downloadLabel;
+
+                height: paintedHeight;
+                width: infoRow.mSize * 11 // big enough for "⬇ 183.9 KiB/s"
+                x: connectionStatusLabel.paintedWidth
+
+                opacity: (ConnectionState == PlasmaNM.Enums.Activated && (infoRow.width - downloadLabel.x - downloadLabel.width > 0)) ? 0.6 : 0
+                Behavior on opacity { NumberAnimation { duration: units.longDuration/2 } }
+
+                font.pointSize: theme.smallestFont.pointSize;
+                text: Download + " ⬇"
+
+                elide: Text.ElideRight;
+                horizontalAlignment: Text.AlignRight
+            }
+
+            PlasmaComponents.Label {
+                id: uploadLabel;
+
+                height: paintedHeight;
+                anchors {
+                    left: downloadLabel.right
+                    right: parent.right
+                    leftMargin: infoRow.mSize
+                }
+
+                opacity: (ConnectionState == PlasmaNM.Enums.Activated && (infoRow.width - uploadLabel.x - paintedWidth) > 0) ? 0.6 : 0
+                Behavior on opacity { NumberAnimation { duration: units.longDuration/2 } }
+
+                font.pointSize: theme.smallestFont.pointSize;
+                text: "⬆ " + Upload
+
+                elide: Text.ElideRight;
+            }
         }
 
         PlasmaComponents.BusyIndicator {
             id: connectingIndicator;
 
-            width: iconSize;
+            width: visible ? iconSize : 0;
             height: width;
             anchors {
                 right: parent.right;
@@ -133,7 +180,7 @@ PlasmaComponents.ListItem {
 
             opacity: connectionItemMouseArea.containsMouse ? 1 : 0
             visible: opacity != 0
-            Behavior on opacity { NumberAnimation { duration: units.shortDuration } }
+            Behavior on opacity { NumberAnimation { duration: units.longDuration/2 } }
 
             PlasmaCore.SvgItem {
                 id: configureButton;
@@ -408,11 +455,11 @@ PlasmaComponents.ListItem {
             return result;
         } else if (ConnectionState == PlasmaNM.Enums.Activated) {
             if (Type == PlasmaNM.Enums.Wired) {
-                return i18n("Connected") + ", ⬇ " + Download + ", ⬆ " + Upload;
+                return i18n("Connected");
             } else if (Type == PlasmaNM.Enums.Wireless) {
-                return i18n("Connected") + ", ⬇ " + Download + ", ⬆ " + Upload;
+                return i18n("Connected");
             } else if (Type == PlasmaNM.Enums.Gsm || Type == PlasmaNM.Enums.Cdma) {
-                return i18n("Connected") + ", ⬇ " + Download + ", ⬆ " + Upload;
+                return i18n("Connected");
             } else {
                 return i18n("Connected");
             }
