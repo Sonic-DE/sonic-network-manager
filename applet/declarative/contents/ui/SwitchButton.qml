@@ -28,50 +28,44 @@ Item {
     property alias icon: switchButtonIcon.elementId;
     property alias checked: switchButtonCheckbox.checked;
     property alias enabled: switchButtonCheckbox.enabled;
-    property alias tooltipText: switchButtonTooltip.mainText;
 
     signal clicked();
 
     height: switchButtonIcon.height + padding.margins.top + padding.margins.bottom;
     width: switchButtonCheckbox.width + switchButtonIcon.width + padding.margins.left * 3 + padding.margins.right;
 
+    PlasmaCore.Svg {
+        id: svgNetworkIcons;
+
+        multipleImages: true;
+        imagePath: "icons/plasma-networkmanagement2";
+    }
+
     PlasmaComponents.CheckBox {
         id: switchButtonCheckbox;
 
         anchors {
+            bottomMargin: padding.margins.bottom
             left: parent.left;
             leftMargin: padding.margins.right;
+            topMargin: padding.margins.top
             verticalCenter: parent.verticalCenter;
+        }
+
+        onClicked: {
+            switchButton.clicked();
         }
     }
 
     PlasmaCore.SvgItem {
         id: switchButtonIcon;
 
-        width: sizes.iconSize;
-        height: width;
         anchors {
             left: switchButtonCheckbox.right;
             leftMargin: padding.margins.left;
             verticalCenter: parent.verticalCenter;
         }
+
         svg: svgNetworkIcons;
-    }
-
-    MouseArea {
-        id: switchButtonMouseArea;
-
-        anchors.fill: parent;
-
-        PlasmaCore.ToolTip {
-            id: switchButtonTooltip;
-            target: switchButtonMouseArea;
-        }
-
-        onClicked: {
-            if (switchButton.enabled) {
-                switchButton.clicked();
-            }
-        }
     }
 }

@@ -34,16 +34,21 @@ ListItem {
     property bool visibleDetails: false;
     property bool visiblePasswordDialog: false;
 
-    enabled: true
-    height: if (visibleDetails || visiblePasswordDialog)
-                connectionItemBase.height + expandableComponentLoader.height + padding.margins.top + padding.margins.bottom;
-            else
-                connectionItemBase.height + padding.margins.top + padding.margins.bottom;
+    property int baseHeight: connectionItemBase.height + padding.margins.top + padding.margins.bottom;
+
+    height: (visibleDetails || visiblePasswordDialog) ? baseHeight + expandableComponentLoader.height : baseHeight;
+//     checked: ListView.isCurrentItem;
+    enabled: true;
+
+    PlasmaCore.Svg {
+        id: svgNetworkIcons;
+
+        multipleImages: true;
+        imagePath: "icons/plasma-networkmanagement2";
+    }
 
     Item {
         id: connectionItemBase;
-
-        height: Math.max(connectionSvgIcon.height, connectionNameLabel.height + connectionStatusLabel.height);
 
         anchors {
             left: parent.left;
@@ -51,15 +56,18 @@ ListItem {
             top: parent.top;
         }
 
+        height: Math.max(theme.iconSizes.toolbar, connectionNameLabel.height + connectionStatusLabel.height)
+
         PlasmaCore.SvgItem {
             id: connectionSvgIcon;
 
-            width: sizes.iconSize;
-            height: width;
             anchors {
                 left: parent.left
                 verticalCenter: parent.verticalCenter
             }
+
+            height: theme.iconSizes.toolbar;
+            width: height;
             svg: svgNetworkIcons;
             elementId: ConnectionIcon;
         }
@@ -67,154 +75,68 @@ ListItem {
         PlasmaComponents.Label {
             id: connectionNameLabel;
 
-            height: paintedHeight;
             anchors {
                 left: connectionSvgIcon.right;
                 leftMargin: padding.margins.left;
-                right: !connectionItem.containsMouse ? connectingIndicator.left : buttonRow.left;
-                top: parent.top;
-                topMargin: 0;
+                right: stateChangeButton.visible ? stateChangeButton.left : parent.right;
+                bottom: connectionSvgIcon.verticalCenter
             }
-            text: ItemUniqueName;
+
+            height: paintedHeight;
             elide: Text.ElideRight;
             font.weight: ConnectionState == PlasmaNM.Enums.Activated ? Font.DemiBold : Font.Normal;
             font.italic: ConnectionState == PlasmaNM.Enums.Activating ? true : false;
+            text: ItemUniqueName;
         }
 
         PlasmaComponents.Label {
             id: connectionStatusLabel;
 
-            height: paintedHeight;
             anchors {
                 left: connectionSvgIcon.right;
                 leftMargin: padding.margins.left;
-                right: !connectionItem.containsMouse ? connectingIndicator.left : buttonRow.left;
+                right: stateChangeButton.visible ? stateChangeButton.left : parent.right;
                 top: connectionNameLabel.bottom;
             }
 
-            font.pointSize: theme.smallestFont.pointSize;
-            opacity: 0.6
-            text: itemText();
-
+            height: paintedHeight;
             elide: Text.ElideRight;
+            font.pointSize: theme.smallestFont.pointSize;
+            opacity: 0.6;
+            text: itemText();
         }
 
         PlasmaComponents.BusyIndicator {
             id: connectingIndicator;
 
-            width: sizes.iconSize;
-            height: width;
+            anchors {
+                right: stateChangeButton.visible ? stateChangeButton.left : parent.right;
+                rightMargin: padding.margins.right;
+                verticalCenter: connectionSvgIcon.verticalCenter;
+            }
+
+            height: theme.iconSizes.toolbar;
+            width: height;
+            running: ConnectionState == PlasmaNM.Enums.Activating;
+            visible: running && !stateChangeButton.visible;
+        }
+
+        PlasmaComponents.Button {
+            id: stateChangeButton;
+
             anchors {
                 right: parent.right;
                 rightMargin: padding.margins.right;
-                verticalCenter: parent.verticalCenter;
+                verticalCenter: connectionSvgIcon.verticalCenter;
             }
-            running: ConnectionState == PlasmaNM.Enums.Activating;
-            visible: running && !connectionItem.containsMouse;
-        }
-
-        Row {
-            id: buttonRow;
-
-            anchors {
-                verticalCenter: parent.verticalCenter;
-                right: parent.right;
-            }
-            spacing: 8;
 
             opacity: connectionItem.containsMouse ? 1 : 0
             visible: opacity != 0
-            Behavior on opacity { NumberAnimation { duration: 100 } }
+            text: (ConnectionState == PlasmaNM.Enums.Deactivated) ? i18n("Connect") : i18n("Disconnect");
 
-            PlasmaCore.SvgItem {
-                id: configureButton;
+            Behavior on opacity { NumberAnimation { duration: 50 } }
 
-                height: sizes.iconSize;
-                width: height;
-                anchors {
-                    verticalCenter: parent.verticalCenter;
-                }
-                svg: svgNetworkIcons;
-                elementId: configureButtonMouse.containsMouse ? "edit-hover" : "edit";
-
-                MouseArea {
-                    id: configureButtonMouse;
-                    anchors {
-                        bottom: parent.bottom;
-                        left: parent.left;
-                        right: parent.right;
-                        top: parent.top;
-                        bottomMargin: -4;
-                        leftMargin: -4;
-                        rightMargin: -4;
-                        topMargin: -4;
-                    }
-                    hoverEnabled: true;
-
-                    onClicked: {
-                        handler.editConnection(Uuid);
-                    }
-                }
-            }
-
-            PlasmaCore.SvgItem {
-                id: openDetailsButton;
-
-                height: sizes.iconSize;
-                width: height;
-                anchors {
-                    verticalCenter: parent.verticalCenter;
-                }
-                svg: svgNetworkIcons;
-                elementId: openDetailsButtonMouse.containsMouse ? "showinfo-hover" : "showinfo";
-
-                MouseArea {
-                    id: openDetailsButtonMouse;
-                    anchors {
-                        bottom: parent.bottom;
-                        left: parent.left;
-                        right: parent.right;
-                        top: parent.top;
-                        margins: -4;
-                    }
-                    hoverEnabled: true;
-
-                    onClicked: {
-                        visiblePasswordDialog = false;
-                        visibleDetails = !visibleDetails;
-                    }
-                }
-            }
-
-            PlasmaComponents.Button {
-                id: stateChangeButton;
-
-                implicitWidth: minimumWidth + padding.margins.left + padding.margins.right;
-                text:if (ConnectionState == PlasmaNM.Enums.Deactivated)
-                        i18n("Connect");
-                    else
-                        i18n("Disconnect");
-
-                onClicked: {
-                    visibleDetails = false;
-                    if (Uuid || !predictableWirelessPassword || visiblePasswordDialog) {
-                        if (ConnectionState == PlasmaNM.Enums.Deactivated) {
-                            if (!predictableWirelessPassword && !Uuid) {
-                                handler.addAndActivateConnection(DevicePath, SpecificPath);
-                            } else if (visiblePasswordDialog) {
-                                handler.addAndActivateConnection(DevicePath, SpecificPath, expandableComponentLoader.item.password);
-                                visiblePasswordDialog = false;
-                            } else {
-                                handler.activateConnection(ConnectionPath, DevicePath, SpecificPath);
-                            }
-                        } else {
-                            handler.deactivateConnection(ConnectionPath, DevicePath);
-                        }
-                    } else if (predictableWirelessPassword) {
-                        visiblePasswordDialog = true;
-                    }
-                }
-            }
+            onClicked: changeState();
         }
     }
 
@@ -233,98 +155,139 @@ ListItem {
         id: detailsComponent;
 
         Item {
-            height: childrenRect.height + padding.margins.top;
+            height: childrenRect.height + padding.margins.bottom;
+
+            PlasmaCore.Svg {
+                id: lineSvg;
+                imagePath: "widgets/line";
+            }
 
             PlasmaCore.SvgItem {
                 id: detailsSeparator;
 
-                height: lineSvg.elementSize("horizontal-line").height;
-                width: parent.width;
                 anchors {
                     left: parent.left;
                     right: parent.right;
                     top: parent.top;
                 }
-                elementId: "horizontal-line";
 
-                svg: PlasmaCore.Svg {
-                    id: lineSvg;
-                    imagePath: "widgets/line";
-                }
+                height: lineSvg.elementSize("horizontal-line").height;
+                width: parent.width;
+                elementId: "horizontal-line";
+                svg: lineSvg;
             }
 
-            PlasmaComponents.TabBar {
-                id: detailsTabBar;
+            PlasmaComponents.Button {
+                id: configureButton;
 
                 anchors {
-                    left: parent.left;
                     right: parent.right;
+                    rightMargin: padding.margins.right;
                     top: detailsSeparator.bottom;
                     topMargin: padding.margins.top;
                 }
-                visible: DevicePath && ConnectionState == PlasmaNM.Enums.Activated && Type != PlasmaNM.Enums.Vpn;
 
-                PlasmaComponents.TabButton {
-                    id: speedTabButton;
-                    text: i18n("Speed");
-                    visible: DevicePath && ConnectionState == PlasmaNM.Enums.Activated && Type != PlasmaNM.Enums.Vpn;
+                opacity: connectionItem.containsMouse && Uuid ? 1 : 0
+                visible: opacity != 0
+                text: i18n("Configure");
+
+                Behavior on opacity { NumberAnimation { duration: 50 } }
+            }
+
+            Column {
+                id: details;
+                anchors {
+                    left: parent.left;
+                    leftMargin: theme.iconSizes.toolbar + padding.margins.left;
+                    right: connectionItem.containsMouse && Uuid ? configureButton.left : parent.right;
+                    top: detailsSeparator.bottom;
+                    topMargin: padding.margins.top;
                 }
 
-                PlasmaComponents.TabButton {
-                    id: detailsTabButton;
-                    text: i18n("Details");
-                }
+                Repeater {
+                    model: ConnectionDetails.length/2;
+                    Item {
+                        anchors {
+                            left: parent.left;
+                            right: parent.right;
+                            topMargin: padding.margins.top;
+                        }
 
-                Component.onCompleted: {
-                    if (!speedTabButton.visible) {
-                        currentTab = detailsTabButton;
+                        height: childrenRect.height;
+
+                        PlasmaComponents.Label {
+                            id: detailNameLabel;
+
+                            anchors {
+                                left: parent.left;
+                            }
+
+                            height: paintedHeight;
+                            font.pointSize: theme.smallestFont.pointSize;
+                            opacity: 0.6;
+                            text: "<b>" + ConnectionDetails[index*2] + "</b>: ";
+                        }
+
+                        PlasmaComponents.Label {
+                            id: detailValueLabel;
+
+                            anchors {
+                                left: detailNameLabel.right;
+                                right: parent.right;
+                            }
+
+                            elide: (index > 2 ) ? Text.ElideNone : Text.ElideRight;
+                            height: paintedHeight;
+                            font.pointSize: theme.smallestFont.pointSize;
+                            opacity: 0.6;
+                            text: ConnectionDetails[(index*2)+1];
+                        }
                     }
                 }
             }
 
-            Item {
-                id: detailsContent;
-
-                height: if (detailsTabBar.currentTab == speedTabButton) trafficMonitorTab.height;
-                        else detailsTextTab.height;
+/*            Item {
+                id: trafficMonitor;
 
                 anchors {
                     left: parent.left;
                     right: parent.right;
-                    top: detailsTabBar.visible ? detailsTabBar.bottom : detailsSeparator.bottom;
+                    top: details.bottom;
                     topMargin: padding.margins.top;
                 }
 
+                height: childrenRect.height;
+                visible: DevicePath && ConnectionState == PlasmaNM.Enums.Activated && Type != PlasmaNM.Enums.Vpn
+
+                PlasmaCore.SvgItem {
+                    id: trafficMonitorSeparator;
+
+                    anchors {
+                        left: parent.left;
+                        right: parent.right;
+                        top: parent.top;
+                        topMargin: padding.margins.top;
+                    }
+
+                    height: lineSvg.elementSize("horizontal-line").height;
+                    width: parent.width;
+                    elementId: "horizontal-line";
+                    svg: lineSvg;
+                }
+
                 TrafficMonitor {
-                    id: trafficMonitorTab;
+                    id: trafficMonitorWidget;
+
                     anchors {
                         left: parent.left;
                         right: parent.right;
-                        top: parent.top;
+                        top: trafficMonitorSeparator.bottom;
+                        topMargin: padding.margins.top;
                     }
+
                     device: DevicePath;
-                    visible: detailsTabBar.currentTab == speedTabButton &&
-                             DevicePath && ConnectionState == PlasmaNM.Enums.Activated && Type != PlasmaNM.Enums.Vpn
                 }
-
-                TextEdit {
-                    id: detailsTextTab;
-
-                    height: implicitHeight;
-                    anchors {
-                        left: parent.left;
-                        right: parent.right;
-                        top: parent.top;
-                    }
-                    color: theme.textColor;
-                    readOnly: true;
-                    selectByMouse: true;
-                    wrapMode: TextEdit.WordWrap;
-                    textFormat: Text.RichText;
-                    text: ConnectionDetails;
-                    visible: detailsTabBar.currentTab == detailsTabButton
-                }
-            }
+            }*/
         }
     }
 
@@ -380,6 +343,7 @@ ListItem {
                     right: parent.right;
                     top: passwordInput.bottom;
                 }
+
                 checked: false;
                 text: i18n("Show password");
             }
@@ -394,12 +358,20 @@ ListItem {
         },
 
         State {
-            name: "expanded";
-            when: visibleDetails || visiblePasswordDialog;
+            name: "expandedDetails";
+            when: visibleDetails;
             StateChangeScript { script: createContent(); }
-            PropertyChanges { target: openDetailsButton; visible: true; }
-            PropertyChanges { target: stateChangeButton; visible: true; }
-            PropertyChanges { target: connectionItem; enabled: false; }
+//             PropertyChanges { target: stateChangeButton; opacity: 1 }
+//             PropertyChanges { target: connectionItem; height: connectionView.height }
+//             PropertyChanges { target: connectionItem.ListView.view; explicit: true; contentY: connectionItem.y }
+//             PropertyChanges { target: connectionItem.ListView.view; interactive: false }
+        },
+
+        State {
+            name: "expandedPasswordDialog";
+            when: visiblePasswordDialog;
+            StateChangeScript { script: createContent(); }
+            PropertyChanges { target: stateChangeButton; opacity: 1; }
         }
     ]
 
@@ -409,6 +381,26 @@ ListItem {
         } else if (visiblePasswordDialog) {
             expandableComponentLoader.sourceComponent = passwordDialogComponent;
             expandableComponentLoader.item.passwordFocus.forceActiveFocus();
+        }
+    }
+
+    function changeState() {
+        visibleDetails = false;
+        if (Uuid || !predictableWirelessPassword || visiblePasswordDialog) {
+            if (ConnectionState == PlasmaNM.Enums.Deactivated) {
+                if (!predictableWirelessPassword && !Uuid) {
+                    handler.addAndActivateConnection(DevicePath, SpecificPath);
+                } else if (visiblePasswordDialog) {
+                    handler.addAndActivateConnection(DevicePath, SpecificPath, expandableComponentLoader.item.password);
+                    visiblePasswordDialog = false;
+                } else {
+                    handler.activateConnection(ConnectionPath, DevicePath, SpecificPath);
+                }
+            } else {
+                handler.deactivateConnection(ConnectionPath, DevicePath);
+            }
+        } else if (predictableWirelessPassword) {
+            visiblePasswordDialog = true;
         }
     }
 
@@ -438,6 +430,24 @@ ListItem {
             } else {
                 return i18n("Connected");
             }
+        }
+    }
+
+    onStateChanged: {
+        if (state == "expandedPasswordDialog" || state == "expandedDetails") {
+            ListView.view.currentIndex = index;
+        }
+    }
+
+    onClicked: {
+        if (visiblePasswordDialog) {
+            visiblePasswordDialog = false;
+        } else {
+            visibleDetails = !visibleDetails;
+        }
+
+        if (!visibleDetails) {
+            ListView.view.currentIndex = -1;
         }
     }
 }

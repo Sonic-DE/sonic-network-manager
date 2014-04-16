@@ -28,25 +28,7 @@ Item {
     property int minimumWidth: 300;
     property int minimumHeight: 300;
     property bool showSections: true;
-    property Component compactRepresentation: CompactRepresentation {
-        Component.onCompleted: {
-            plasmoid.addEventListener('configChanged', mainWindow.configChanged)
-        }
-    }
-
-    signal sectionChanged();
-
-    PlasmaNM.GlobalConfig {
-        id: globalConfig;
-
-        onDetailKeysChanged: {
-            connectionModel.updateItems();
-        }
-
-        onNetworkSpeedUnitChanged: {
-            connectionModel.updateItems();
-        }
-    }
+    property Component compactRepresentation: CompactRepresentation { }
 
     PlasmaNM.Handler {
             id: handler;
@@ -55,32 +37,20 @@ Item {
     PlasmaNM.NetworkModel {
         id: connectionModel;
     }
+
     PlasmaNM.AppletProxyModel {
         id: appletProxyModel;
 
         sourceModel: connectionModel;
     }
 
-    PlasmaCore.Svg {
-        id: svgNetworkIcons;
-
-        multipleImages: true;
-        imagePath: "icons/plasma-networkmanagement2";
-    }
-
     PlasmaCore.FrameSvgItem {
         id: padding
+
         imagePath: "widgets/viewitem"
         prefix: "hover"
         opacity: 0
         anchors.fill: parent
-    }
-
-    Item {
-        id: sizes;
-
-        property int iconSize: theme.iconSizes.toolbar;
-        property int itemSize: iconSize + padding.margins.top + padding.margins.bottom;
     }
 
     Toolbar {
@@ -102,34 +72,13 @@ Item {
             right: parent.right;
             top: toolbar.bottom;
         }
-        clip: true
-        model: appletProxyModel;
-        currentIndex: -1;
-        interactive: true;
+
         boundsBehavior: Flickable.StopAtBounds;
+        clip: true
+        currentIndex: -1;
+        model: appletProxyModel;
         section.property: showSections ? "Section" : "";
         section.delegate: Header { text: section }
-        delegate: ConnectionItem {
-            onStateChanged: {
-                if (state == "expanded") {
-                    connectionView.currentIndex = index;
-                }
-            }
-        }
-    }
-
-    Component.onCompleted: {
-        configChanged();
-        plasmoid.addEventListener('configChanged', mainWindow.configChanged)
-    }
-
-    function configChanged() {
-        var keys;
-        keys = plasmoid.readConfig("detailKeys");
-        globalConfig.setDetailKeys(keys);
-        var speedUnit;
-        speedUnit = plasmoid.readConfig("networkSpeedUnit");
-        globalConfig.setNetworkSpeedUnit(speedUnit);
-        showSections = plasmoid.readConfig("showSections");
+        delegate: ConnectionItem { }
     }
 }
