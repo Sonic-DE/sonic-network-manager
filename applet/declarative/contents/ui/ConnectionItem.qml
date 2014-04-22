@@ -192,6 +192,10 @@ ListItem {
                 text: i18n("Configure");
 
                 Behavior on opacity { NumberAnimation { duration: 50 } }
+
+                onClicked: {
+                    handler.editConnection(Uuid);
+                }
             }
 
             Column {
