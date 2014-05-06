@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Jan Grulich <jgrulich@redhat.com>
+    Copyright 2013-2014 Jan Grulich <jgrulich@redhat.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -37,7 +37,6 @@ ListItem {
     property int baseHeight: connectionItemBase.height + padding.margins.top + padding.margins.bottom;
 
     height: (visibleDetails || visiblePasswordDialog) ? baseHeight + expandableComponentLoader.height : baseHeight;
-//     checked: ListView.isCurrentItem;
     enabled: true;
 
     PlasmaCore.Svg {
@@ -177,39 +176,24 @@ ListItem {
                 svg: lineSvg;
             }
 
-            PlasmaComponents.Button {
-                id: configureButton;
-
-                anchors {
-                    right: parent.right;
-                    rightMargin: padding.margins.right;
-                    top: detailsSeparator.bottom;
-                    topMargin: padding.margins.top;
-                }
-
-                opacity: connectionItem.containsMouse && Uuid ? 1 : 0
-                visible: opacity != 0
-                text: i18n("Configure");
-
-                Behavior on opacity { NumberAnimation { duration: 50 } }
-
-                onClicked: {
-                    handler.editConnection(Uuid);
-                }
-            }
-
             Column {
                 id: details;
+
                 anchors {
                     left: parent.left;
-                    leftMargin: theme.iconSizes.toolbar + padding.margins.left;
-                    right: connectionItem.containsMouse && Uuid ? configureButton.left : parent.right;
+                    leftMargin: theme.iconSizes.toolbar;
+                    right: parent.right;
                     top: detailsSeparator.bottom;
                     topMargin: padding.margins.top;
                 }
 
                 Repeater {
+                    id: repeater;
+
+                    property int longestString: 0;
+
                     model: ConnectionDetails.length/2;
+
                     Item {
                         anchors {
                             left: parent.left;
@@ -217,19 +201,28 @@ ListItem {
                             topMargin: padding.margins.top;
                         }
 
-                        height: childrenRect.height;
+                        height: Math.max(detailNameLabel.height, detailValueLabel.height);
 
                         PlasmaComponents.Label {
                             id: detailNameLabel;
 
                             anchors {
                                 left: parent.left;
+                                leftMargin: repeater.longestString - paintedWidth + padding.margins.left;
+                                verticalCenter: parent.verticalCenter;
                             }
 
                             height: paintedHeight;
                             font.pointSize: theme.smallestFont.pointSize;
+                            horizontalAlignment: Text.AlignRight;
                             opacity: 0.6;
                             text: "<b>" + ConnectionDetails[index*2] + "</b>: ";
+
+                            Component.onCompleted: {
+                                if (paintedWidth > repeater.longestString) {
+                                    repeater.longestString = paintedWidth;
+                                }
+                            }
                         }
 
                         PlasmaComponents.Label {
@@ -238,10 +231,11 @@ ListItem {
                             anchors {
                                 left: detailNameLabel.right;
                                 right: parent.right;
+                                verticalCenter: parent.verticalCenter;
                             }
 
-                            elide: (index > 2 ) ? Text.ElideNone : Text.ElideRight;
                             height: paintedHeight;
+                            elide: Text.ElideRight;
                             font.pointSize: theme.smallestFont.pointSize;
                             opacity: 0.6;
                             text: ConnectionDetails[(index*2)+1];
@@ -250,48 +244,48 @@ ListItem {
                 }
             }
 
-/*            Item {
-                id: trafficMonitor;
-
-                anchors {
-                    left: parent.left;
-                    right: parent.right;
-                    top: details.bottom;
-                    topMargin: padding.margins.top;
-                }
-
-                height: childrenRect.height;
-                visible: DevicePath && ConnectionState == PlasmaNM.Enums.Activated && Type != PlasmaNM.Enums.Vpn
-
-                PlasmaCore.SvgItem {
-                    id: trafficMonitorSeparator;
-
-                    anchors {
-                        left: parent.left;
-                        right: parent.right;
-                        top: parent.top;
-                        topMargin: padding.margins.top;
-                    }
-
-                    height: lineSvg.elementSize("horizontal-line").height;
-                    width: parent.width;
-                    elementId: "horizontal-line";
-                    svg: lineSvg;
-                }
-
-                TrafficMonitor {
-                    id: trafficMonitorWidget;
-
-                    anchors {
-                        left: parent.left;
-                        right: parent.right;
-                        top: trafficMonitorSeparator.bottom;
-                        topMargin: padding.margins.top;
-                    }
-
-                    device: DevicePath;
-                }
-            }*/
+//             Item {
+//                 id: trafficMonitor;
+//
+//                 anchors {
+//                     left: parent.left;
+//                     right: parent.right;
+//                     top: details.bottom;
+//                     topMargin: padding.margins.top;
+//                 }
+//
+//                 height: childrenRect.height;
+//                 visible: DevicePath && ConnectionState == PlasmaNM.Enums.Activated && Type != PlasmaNM.Enums.Vpn
+//
+//                 PlasmaCore.SvgItem {
+//                     id: trafficMonitorSeparator;
+//
+//                     anchors {
+//                         left: parent.left;
+//                         right: parent.right;
+//                         top: parent.top;
+//                         topMargin: padding.margins.top;
+//                     }
+//
+//                     height: lineSvg.elementSize("horizontal-line").height;
+//                     width: parent.width;
+//                     elementId: "horizontal-line";
+//                     svg: lineSvg;
+//                 }
+//
+//                 TrafficMonitor {
+//                     id: trafficMonitorWidget;
+//
+//                     anchors {
+//                         left: parent.left;
+//                         right: parent.right;
+//                         top: trafficMonitorSeparator.bottom;
+//                         topMargin: padding.margins.top;
+//                     }
+//
+//                     device: DevicePath;
+//                 }
+//             }
         }
     }
 
@@ -307,13 +301,14 @@ ListItem {
             PlasmaCore.SvgItem {
                 id: passwordSeparator;
 
-                height: lineSvg.elementSize("horizontal-line").height;
-                width: parent.width;
                 anchors {
                     left: parent.left;
                     right: parent.right;
                     top: parent.top;
                 }
+
+                height: lineSvg.elementSize("horizontal-line").height;
+                width: parent.width;
                 elementId: "horizontal-line";
 
                 svg: PlasmaCore.Svg {
@@ -325,13 +320,14 @@ ListItem {
             PlasmaComponents.TextField {
                 id: passwordInput;
 
-                width: 200;
-                height: implicitHeight;
                 anchors {
                     horizontalCenter: parent.horizontalCenter;
                     top: passwordSeparator.bottom;
                     topMargin: padding.margins.top;
                 }
+
+                height: implicitHeight;
+                width: 200;
                 echoMode: showPasswordCheckbox.checked ? TextInput.Normal : TextInput.Password
                 placeholderText: i18n("Password...");
                 onAccepted: {
@@ -365,10 +361,6 @@ ListItem {
             name: "expandedDetails";
             when: visibleDetails;
             StateChangeScript { script: createContent(); }
-//             PropertyChanges { target: stateChangeButton; opacity: 1 }
-//             PropertyChanges { target: connectionItem; height: connectionView.height }
-//             PropertyChanges { target: connectionItem.ListView.view; explicit: true; contentY: connectionItem.y }
-//             PropertyChanges { target: connectionItem.ListView.view; interactive: false }
         },
 
         State {
