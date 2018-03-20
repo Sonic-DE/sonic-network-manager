@@ -18,41 +18,26 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PLASMA_NM_SETTING_H
-#define PLASMA_NM_SETTING_H
+import QtQuick 2.6
+import QtQuick.Layouts 1.3
+import QtQuick.Controls 2.2 as QtControls
 
-class QObject;
+import org.kde.kirigami 2.0 // for units
 
-class SettingPrivate;
+import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
 
-#include <NetworkManagerQt/Setting>
+ColumnLayout {
+    id: connectionSetting
 
-class Q_DECL_EXPORT Setting : public QObject
-{
-    Q_OBJECT
-public:
-    explicit Setting(const NetworkManager::Setting::Ptr &setting = NetworkManager::Setting::Ptr(), QObject *parent = nullptr);
-    virtual ~Setting();
+    property string settingName: i18n("Wired")
 
-//     virtual void loadConfig(const NetworkManager::Setting::Ptr &setting) = 0;
-    virtual void loadSecrets(const NetworkManager::Setting::Ptr &setting);
+    spacing: Math.round(Units.gridUnit / 2)
 
-    virtual QVariantMap setting() const = 0;
+    QtControls.Label {
+        text: "Wired setting"
+    }
 
-    NetworkManager::Setting::SettingType type() const;
+    function loadSettings() {
 
-    virtual bool isValid() const;
-
-Q_SIGNALS:
-    void changed();
-    void validityChanged(bool valid);
-
-protected:
-    SettingPrivate *d_ptr;
-
-private:
-    Q_DECLARE_PRIVATE(Setting)
-
-};
-
-#endif // PLASMA_NM_SETTING_H
+    }
+}

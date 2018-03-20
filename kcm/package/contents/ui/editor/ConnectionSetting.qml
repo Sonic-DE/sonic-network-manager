@@ -20,114 +20,118 @@
 
 import QtQuick 2.6
 import QtQuick.Layouts 1.3
-import QtQuick.Controls 2.2 as QtControls
+import QtQuick.Controls 2.2 as QQC2
 
-import org.kde.kirigami 2.0 // for units
+import org.kde.kirigami 2.5 as Kirigami
 
 import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
 
-ColumnLayout {
+Kirigami.FormLayout {
     id: connectionSetting
 
-    spacing: Math.round(Units.gridUnit / 2)
+    property string settingName: i18n("Connection")
+    property alias connectionNameTextField: connectionNameTextField
 
-    QtControls.CheckBox {
+    QQC2.TextField  {
+        id: connectionNameTextField
+        focus: true
+        Kirigami.FormData.label: i18n("Network Name:")
+
+        onTextEdited: connectionSettingsObject.id = text
+    }
+
+    QQC2.SpinBox {
+        id: prioritySpinBox
+        Kirigami.FormData.label: i18n("Priority:")
+        value: 0
+
+        QQC2.ToolTip {
+            text: i18n("If the connection is set to autoconnect, connections with higher priority will be preferred.\nDefaults to 0. The higher number means higher priority. An negative number can be used to \nindicate priority lower than the default.")
+        }
+
+        onValueModified: connectionSettingsObject.priority = value
+    }
+
+    QQC2.CheckBox {
         id: autoconnectCheckbox
-
         checked: true
-        Layout.fillWidth: true
+        text: i18n("Automatically connect")
 
-        text: i18n("Automatically connect to this network when it is available")
+        onToggled: connectionSettingsObject.autoconnect = checked
+    }
+
+    QQC2.CheckBox {
+        id: allUsersAllowedCheckbox
+        Layout.fillWidth: true
+        text: i18n("Allow all users to connect to this network")
+
+        onToggled: checked ? connectionSettingsObject.permissions = [] : connectionSettingsObject.permissions = ["replace_current_user"]
     }
 
     RowLayout {
         Layout.fillWidth: true
+        Kirigami.FormData.label: i18n("Connect to this VPN when active:")
 
-        QtControls.CheckBox {
-            id: allUsersAllowedCheckbox
+        QQC2.CheckBox {
+            id: autoconnectVpnCheckbox
 
-            Layout.fillWidth: true
-
-            text: i18n("All users may connect to this network")
+            onToggled: checked ? connectionSettingsObject.secondaryConnection = vpnListCombobox.currentText : connectionSettingsObject.secondaryConnection = ""
         }
+        QQC2.ComboBox {
+            id: vpnListCombobox
+            enabled: autoconnectVpnCheckbox.checked
+            model: nmUtils.vpnConnections()
 
-        QtControls.Button {
-            id: advancedPermissionsButton
-
-            Layout.alignment: Qt.AlignRight
-
-            enabled: !allUsersAllowedCheckbox.checked
-            text: i18n("Advanced...")
+            onActivated: connectionSettingsObject.secondaryConnection = currentText
         }
     }
 
-    QtControls.CheckBox {
-        id: autoconnectVpnCheckbox
+    QQC2.ComboBox {
+        id: connectionMeteredCombobox
+        model: [ i18n("Automatically"), i18n("Always"), i18n("Never") ]
 
-        Layout.fillWidth: true
+        onActivated: connectionSettingsObject.metered = currentIndex
 
-        text: i18n("Automatically connect to VPN when using this connection")
+        Kirigami.FormData.label: i18n("Consider this a metered connection:")
     }
 
-    QtControls.ComboBox {
-        id: vpnListCombobox
+    QQC2.ComboBox {
+        id: firewallZoneCombobox
+        model: nmUtils.firewallZones()
 
-        Layout.fillWidth: true
+        onActivated: connectionSettingsObject.zone = currentText
 
-        model: connectionSettingObject.vpnConnections
+        Kirigami.FormData.label: i18n("Put this network in the firewall zone:")
     }
 
-    RowLayout {
-        ColumnLayout {
-            QtControls.Label {
-                Layout.fillHeight: true
-                Layout.alignment: Qt.AlignRight
-
-                text: i18n("Firewall zone:")
-            }
-
-            QtControls.Label {
-                Layout.fillHeight: true
-                Layout.alignment: Qt.AlignRight
-
-                text: i18n("Priority:")
-            }
-        }
-
-        ColumnLayout {
-            QtControls.ComboBox {
-                id: firewallZoneCombobox
-
-                Layout.fillWidth: true
-            }
-
-            QtControls.SpinBox {
-                id: prioritySpinBox
-
-                Layout.fillWidth: true
-
-                value: 0
-            }
-        }
-    }
-
-    function loadSetting() {
-        if (connectionSettingObject.connectionType == PlasmaNM.Enums.Vpn) {
+    function loadSettings() {
+        if (connectionSettingsObject.connectionType == PlasmaNM.Enums.Vpn) {
             autoconnectCheckbox.enabled = false
             autoconnectVpnCheckbox.enabled = false
             prioritySpinBox.enabled = false
-            vpnListCombobox.enabled = false
         } else {
             autoconnectCheckbox.enabled = true
             autoconnectVpnCheckbox.enabled = true
             prioritySpinBox.enabled = true
-            vpnListCombobox.enabled = true
         }
 
-        autoconnectCheckbox.checked = connectionSettingObject.autoconnect
-        allUsersAllowedCheckbox.checked = !connectionSettingObject.permissions.length
-        prioritySpinBox.value = connectionSettingObject.priority
+        autoconnectCheckbox.checked = connectionSettingsObject.autoconnect
+        allUsersAllowedCheckbox.checked = !connectionSettingsObject.permissions.length
+        prioritySpinBox.value = connectionSettingsObject.priority
 
-        // TODO set firewall zone and vpn
+        if (connectionSettingsObject.zone.length) {
+            firewallZoneCombobox.currentIndex = firewallZoneCombobox.find(connectionSettingsObject.zone)
+        } else {
+            firewallZoneCombobox.currentIndex = 0 // Default
+        }
+
+        if (connectionSettingsObject.secondaryConnection.length) {
+            autoconnectVpnCheckbox.checked = true
+            vpnListCombobox.currentIndex = vpnListCombobox.find(connectionSettingsObject.secondaryConnection)
+        } else {
+            autoconnectVpnCheckbox.checked = false
+        }
+
+        connectionMeteredCombobox.currentIndex = connectionSettingsObject.metered
     }
 }

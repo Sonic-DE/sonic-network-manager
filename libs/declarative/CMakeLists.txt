@@ -9,12 +9,14 @@ set(plasmanm_qml_plugins_SRCS
     enabledconnections.cpp
     enums.cpp
     networkstatus.cpp
+    utils.cpp
     qmlplugins.cpp
 
     models/appletproxymodel.cpp
     models/creatableconnectionsmodel.cpp
     models/editorproxymodel.cpp
     models/kcmidentitymodel.cpp
+    models/mobileproxymodel.cpp
     models/networkitemslist.cpp
     models/networkmodel.cpp
     models/networkmodelitem.cpp
@@ -25,8 +27,9 @@ add_library(plasmanm_qmlplugins SHARED ${plasmanm_qml_plugins_SRCS})
 target_link_libraries(plasmanm_qmlplugins
     plasmanm_internal
     Qt5::Quick
-    KF5::NetworkManagerQt
     KF5::I18n
+    KF5::NetworkManagerQt
+    KF5::Service
 )
 
 if (WITH_MODEMMANAGER_SUPPORT)

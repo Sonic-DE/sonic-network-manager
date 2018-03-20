@@ -18,21 +18,27 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "connectionsetting.h"
+#include "connectionsettings.h"
 #include "setting.h"
 
-#include <QDBusConnection>
-#include <QDBusMessage>
-#include <QDBusPendingReply>
-#include <QDBusPendingCallWatcher>
+#include "ipv4setting.h"
+#include "ipv6setting.h"
+#include "wiredsetting.h"
+#include "wirelesssetting.h"
+#include "wirelesssecuritysetting.h"
 
 #include <NetworkManagerQt/Connection>
 #include <NetworkManagerQt/ConnectionSettings>
 #include <NetworkManagerQt/Settings>
 
+#include <KIconLoader>
+#include <KNotification>
+#include <KLocalizedString>
 #include <KUser>
 
-class ConnectionSettingPrivate
+#include <QIcon>
+
+class ConnectionSettingsPrivate
 {
 public:
     NetworkManager::ConnectionSettings::Ptr connectionSettings;
@@ -42,57 +48,50 @@ public:
     int pendingReplies;
     bool valid;
     bool secretsLoaded;
-    QStringList firewallZones;
     NMStringMap vpnConnections;
 };
 
-ConnectionSetting::ConnectionSetting(QObject *parent)
-    : ConnectionSetting(nullptr, parent)
+ConnectionSettings::ConnectionSettings(QObject *parent)
+    : ConnectionSettings(NMVariantMapMap(), parent)
 {
 }
 
-ConnectionSetting::ConnectionSetting(const NetworkManager::ConnectionSettings::Ptr &settings, QObject *parent)
+ConnectionSettings::ConnectionSettings(const NMVariantMapMap &settings, QObject *parent)
     : QObject(parent)
-    , d_ptr(new ConnectionSettingPrivate())
+    , d_ptr(new ConnectionSettingsPrivate())
 {
-    Q_D(ConnectionSetting);
-
-    // Load list of firewall zones
-    QDBusMessage msg = QDBusMessage::createMethodCall("org.fedoraproject.FirewallD1", "/org/fedoraproject/FirewallD1",
-                                                      "org.fedoraproject.FirewallD1.zone", "getZones");
-    QDBusPendingReply<QStringList> reply = QDBusConnection::systemBus().asyncCall(msg);
-    reply.waitForFinished();
-    if (reply.isValid()) {
-        d->firewallZones = reply.value();
-    }
+    Q_D(ConnectionSettings);
 
     // Load list of VPN connections
     NetworkManager::Connection::List list = NetworkManager::listConnections();
 
-    Q_FOREACH (const NetworkManager::Connection::Ptr & conn, list) {
+    for (const NetworkManager::Connection::Ptr & conn : list) {
         NetworkManager::ConnectionSettings::Ptr conSet = conn->settings();
         if (conSet->connectionType() == NetworkManager::ConnectionSettings::Vpn) {
             d->vpnConnections.insert(conSet->uuid(), conSet->id());
         }
     }
 
-    if (settings) {
-        loadConfig(settings);
-    }
+    loadConfig(settings);
 }
 
-ConnectionSetting::~ConnectionSetting()
+ConnectionSettings::~ConnectionSettings()
 {
     delete d_ptr;
 }
 
-void ConnectionSetting::loadConfig(const NetworkManager::ConnectionSettings::Ptr &settings)
+void ConnectionSettings::loadConfig(const NMVariantMapMap &settings)
 {
-    Q_D(ConnectionSetting);
+    Q_D(ConnectionSettings);
 
+    // Clear previous configuration
+    d->pendingReplies = 0;
+    d->valid = false;
     d->secretsLoaded = false;
+    qDeleteAll(d->settings);
+    d->settings.clear();
 
-    d->connectionSettings = settings;
+    d->connectionSettings = NetworkManager::ConnectionSettings::Ptr(new NetworkManager::ConnectionSettings(settings));
 
     // In case of new connection id will be empty
     if (d->connectionSettings->id().isEmpty()) {
@@ -100,14 +99,16 @@ void ConnectionSetting::loadConfig(const NetworkManager::ConnectionSettings::Ptr
     }
 
     // TODO add rest setting types
-//     // Add the rest of widgets
 //     QString serviceType;
-//     if (type == NetworkManager::ConnectionSettings::Wired) {
-//         WiredConnectionWidget *wiredWidget = new WiredConnectionWidget(m_connection->setting(NetworkManager::Setting::Wired), this);
-//         addSettingWidget(wiredWidget, i18n("Wired"));
-//         WiredSecurity *wiredSecurity = new WiredSecurity(m_connection->setting(NetworkManager::Setting::Security8021x).staticCast<NetworkManager::Security8021xSetting>(), this);
-//         addSettingWidget(wiredSecurity, i18n("802.1x Security"));
-//     } else if (type == NetworkManager::ConnectionSettings::Wireless) {
+    if (d->connectionSettings->connectionType() == NetworkManager::ConnectionSettings::Wired) {
+        addSetting(NetworkManager::Setting::Ipv4, new Ipv4Setting(d->connectionSettings->setting(NetworkManager::Setting::Ipv4), this));
+        addSetting(NetworkManager::Setting::Ipv6, new Ipv6Setting(d->connectionSettings->setting(NetworkManager::Setting::Ipv6), this));
+        addSetting(NetworkManager::Setting::Wired, new WiredSetting(d->connectionSettings->setting(NetworkManager::Setting::Wired), this));;
+    } else if (d->connectionSettings->connectionType() == NetworkManager::ConnectionSettings::Wireless) {
+        addSetting(NetworkManager::Setting::Ipv4, new Ipv4Setting(d->connectionSettings->setting(NetworkManager::Setting::Ipv4), this));
+        addSetting(NetworkManager::Setting::Ipv6, new Ipv6Setting(d->connectionSettings->setting(NetworkManager::Setting::Ipv6), this));
+        addSetting(NetworkManager::Setting::Wireless, new WirelessSetting(d->connectionSettings->setting(NetworkManager::Setting::Wireless), this));
+        addSetting(NetworkManager::Setting::WirelessSecurity, new WirelessSecuritySetting(d->connectionSettings->setting(NetworkManager::Setting::WirelessSecurity), this));
 //         WifiConnectionWidget *wifiWidget = new WifiConnectionWidget(m_connection->setting(NetworkManager::Setting::Wireless), this);
 //         addSettingWidget(wifiWidget, i18n("Wi-Fi"));
 //         WifiSecurity *wifiSecurity = new WifiSecurity(m_connection->setting(NetworkManager::Setting::WirelessSecurity),
@@ -115,7 +116,8 @@ void ConnectionSetting::loadConfig(const NetworkManager::ConnectionSettings::Ptr
 //                 this);
 //         addSettingWidget(wifiSecurity, i18n("Wi-Fi Security"));
 //         connect(wifiWidget, static_cast<void (WifiConnectionWidget::*)(const QString &)>(&WifiConnectionWidget::ssidChanged), wifiSecurity, &WifiSecurity::onSsidChanged);
-//     } else if (type == NetworkManager::ConnectionSettings::Pppoe) { // DSL
+    }
+//     else if (type == NetworkManager::ConnectionSettings::Pppoe) { // DSL
 //         PppoeWidget *pppoeWidget = new PppoeWidget(m_connection->setting(NetworkManager::Setting::Pppoe), this);
 //         addSettingWidget(pppoeWidget, i18n("DSL"));
 //         WiredConnectionWidget *wiredWidget = new WiredConnectionWidget(m_connection->setting(NetworkManager::Setting::Wired), this);
@@ -206,23 +208,23 @@ void ConnectionSetting::loadConfig(const NetworkManager::ConnectionSettings::Ptr
 //     }
 
     bool valid = true;
-    foreach (NetworkManager::Setting::SettingType settingType, d->settings.keys()) {
-        valid = valid && d->settings.value(settingType)->isValid();
-        connect(d->settings.value(settingType), &Setting::validityChanged, this, &ConnectionSetting::onValidityChanged);
+    for (auto it = d->settings.constBegin(); it != d->settings.constEnd(); ++it) {
+        valid = valid && it.value()->isValid();
+        connect(it.value(), &Setting::validityChanged, this, &ConnectionSettings::onValidityChanged);
     }
 
     d->valid = valid;
     Q_EMIT validityChanged(valid);
 
-//     // If the connection is not empty (not new) we want to load its secrets
+    // If the connection is not empty (not new) we want to load its secrets
 //     if (!emptyConnection) {
-//         NetworkManager::Connection::Ptr connection = NetworkManager::findConnectionByUuid(m_connectionSetting->uuid());
-//         if (connection) {
-//             QStringList requiredSecrets;
-//             QString settingName;
-//             QVariantMap setting;
-//             QDBusPendingReply<NMVariantMapMap> reply;
-//
+        NetworkManager::Connection::Ptr connection = NetworkManager::findConnectionByUuid(d->connectionSettings->uuid());
+        if (connection) {
+            QStringList requiredSecrets;
+            QString settingName;
+            QVariantMap setting;
+            QDBusPendingReply<NMVariantMapMap> reply;
+
 //             if (m_connection->connectionType() == NetworkManager::ConnectionSettings::Adsl) {
 //                 NetworkManager::AdslSetting::Ptr adslSetting = connection->settings()->setting(NetworkManager::Setting::Adsl).staticCast<NetworkManager::AdslSetting>();
 //                 if (adslSetting && !adslSetting->needSecrets().isEmpty()) {
@@ -265,12 +267,14 @@ void ConnectionSetting::loadConfig(const NetworkManager::ConnectionSettings::Ptr
 //                     setting = securitySetting->toMap();
 //                     settingName = QLatin1String("802-1x");
 //                 }
-//             } else if (m_connection->connectionType() == NetworkManager::ConnectionSettings::Wireless) {
-//                 NetworkManager::WirelessSecuritySetting::Ptr wifiSecuritySetting = connection->settings()->setting(NetworkManager::Setting::WirelessSecurity).staticCast<NetworkManager::WirelessSecuritySetting>();
-//                 if (wifiSecuritySetting &&
-//                         (wifiSecuritySetting->keyMgmt() == NetworkManager::WirelessSecuritySetting::WpaEap ||
-//                          (wifiSecuritySetting->keyMgmt() == NetworkManager::WirelessSecuritySetting::WirelessSecuritySetting::Ieee8021x &&
-//                           wifiSecuritySetting->authAlg() != NetworkManager::WirelessSecuritySetting::Leap))) {
+//             } else
+            if (d->connectionSettings->connectionType() == NetworkManager::ConnectionSettings::Wireless) {
+                NetworkManager::WirelessSecuritySetting::Ptr wifiSecuritySetting = d->connectionSettings->setting(NetworkManager::Setting::WirelessSecurity).staticCast<NetworkManager::WirelessSecuritySetting>();
+                if (wifiSecuritySetting &&
+                        (wifiSecuritySetting->keyMgmt() == NetworkManager::WirelessSecuritySetting::WpaEap ||
+                        (wifiSecuritySetting->keyMgmt() == NetworkManager::WirelessSecuritySetting::WirelessSecuritySetting::Ieee8021x &&
+                         wifiSecuritySetting->authAlg() != NetworkManager::WirelessSecuritySetting::Leap))) {
+                    // TODO
 //                     NetworkManager::Security8021xSetting::Ptr securitySetting = connection->settings()->setting(NetworkManager::Setting::Security8021x).staticCast<NetworkManager::Security8021xSetting>();
 //                     if (securitySetting && !securitySetting->needSecrets().isEmpty()) {
 //                         requiredSecrets = securitySetting->needSecrets();
@@ -281,221 +285,293 @@ void ConnectionSetting::loadConfig(const NetworkManager::ConnectionSettings::Ptr
 //                             requiredSecrets.removeAll(NM_SETTING_802_1X_PASSWORD_RAW);
 //                         }
 //                     }
-//                 } else {
-//                     if (!wifiSecuritySetting->needSecrets().isEmpty()) {
-//                         requiredSecrets = wifiSecuritySetting->needSecrets();
-//                         setting = wifiSecuritySetting->toMap();
-//                         settingName = QLatin1String("802-11-wireless-security");
-//                     }
-//                 }
-//             } else if (m_connection->connectionType() == NetworkManager::ConnectionSettings::Vpn) {
-//                 settingName = QLatin1String("vpn");
-//             }
-//
-//             if (!requiredSecrets.isEmpty() || m_connection->connectionType() == NetworkManager::ConnectionSettings::Vpn) {
-//                 bool requestSecrets = false;
-//                 if (m_connection->connectionType() == NetworkManager::ConnectionSettings::Vpn) {
-//                     requestSecrets = true;
-//                 } else {
-//                     Q_FOREACH (const QString &secret, requiredSecrets) {
-//                         if (setting.contains(secret + QLatin1String("-flags"))) {
-//                             NetworkManager::Setting::SecretFlagType secretFlag = (NetworkManager::Setting::SecretFlagType)setting.value(secret + QLatin1String("-flags")).toInt();
-//                             if (secretFlag == NetworkManager::Setting::None || secretFlag == NetworkManager::Setting::AgentOwned) {
-//                                 requestSecrets = true;
-//                             }
-//                         } else {
-//                             requestSecrets = true;
-//                         }
-//                     }
-//                 }
-//
-//                 if (requestSecrets) {
-//                     m_pendingReplies++;
-//                     reply = connection->secrets(settingName);
-//                     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, this);
-//                     watcher->setProperty("connection", connection->name());
-//                     watcher->setProperty("settingName", settingName);
-//                     connect(watcher, &QDBusPendingCallWatcher::finished, this, &ConnectionEditorBase::replyFinished);
-//                     m_valid = false;
-//                     Q_EMIT validityChanged(false);
-//                     return;
-//                 }
-//             }
-//         }
+                } else {
+                    if (!wifiSecuritySetting->needSecrets().isEmpty()) {
+                        requiredSecrets = wifiSecuritySetting->needSecrets();
+                        setting = wifiSecuritySetting->toMap();
+                        settingName = QLatin1String("802-11-wireless-security");
+                    }
+                }
+            } else if (d->connectionSettings->connectionType() == NetworkManager::ConnectionSettings::Vpn) {
+                settingName = QLatin1String("vpn");
+            }
+
+            if (!requiredSecrets.isEmpty() || d->connectionSettings->connectionType() == NetworkManager::ConnectionSettings::Vpn) {
+                bool requestSecrets = false;
+                if (d->connectionSettings->connectionType() == NetworkManager::ConnectionSettings::Vpn) {
+                    requestSecrets = true;
+                } else {
+                    for (const QString &secret : requiredSecrets) {
+                        if (setting.contains(secret + QLatin1String("-flags"))) {
+                            NetworkManager::Setting::SecretFlagType secretFlag = (NetworkManager::Setting::SecretFlagType)setting.value(secret + QLatin1String("-flags")).toInt();
+                            if (secretFlag == NetworkManager::Setting::None || secretFlag == NetworkManager::Setting::AgentOwned) {
+                                requestSecrets = true;
+                            }
+                        } else {
+                            requestSecrets = true;
+                        }
+                    }
+                }
+
+                if (requestSecrets) {
+                    d->pendingReplies++;
+                    reply = connection->secrets(settingName);
+                    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, this);
+                    watcher->setProperty("connection", connection->name());
+                    watcher->setProperty("settingName", settingName);
+                    connect(watcher, &QDBusPendingCallWatcher::finished, this, &ConnectionSettings::onReplyFinished);
+                    d->valid = false;
+                    Q_EMIT validityChanged(false);
+                    return;
+                }
+            }
+        }
 //     }
-//
+
     // We should be now fully initialized as we don't wait for secrets
     if (d->pendingReplies == 0) {
         d->secretsLoaded = true;
     }
 }
 
-NMVariantMapMap ConnectionSetting::settingMap() const
+NMVariantMapMap ConnectionSettings::settingMap() const
 {
-    return NMVariantMapMap();
+    Q_D(const ConnectionSettings);
+
+    return d->connectionSettings->toMap();
 }
 
-QString ConnectionSetting::id() const
+QString ConnectionSettings::id() const
 {
-    Q_D(const ConnectionSetting);
+    Q_D(const ConnectionSettings);
 
     return d->connectionSettings->id();
 }
 
-void ConnectionSetting::setId(const QString &id)
+void ConnectionSettings::setId(const QString &id)
 {
-    Q_D(ConnectionSetting);
+    Q_D(ConnectionSettings);
 
     d->connectionSettings->setId(id);
+
+    Q_EMIT settingChanged();
 }
 
-QString ConnectionSetting::uuid() const
+QString ConnectionSettings::uuid() const
 {
-    Q_D(const ConnectionSetting);
+    Q_D(const ConnectionSettings);
 
     return d->connectionSettings->uuid();
 }
 
-void ConnectionSetting::setUuid(const QString &uuid)
+void ConnectionSettings::setUuid(const QString &uuid)
 {
-    Q_D(ConnectionSetting);
+    Q_D(ConnectionSettings);
 
     d->connectionSettings->setUuid(uuid);
 }
 
-uint ConnectionSetting::connectionType() const
+uint ConnectionSettings::connectionType() const
 {
-    Q_D(const ConnectionSetting);
+    Q_D(const ConnectionSettings);
 
     return (uint)d->connectionSettings->connectionType();
 }
 
-bool ConnectionSetting::autoconnect() const
+bool ConnectionSettings::autoconnect() const
 {
-    Q_D(const ConnectionSetting);
+    Q_D(const ConnectionSettings);
 
     return d->connectionSettings->autoconnect();
 }
 
-void ConnectionSetting::setAutoconnect(bool autoconnect)
+void ConnectionSettings::setAutoconnect(bool autoconnect)
 {
-    Q_D(ConnectionSetting);
+    Q_D(ConnectionSettings);
 
     d->connectionSettings->setAutoconnect(autoconnect);
+
+    Q_EMIT settingChanged();
 }
 
-QStringList ConnectionSetting::permissions() const
+QStringList ConnectionSettings::permissions() const
 {
-    Q_D(const ConnectionSetting);
+    Q_D(const ConnectionSettings);
 
     return d->connectionSettings->permissions().keys();
 }
 
-void ConnectionSetting::setPermissions(const QStringList &permissions)
+void ConnectionSettings::setPermissions(const QStringList &permissions)
 {
-    Q_D(ConnectionSetting);
+    Q_D(ConnectionSettings);
 
-    foreach (const QString &user, permissions) {
-        d->connectionSettings->addToPermissions(user, QString());
+    if (permissions.isEmpty()) {
+        d->connectionSettings->setPermissions({});
+    } else {
+        for (const QString &user : permissions) {
+            if (user == QLatin1String("replace_current_user")) {
+                d->connectionSettings->addToPermissions(KUser().loginName(), QString());
+            } else {
+                d->connectionSettings->addToPermissions(user, QString());
+            }
+        }
     }
+
+    Q_EMIT settingChanged();
 }
 
-QString ConnectionSetting::secondaryConnection() const
+QString ConnectionSettings::secondaryConnection() const
 {
-    Q_D(const ConnectionSetting);
+    Q_D(const ConnectionSettings);
 
     if (!d->connectionSettings->secondaries().isEmpty()) {
-        return d->connectionSettings->secondaries().first();
+        return d->vpnConnections.value(d->connectionSettings->secondaries().first());
     }
 
     return nullptr;
 }
 
-void ConnectionSetting::setSecondaryConnection(const QString &secondaryConnection)
+void ConnectionSettings::setSecondaryConnection(const QString &secondaryConnection)
 {
-    Q_D(ConnectionSetting);
+    Q_D(ConnectionSettings);
 
-    d->connectionSettings->setSecondaries({secondaryConnection});
+    d->connectionSettings->setSecondaries({d->vpnConnections.key(secondaryConnection)});
+
+    Q_EMIT settingChanged();
 }
 
-int ConnectionSetting::priority() const
+QString ConnectionSettings::zone() const
 {
-    Q_D(const ConnectionSetting);
+    Q_D(const ConnectionSettings);
+
+    return d->connectionSettings->zone();
+}
+
+void ConnectionSettings::setZone(const QString &zone)
+{
+    Q_D(ConnectionSettings);
+
+    d->connectionSettings->setZone(zone);
+
+    Q_EMIT settingChanged();
+}
+
+int ConnectionSettings::priority() const
+{
+    Q_D(const ConnectionSettings);
 
     return d->connectionSettings->autoconnectPriority();
 }
 
-void ConnectionSetting::setPriority(int priority)
+void ConnectionSettings::setPriority(int priority)
 {
-    Q_D(ConnectionSetting);
+    Q_D(ConnectionSettings);
 
     d->connectionSettings->setAutoconnectPriority(priority);
+
+    Q_EMIT settingChanged();
 }
 
-QStringList ConnectionSetting::firewallZones() const
+int ConnectionSettings::metered() const
 {
-    Q_D(const ConnectionSetting);
+    Q_D(const ConnectionSettings);
 
-    return d->firewallZones;
+    return d->connectionSettings->metered();
 }
 
-QStringList ConnectionSetting::vpnConnections() const
+void ConnectionSettings::setMetered(int metered)
 {
-    Q_D(const ConnectionSetting);
+    Q_D(ConnectionSettings);
 
-    return d->vpnConnections.values();
+    d->connectionSettings->setMetered(static_cast<NetworkManager::ConnectionSettings::Metered>(metered));
+
+    Q_EMIT settingChanged();
 }
 
-Setting * ConnectionSetting::setting(NetworkManager::Setting::SettingType type) const
+QObject * ConnectionSettings::setting(uint type) const
 {
-    Q_D(const ConnectionSetting);
+    Q_D(const ConnectionSettings);
 
-    return d->settings.value(type);
+    return d->settings.value((NetworkManager::Setting::SettingType) type);
 }
 
-QList<NetworkManager::Setting::SettingType> ConnectionSetting::settingTypes() const
+QList<NetworkManager::Setting::SettingType> ConnectionSettings::settingTypes() const
 {
-    Q_D(const ConnectionSetting);
+    Q_D(const ConnectionSettings);
 
     return d->settings.keys();
 }
 
-void ConnectionSetting::addSetting(NetworkManager::Setting::SettingType type, Setting *setting)
+void ConnectionSettings::addSetting(NetworkManager::Setting::SettingType type, Setting *setting)
 {
-    Q_D(ConnectionSetting);
+    Q_D(ConnectionSettings);
 
     d->settings.insert(type, setting);
 }
 
-bool ConnectionSetting::isInitialized() const
+bool ConnectionSettings::isInitialized() const
 {
-    Q_D(const ConnectionSetting);
+    Q_D(const ConnectionSettings);
 
     return d->secretsLoaded;
 }
 
-bool ConnectionSetting::isValid() const
+bool ConnectionSettings::isValid() const
 {
-    Q_D(const ConnectionSetting);
+    Q_D(const ConnectionSettings);
 
     return d->valid;
 }
 
-void ConnectionSetting::onReplyFinished(QDBusPendingCallWatcher *watcher)
+void ConnectionSettings::onReplyFinished(QDBusPendingCallWatcher *watcher)
 {
+    Q_D(ConnectionSettings);
+
+    QDBusPendingReply<NMVariantMapMap> reply = *watcher;
+    const QString settingName = watcher->property("settingName").toString();
+    if (reply.isValid()) {
+        NMVariantMapMap secrets = reply.argumentAt<0>();
+        for (const QString &key : secrets.keys()) {
+            if (key == settingName) {
+                NetworkManager::Setting::Ptr setting = d->connectionSettings->setting(NetworkManager::Setting::typeFromString(key));
+                if (setting) {
+                    setting->secretsFromMap(secrets.value(key));
+                    for (auto it = d->settings.constBegin(); it != d->settings.constEnd(); ++it) {
+                        if (NetworkManager::Setting::typeFromString(key) == it.key()) {
+                            it.value()->loadSecrets(setting);
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        KNotification *notification = new KNotification("FailedToGetSecrets", KNotification::CloseOnTimeout);
+        notification->setComponentName("networkmanagement");
+        notification->setTitle(i18n("Failed to get secrets for %1", watcher->property("connection").toString()));
+        notification->setText(reply.error().message());
+        notification->setPixmap(QIcon::fromTheme("dialog-warning").pixmap(KIconLoader::SizeHuge));
+        notification->sendEvent();
+    }
+
+    watcher->deleteLater();
+    onValidityChanged(true);
+
+    // We should be now fully with secrets
+    d->pendingReplies--;
+    d->secretsLoaded = true;
 }
 
-void ConnectionSetting::onValidityChanged(bool valid)
+void ConnectionSettings::onValidityChanged(bool valid)
 {
-    Q_D(ConnectionSetting);
+    Q_D(ConnectionSettings);
 
     if (!valid) {
         d->valid = false;
         Q_EMIT validityChanged(false);
         return;
     } else {
-        foreach (NetworkManager::Setting::SettingType settingType, d->settings.keys()) {
-            if (!d->settings.value(settingType)->isValid()) {
+        for (auto it = d->settings.constBegin(); it != d->settings.constEnd(); ++it) {
+            if (!it.value()->isValid()) {
                 d->valid = false;
                 Q_EMIT validityChanged(false);
                 return;
