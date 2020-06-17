@@ -226,14 +226,14 @@ PlasmaExtras.ExpandableListItem {
     }
 
     function changeState() {
-        if (Uuid || !predictableWirelessPassword || connectionItem.customExpandedViewContent == passwordDialogComponent) {
+        if (Uuid || !predictableWirelessPassword || connectionItem.customExpandedViewContentItem == passwordDialogComponent) {
             if (ConnectionState == PlasmaNM.Enums.Deactivated) {
                 if (!predictableWirelessPassword && !Uuid) {
                     handler.addAndActivateConnection(DevicePath, SpecificPath)
-                } else if (connectionItem.customExpandedViewContent == passwordDialogComponent) {
-                    if (passwordDialogComponent.password != "") {
-                        handler.addAndActivateConnection(DevicePath, SpecificPath, passwordDialogComponent.password)
-                        connectionItem.customExpandedViewContent = detailsComponent
+                } else if (connectionItem.customExpandedViewContentItem == passwordDialogComponent) {
+                    if (connectionItem.customExpandedViewContentItem.password != "") {
+                        handler.addAndActivateConnection(DevicePath, SpecificPath, connectionItem.customExpandedViewContentItem.password)
+                        connectionItem.customExpandedViewContentItem = detailsComponent
                         connectionItem.collapse()
                     } else {
                         connectionItem.expand()
@@ -246,7 +246,7 @@ PlasmaExtras.ExpandableListItem {
             }
         } else if (predictableWirelessPassword) {
             appletProxyModel.dynamicSortFilter = false
-            connectionItem.customExpandedViewContent = passwordDialogComponent
+            connectionItem.customExpandedViewContentItem = passwordDialogComponent
             connectionItem.expand()
         }
     }
