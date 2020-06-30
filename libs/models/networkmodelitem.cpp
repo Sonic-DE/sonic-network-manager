@@ -679,4 +679,6 @@ void NetworkModelItem::updateDetails() const
             m_details << i18n("MAC Address") << teamDevice->hwAddress();
         }
     }
+
+    m_details << i18n("Device") << device->interfaceName();
 }
