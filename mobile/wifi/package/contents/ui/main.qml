@@ -107,6 +107,7 @@ ScrollViewKCM {
         Controls.Button {
             icon.name: "list-add"
             text: i18n("Add custom connection")
+            visible: enabledConnections.wirelessEnabled
             onClicked: kcm.push("NetworkSettings.qml")
         }
 
@@ -115,6 +116,7 @@ ScrollViewKCM {
             text: i18n("Saved Connections")
             checkable: true
             checked: false
+            visible: enabledConnections.wirelessEnabled
             onClicked: mobileProxyModel.showSavedMode = !mobileProxyModel.showSavedMode
         }
     }
