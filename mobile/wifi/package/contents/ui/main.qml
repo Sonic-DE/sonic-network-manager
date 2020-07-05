@@ -21,7 +21,7 @@ import QtQuick 2.6
 import QtQuick.Layouts 1.2
 import QtQuick.Controls 2.2 as Controls
 import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
-import org.kde.kirigami 2.10 as Kirigami
+import org.kde.kirigami 2.12 as Kirigami
 import org.kde.kcm 1.2
 
 ScrollViewKCM {
@@ -33,10 +33,6 @@ ScrollViewKCM {
 
     PlasmaNM.EnabledConnections {
         id: enabledConnections
-
-        onWirelessEnabledChanged: {
-            wifiSwitchButton.checked = wifiSwitchButton.enabled && enabled
-        }
     }
 
     PlasmaNM.NetworkModel {
@@ -79,7 +75,6 @@ ScrollViewKCM {
 
         clip: true
         currentIndex: -1
-        boundsBehavior: Flickable.StopAtBounds
 
         section.property: "Section"
         section.delegate: Kirigami.ListSectionHeader {
@@ -88,32 +83,39 @@ ScrollViewKCM {
 
         model: mobileProxyModel
         delegate: ConnectionItemDelegate {}
-    }
 
-    actions.main: Kirigami.Action {
-        iconName: enabledConnections.wirelessEnabled ? "network-wireless-disconnected" : "network-wireless-connected"
-        text: enabledConnections.wirelessEnabled ? i18n("Disable Wi-Fi") : i18n("Enable Wi-Fi")
-        onTriggered: handler.enableWireless(!enabledConnections.wirelessEnabled);
-    }
-
-    actions.contextualActions: [
-
-        Kirigami.Action {
-            iconName: "edit"
-            text: i18n("Add custom connection")
-            onTriggered: {
-                kcm.push("NetworkSettings.qml")
-                contextDrawer.close()
+        Kirigami.PlaceholderMessage {
+            anchors.centerIn: parent
+            width: parent.width - (Kirigami.Units.largeSpacing * 4)
+            visible: !enabledConnections.wirelessEnabled
+            text: i18n("Wi-Fi is disabled")
+            helpfulAction: Kirigami.Action {
+                iconName: "network-wireless-connected"
+                text: i18n("Enable")
+                onTriggered: handler.enableWireless(true)
             }
-        },
-        Kirigami.Action {
-            iconName: "edit"
+        }
+    }
+
+    footer: Row {
+        Controls.Button {
+            text: i18n("Disable Wi-Fi")
+            icon.name: "network-disconnect"
+            visible: enabledConnections.wirelessEnabled
+            onClicked: handler.enableWireless(false)
+        }
+        Controls.Button {
+            icon.name: "list-add"
+            text: i18n("Add custom connection")
+            onClicked: kcm.push("NetworkSettings.qml")
+        }
+
+        Controls.Button {
+            icon.name: "document-save"
             text: i18n("Saved Connections")
             checkable: true
             checked: false
-            onTriggered: {
-                mobileProxyModel.showSavedMode = !mobileProxyModel.showSavedMode
-            }
+            onClicked: mobileProxyModel.showSavedMode = !mobileProxyModel.showSavedMode
         }
-    ]
+    }
 }
