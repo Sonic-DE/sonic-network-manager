@@ -18,41 +18,14 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PLASMA_NM_SETTING_H
-#define PLASMA_NM_SETTING_H
+#include "setting.h"
 
-class QObject;
-
-class SettingPrivate;
-
-#include <NetworkManagerQt/Setting>
-
-class Q_DECL_EXPORT Setting : public QObject
+class SettingPrivate
 {
-    Q_OBJECT
 public:
-    explicit Setting(const NetworkManager::Setting::Ptr &setting = NetworkManager::Setting::Ptr(), QObject *parent = nullptr);
-    virtual ~Setting();
-
-//     virtual void loadConfig(const NetworkManager::Setting::Ptr &setting) = 0;
-    virtual void loadSecrets(const NetworkManager::Setting::Ptr &setting);
-
-    virtual QVariantMap setting() const = 0;
-
-    NetworkManager::Setting::SettingType type() const;
-
-    virtual bool isValid() const;
-
-Q_SIGNALS:
-    void changed();
-    void validityChanged(bool valid);
-
-protected:
-    SettingPrivate *d_ptr;
-
-private:
-    Q_DECLARE_PRIVATE(Setting)
-
+    explicit SettingPrivate(const NetworkManager::Setting::Ptr &setting, NetworkManager::Setting::SettingType type)
+        : type(type)
+        { Q_UNUSED(setting);}
+    NetworkManager::Setting::SettingType type;
 };
 
-#endif // PLASMA_NM_SETTING_H

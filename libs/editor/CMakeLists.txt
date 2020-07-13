@@ -4,8 +4,13 @@ set(plasmanm_editor_SRCS
     # FIXME
     ../debug.cpp
 
-    settings/connectionsetting.cpp
+    settings/connectionsettings.cpp
+    settings/ipv4setting.cpp
+    settings/ipv6setting.cpp
     settings/setting.cpp
+    settings/wiredsetting.cpp
+    settings/wirelesssetting.cpp
+    settings/wirelesssecuritysetting.cpp
 
     widgets/passwordfield.cpp
     widgets/settingwidget.cpp
@@ -27,15 +32,22 @@ endif()
 
 add_library(plasmanm_editor SHARED ${plasmanm_editor_SRCS})
 target_link_libraries(plasmanm_editor
-    plasmanm_internal
-    Qt5::DBus
-    Qt5::Widgets
-    KF5::CoreAddons
-    KF5::KDELibs4Support
-    KF5::I18n
+PUBLIC
+    KF5::Completion
     KF5::NetworkManagerQt
+    Qt5::Widgets
+PRIVATE
+    Qt5::DBus
+    KF5::ConfigCore
+    KF5::CoreAddons
+    KF5::I18n
+    KF5::IconThemes
+    KF5::KIOFileWidgets
+    KF5::Notifications
+    KF5::Solid
+    KF5::Wallet
+    plasmanm_internal
 #     KF5::Declarative
-#     KF5::Notifications
 #     qca-qt5
 )
 

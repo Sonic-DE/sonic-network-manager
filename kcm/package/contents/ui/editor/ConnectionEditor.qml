@@ -22,69 +22,48 @@ import QtQuick 2.6
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2 as QtControls
 
-import org.kde.kirigami 2.0 // for units
+import org.kde.kcm 1.2
+import org.kde.kirigami 2.0 as Kirigami
+import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
 
-// FIXME add horizontal scrollbar?
-Item {
-    id: connectionEditorTab
+SimpleKCM {
+    id: connectionEditorPage
 
-    QtControls.TextField  {
-        id: connectionNameTextField
+    title: connectionSetting.connectionNameTextField.text
 
-        anchors.top: parent.top
-
-        hoverEnabled: true
+    PlasmaNM.Utils {
+        id: nmUtils
     }
 
-    QtControls.TabBar {
-        id: tabBar
-
-        width: parent.width
-        anchors {
-            top: connectionNameTextField.bottom
-            topMargin: Math.round(Units.gridUnit / 2)
-        }
-
-        QtControls.TabButton {
-            text: i18n("Connection")
-        }
-
-        // FIXME just placeholders for now
-        QtControls.TabButton {
-            text: i18n("Wireless")
-        }
-
-        QtControls.TabButton {
-            text: i18n("Wireless security")
-        }
-
-        QtControls.TabButton {
-            text: i18n("IPv4")
-        }
-
-        QtControls.TabButton {
-            text: i18n("IPv6")
-        }
-    }
-
-    StackLayout {
-        anchors {
-            horizontalCenter: parent.horizontalCenter
-            top: tabBar.bottom
-            topMargin: Math.round(Units.gridUnit / 2)
-        }
-
-        currentIndex: tabBar.currentIndex
+    ColumnLayout {
+        id: simpleLayout
 
         ConnectionSetting {
             id: connectionSetting
+            Layout.fillWidth: true
+            twinFormLayouts: connectionSpecificSetting.item
+        }
+
+        Loader {
+            id: connectionSpecificSetting
+            Layout.fillWidth: true
         }
     }
 
-    function loadConnectionSetting() {
-        connectionNameTextField.text = connectionSettingObject.id
+    function loadConnectionSettings() {
+        connectionSetting.connectionNameTextField.text = connectionSettingsObject.id
         // Load general connection setting
-        connectionSetting.loadSetting()
+        connectionSetting.loadSettings()
+
+        // Load connection specific setting
+        if (connectionSettingsObject.connectionType == PlasmaNM.Enums.Wired) {
+            connectionSpecificSetting.source = "WiredSetting.qml"
+        } else if (connectionSettingsObject.connectionType == PlasmaNM.Enums.Wireless) {
+            connectionSpecificSetting.source = "WirelessSetting.qml"
+        }
+
+        connectionSpecificSetting.item.twinFormLayouts = connectionSetting;
+        connectionSpecificSetting.item.loadSettings()
     }
 }
 

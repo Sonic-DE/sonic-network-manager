@@ -21,7 +21,7 @@
 #include "kcm.h"
 
 #include "debug.h"
-#include "settings/connectionsetting.h"
+#include "settings/connectionsettings.h"
 // #include "mobileconnectionwizard.h"
 #include "uiutils.h"
 
@@ -104,16 +104,16 @@ KCMNetworkmanagement::KCMNetworkmanagement(QObject *parent, const QVariantList &
 //     m_ui->connectionView->rootContext()->setContextProperty("connectionModified", false);
 //     m_ui->connectionView->rootContext()->setContextProperty("useApMode", useApMode);
 
-    m_connectionSetting = new ConnectionSetting(this);
-//     connect(m_connectionSetting, &ConnectionSetting::settingChanged,
-//             [this] () {
-//                 if (m_connectionSetting->isInitialized() && m_connectionSetting->isValid()) {
-//                     setNeedsSave(true);
-//                 }
-//             });
-    connect(m_connectionSetting, &ConnectionSetting::validityChanged,
+    m_connectionSettings = new ConnectionSettings(this);
+    connect(m_connectionSettings, &ConnectionSettings::settingChanged,
+            [this] () {
+                if (m_connectionSettings->isInitialized() && m_connectionSettings->isValid()) {
+                    setNeedsSave(true);
+                }
+            });
+    connect(m_connectionSettings, &ConnectionSettings::validityChanged,
             [this] (bool valid) {
-                if (m_connectionSetting->isInitialized()) {
+                if (m_connectionSettings->isInitialized()) {
                     setNeedsSave(true);
                 }
             });
@@ -136,64 +136,64 @@ KCMNetworkmanagement::KCMNetworkmanagement(QObject *parent, const QVariantList &
 
     // Pre-select currently active primary connection and if there is none then just select
     // the very first connection
-    NetworkManager::ActiveConnection::Ptr activeConnection = NetworkManager::primaryConnection();
-    if (activeConnection && activeConnection->isValid()) {
-        // Also check if the connection type is supported by KCM
-        const NetworkManager::ConnectionSettings::ConnectionType type = activeConnection->type();
-        if (UiUtils::isConnectionTypeSupported(type)) {
-            QMetaObject::invokeMethod(mainUi(), "selectConnectionInView", Q_ARG(QVariant, activeConnection->id()), Q_ARG(QVariant, activeConnection->connection()->path()));
-        }
-    }
+//     NetworkManager::ActiveConnection::Ptr activeConnection = NetworkManager::primaryConnection();
+//     if (activeConnection && activeConnection->isValid()) {
+//         // Also check if the connection type is supported by KCM
+//         const NetworkManager::ConnectionSettings::ConnectionType type = activeConnection->type();
+//         if (UiUtils::isConnectionTypeSupported(type)) {
+//             QMetaObject::invokeMethod(mainUi(), "selectConnectionInView", Q_ARG(QVariant, activeConnection->id()), Q_ARG(QVariant, activeConnection->connection()->path()));
+//         }
+//     }
+//
+//     // Select the very first connection as a fallback
+//     if (!selectedConnection || !selectedConnection->isValid()) {
+//         NetworkManager::Connection::List connectionList = NetworkManager::listConnections();
+//         std::sort(connectionList.begin(), connectionList.end(), [] (const NetworkManager::Connection::Ptr &left, const NetworkManager::Connection::Ptr &right)
+//         {
+//             const QString leftName = left->settings()->id();
+//             const UiUtils::SortedConnectionType leftType = UiUtils::connectionTypeToSortedType(left->settings()->connectionType());
+//             const QDateTime leftDate = left->settings()->timestamp();
+//
+//             const QString rightName = right->settings()->id();
+//             const UiUtils::SortedConnectionType rightType = UiUtils::connectionTypeToSortedType(right->settings()->connectionType());
+//             const QDateTime rightDate = right->settings()->timestamp();
+//
+//             if (leftType < rightType) {
+//                 return true;
+//             } else if (leftType > rightType) {
+//                 return false;
+//             }
+//
+//             if (leftDate > rightDate) {
+//                 return true;
+//             } else if (leftDate < rightDate) {
+//                 return false;
+//             }
+//
+//             if (QString::localeAwareCompare(leftName, rightName) > 0) {
+//                 return true;
+//             } else {
+//                 return false;
+//             }
+//         });
+//
+//         for (const NetworkManager::Connection::Ptr &connection : connectionList) {
+//             const NetworkManager::ConnectionSettings::ConnectionType type = connection->settings()->connectionType();
+//             if (UiUtils::isConnectionTypeSupported(type)) {
+//                 QMetaObject::invokeMethod(mainUi(), "selectConnectionInView", Q_ARG(QVariant, connection->settings()->id()), Q_ARG(QVariant, connection->path()));
+//                 break;
+//             }
+//         }
+//     }
 
-    // Select the very first connection as a fallback
-    if (!selectedConnection || !selectedConnection->isValid()) {
-        NetworkManager::Connection::List connectionList = NetworkManager::listConnections();
-        std::sort(connectionList.begin(), connectionList.end(), [] (const NetworkManager::Connection::Ptr &left, const NetworkManager::Connection::Ptr &right)
-        {
-            const QString leftName = left->settings()->id();
-            const UiUtils::SortedConnectionType leftType = UiUtils::connectionTypeToSortedType(left->settings()->connectionType());
-            const QDateTime leftDate = left->settings()->timestamp();
-
-            const QString rightName = right->settings()->id();
-            const UiUtils::SortedConnectionType rightType = UiUtils::connectionTypeToSortedType(right->settings()->connectionType());
-            const QDateTime rightDate = right->settings()->timestamp();
-
-            if (leftType < rightType) {
-                return true;
-            } else if (leftType > rightType) {
-                return false;
-            }
-
-            if (leftDate > rightDate) {
-                return true;
-            } else if (leftDate < rightDate) {
-                return false;
-            }
-
-            if (QString::localeAwareCompare(leftName, rightName) > 0) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-
-        for (const NetworkManager::Connection::Ptr &connection : connectionList) {
-            const NetworkManager::ConnectionSettings::ConnectionType type = connection->settings()->connectionType();
-            if (UiUtils::isConnectionTypeSupported(type)) {
-                QMetaObject::invokeMethod(mainUi(), "selectConnectionInView", Q_ARG(QVariant, connection->settings()->id()), Q_ARG(QVariant, connection->path()));
-                break;
-            }
-        }
-    }
-
-    if (selectedConnection && selectedConnection->isValid()) {
-        const NetworkManager::ConnectionSettings::Ptr settings = selectedConnection->settings();
-        if (UiUtils::isConnectionTypeSupported(settings->connectionType())) {
-            QMetaObject::invokeMethod(rootItem, "selectConnection", Q_ARG(QVariant, settings->id()), Q_ARG(QVariant, selectedConnection->path()));
-        }
-    } else {
-        qDebug() << "Cannot preselect a connection";
-    }
+//     if (selectedConnection && selectedConnection->isValid()) {
+//         const NetworkManager::ConnectionSettings::Ptr settings = selectedConnection->settings();
+//         if (UiUtils::isConnectionTypeSupported(settings->connectionType())) {
+//             QMetaObject::invokeMethod(rootItem, "selectConnection", Q_ARG(QVariant, settings->id()), Q_ARG(QVariant, selectedConnection->path()));
+//         }
+//     } else {
+//         qDebug() << "Cannot preselect a connection";
+//     }
 
     connect(NetworkManager::settingsNotifier(), &NetworkManager::SettingsNotifier::connectionAdded, this, &KCMNetworkmanagement::onConnectionAdded, Qt::UniqueConnection);
 
@@ -229,7 +229,7 @@ void KCMNetworkmanagement::load()
     if (connection) {
         NetworkManager::ConnectionSettings::Ptr connectionSettings = connection->settings();
         // Re-load the connection again to load stored values
-        m_connectionSetting->loadConfig(connectionSettings);
+        m_connectionSettings->loadConfig(connectionSettings->toMap());
     }
 
     KQuickAddons::ConfigModule::load();
@@ -237,11 +237,11 @@ void KCMNetworkmanagement::load()
 
 void KCMNetworkmanagement::save()
 {
-//     NetworkManager::Connection::Ptr connection = NetworkManager::findConnection(m_currentConnectionPath);
-//
-//     if (connection) {
-//         m_handler->updateConnection(connection, m_connectionSetting->setting());
-//     }
+    NetworkManager::Connection::Ptr connection = NetworkManager::findConnection(m_currentConnectionPath);
+
+    if (connection) {
+        m_handler->updateConnection(connection, m_connectionSettings->settingMap());
+    }
 
     KQuickAddons::ConfigModule::save();
 }
@@ -256,7 +256,7 @@ void KCMNetworkmanagement::onConnectionAdded(const QString &connection)
     if (newConnection) {
         NetworkManager::ConnectionSettings::Ptr connectionSettings = newConnection->settings();
         if (connectionSettings && connectionSettings->uuid() == m_createdConnectionUuid) {
-            loadConnectionSettings(connectionSettings);
+            loadConnectionSettings(connectionSettings->toMap());
             QMetaObject::invokeMethod(mainUi(), "selectConnectionInView", Q_ARG(QVariant, connectionSettings->id()), Q_ARG(QVariant, newConnection->path()));
             m_createdConnectionUuid.clear();
         }
@@ -275,7 +275,7 @@ void KCMNetworkmanagement::selectConnection(const QString &connectionPath)
     NetworkManager::Connection::Ptr connection = NetworkManager::findConnection(m_currentConnectionPath);
     if (connection) {
         NetworkManager::ConnectionSettings::Ptr connectionSettings = connection->settings();
-        loadConnectionSettings(connectionSettings);
+        loadConnectionSettings(connectionSettings->toMap());
     }
 }
 
@@ -327,6 +327,7 @@ void KCMNetworkmanagement::requestCreateConnection(int connectionType, const QSt
 //         wizard->show();
 // #endif
     } else {
+        qDebug() << "linluwi ante";
         NetworkManager::ConnectionSettings::Ptr connectionSettings;
         connectionSettings = NetworkManager::ConnectionSettings::Ptr(new NetworkManager::ConnectionSettings(type));
 
@@ -384,6 +385,7 @@ void KCMNetworkmanagement::requestCreateConnection(int connectionType, const QSt
         }
         // Generate new UUID
         connectionSettings->setUuid(NetworkManager::ConnectionSettings::createNewUuid());
+        qDebug() << "pana linluwi";
         addConnection(connectionSettings);
     }
 }
@@ -431,9 +433,9 @@ void KCMNetworkmanagement::requestExportConnection(const QString &connectionPath
 //     }
 }
 
-QObject * KCMNetworkmanagement::connectionSetting() const
+QObject * KCMNetworkmanagement::connectionSettings() const
 {
-   return m_connectionSetting;
+   return m_connectionSettings;
 }
 
 void KCMNetworkmanagement::addConnection(const NetworkManager::ConnectionSettings::Ptr &connectionSettings)
@@ -455,9 +457,9 @@ void KCMNetworkmanagement::addConnection(const NetworkManager::ConnectionSetting
 //     editor->show();
 }
 
-void KCMNetworkmanagement::loadConnectionSettings(const NetworkManager::ConnectionSettings::Ptr& connectionSettings)
+void KCMNetworkmanagement::loadConnectionSettings(const NMVariantMapMap &connectionSettings)
 {
-    m_connectionSetting->loadConfig(connectionSettings);
+    m_connectionSettings->loadConfig(connectionSettings);
 
     QMetaObject::invokeMethod(mainUi(), "loadConnectionSetting");
 
