@@ -410,6 +410,11 @@ void Notification::onActiveConnectionStateChanged(NetworkManager::ActiveConnecti
             return;
         }
 
+        if (!m_ignoreDeactivationAfterResumeTimer.hasExpired()) {
+            qCDebug(PLASMA_NM) << "Not emitting connection deactivated notification as we've just woken up from suspend";
+            return;
+        }
+
         eventId = QStringLiteral("ConnectionDeactivated");
         text = i18n("Connection '%1' deactivated.", acName);
 
@@ -559,6 +564,8 @@ void Notification::onPrepareForSleep(bool sleep)
         }
 
         m_checkActiveConnectionOnResumeTimer->start();
+
+        m_ignoreDeactivationAfterResumeTimer.setRemainingTime(5000);
     }
 }
 

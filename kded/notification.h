@@ -24,6 +24,7 @@
 #ifndef PLASMA_NM_NOTIFICATION_H
 #define PLASMA_NM_NOTIFICATION_H
 
+#include <QDeadlineTimer>
 #include <QObject>
 
 #include <NetworkManagerQt/Device>
@@ -59,6 +60,7 @@ private:
     bool m_preparingForSleep = false;
     QStringList m_activeConnectionsBeforeSleep;
     QTimer *m_checkActiveConnectionOnResumeTimer = nullptr;
+    QDeadlineTimer m_ignoreDeactivationAfterResumeTimer;
 
 };
 
