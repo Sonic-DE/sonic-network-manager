@@ -74,7 +74,10 @@ Item {
         height: units.gridUnit * 8
         smooth: true
         direction: QuickCharts.XYChart.ZeroAtEnd
-        fillOpacity: 0.5
+        yRange {
+            minimum: 100 * 1024
+            increment: 100 * 1024
+        }
         valueSources: [
             QuickCharts.ValueHistorySource {
                 id: txSpeed
