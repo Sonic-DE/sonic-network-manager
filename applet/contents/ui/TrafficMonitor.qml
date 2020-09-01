@@ -46,15 +46,15 @@ Item {
             font.pointSize: PlasmaCore.Theme.smallestFont.pointSize
         }
         source: QuickCharts.ChartAxisSource { 
-            chart: plotter; 
-            axis: QuickCharts.ChartAxisSource.YAxis;
+            chart: plotter
+            axis: QuickCharts.ChartAxisSource.YAxis
             itemCount: 5
         }
     }
 
     QuickCharts.GridLines {
         anchors.fill: plotter
-        direction: QuickCharts.GridLines.Vertical;
+        direction: QuickCharts.GridLines.Vertical
         minor.visible: false
         major.count: 3
         major.lineWidth: 1
@@ -63,8 +63,6 @@ Item {
     }
     QuickCharts.LineChart {
         id: plotter
-        property variant downloadColor: theme.highlightColor
-        property variant uploadColor: Qt.hsva((downloadColor.hsvHue + 0.5) % 1, downloadColor.hsvSaturation, downloadColor.hsvValue, downloadColor.a)
         anchors {
             left: parent.left
             leftMargin: speedMetrics.width + units.smallSpacing * 2
@@ -87,7 +85,19 @@ Item {
                 maximumHistory: 40
             }
         ]
-        colorSource: QuickCharts.ArraySource { array: [plotter.uploadColor, plotter.downloadColor] }
+        colorSource: QuickCharts.ArraySource {
+            array: colors.colors.reverse()
+        }
+
+        fillColorSource: QuickCharts.ArraySource  {
+           array: colors.colors.reverse().map(color => Qt.lighter(color, 1.5))
+        }
+
+        QuickCharts.ColorGradientSource {
+                id: colors
+                baseColor:  PlasmaCore.Theme.highlightColor
+                itemCount: 2
+        }
 
         Timer {
             id: timer
