@@ -24,6 +24,7 @@ import QtQuick.Controls 2.12 as Controls
 import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
 import org.kde.kirigami 2.12 as Kirigami
 import org.kde.kcm 1.2
+import mobilebroadbandkcm 1.0
 
 SimpleKCM {
     id: main
@@ -63,18 +64,22 @@ SimpleKCM {
     Flickable {
         anchors.left: parent.left
         anchors.right: parent.right
+        
         Kirigami.FormLayout {
-            Layout.fillWidth: true
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: Kirigami.Units.largeSpacing * 2
+            anchors.rightMargin: Kirigami.Units.largeSpacing * 2
             wideMode: false
             //visible: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable
-            Kirigami.Separator {
+            Kirigami.Heading {
+                level: 3
                 Kirigami.FormData.isSection: true
-                Kirigami.FormData.label: i18n("Mobile Data")
-                weight: 0
+                text: i18n("Mobile Data")
             }
             Controls.Switch {
                 id: mobileDataCheckbox
-                Kirigami.FormData.label: i18n("Mobile data:")
+                Kirigami.FormData.label: i18n("Mobile data")
                 text: checked ? i18n("On") : i18n("Off")
                 enabled: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable
                 checked: false // TODO
@@ -86,16 +91,37 @@ SimpleKCM {
                 weight: 0
             }
             Controls.Switch {
-                Kirigami.FormData.label: i18n("Data roaming:")
+                Kirigami.FormData.label: i18n("Data roaming")
                 text: checked ? i18n("On") : i18n("Off")
                 enabled: mobileDataCheckbox.checked
-                onEnabledChanged: {
-                    if (!enabled) {
-                        checked = false;
+                checked: APNProfileModel.allowRoaming
+                onCheckedChanged: APNProfileModel.allowRoaming = checked
+            }
+            
+            ColumnLayout {
+                Layout.rowSpan: 3
+                Kirigami.FormData.label: "Network types enabled"
+                Repeater {
+                    model: ListModel {
+                        ListElement {
+                            enabled: false
+                            name: "4G"
+                        }
+                        ListElement {
+                            enabled: true
+                            name: "3G"
+                        }
+                    }
+                    //model: APNProfileModel.capabilities
+                    
+                    Controls.CheckBox {
+                        checked: model.enabled
+                        text: model.name
+                        onCheckedChanged: APNProfileModel.toggleCapability(model)
                     }
                 }
-                checked: false // TODO
             }
+            
             Controls.Button {
                 icon.name: "globe"
                 text: "Access point names"
