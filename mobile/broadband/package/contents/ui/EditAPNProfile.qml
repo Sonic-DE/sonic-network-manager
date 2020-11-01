@@ -30,14 +30,52 @@ Kirigami.ScrollablePage {
     
     property APNProfile apnProfile
     
+    footer: ColumnLayout {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        
+        Kirigami.Separator {
+            weight: Kirigami.Separator.Weight.Normal
+        }
+        
+        Controls.Button {
+            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+            icon.name: "dialog-ok"
+            text: i18n("Done")
+        }
+    }
+    
     ColumnLayout {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        
         Kirigami.FormLayout {
+            wideMode: false
+            
             Controls.TextField {
-                Kirigami.FormData.label: i18n("APN:")
+                id: profileApn
+                Kirigami.FormData.label: i18n("APN")
                 text: apnProfile.apn
             }
             Controls.TextField {
-                
+                id: profileUsername
+                Kirigami.FormData.label: i18n("Username")
+                text: apnProfile.user
+            }
+            Controls.TextField {
+                id: profilePassword
+                Kirigami.FormData.label: i18n("Password")
+                text: apnProfile.password
+            }
+            Controls.ComboBox {
+                id: profileAuthType
+                Kirigami.FormData.label: i18n("Authentication type")
+                model: ["None", "PAP", "CHAP", "MSCHAP", "MSCHAPV2", "EAP"]
+            }
+            Controls.ComboBox {
+                id: profileProtocol
+                Kirigami.FormData.label: i18n("APN Protocol")
+                model: ["IPv4", "IPv6", "IPv4/IPv6"]
             }
         }
     }

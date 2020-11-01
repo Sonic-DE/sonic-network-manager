@@ -42,9 +42,12 @@ MobileBroadbandSettings::MobileBroadbandSettings(QObject* parent, const QVariant
     
     qmlRegisterSingletonInstance("mobilebroadbandkcm", 1, 0, "APNProfileModel", APNProfileModel::instance());
     qmlRegisterType<APNProfile>("mobilebroadbandkcm", 1, 0, "APNProfile");
+    qmlRegisterType<NetworkType>("mobilebroadbandkcm", 1, 0, "NetworkType");
     
 //     m_providers = new MobileProviders();
 //     m_providers->getApns();
+    
+    APNProfileModel::instance();
     
     // update ui bearers list when changed
     connect(this, &MobileBroadbandSettings::bearersChanged, this, &MobileBroadbandSettings::updateBearerProfileModel);
@@ -53,12 +56,37 @@ MobileBroadbandSettings::MobileBroadbandSettings(QObject* parent, const QVariant
     m_modemDevice = ModemManager::findModemDevice(getModemDevice()); // TODO check if modem changes?
     
     if (m_modemDevice) {
-        // TODO
-//         connect(m_modemDevice.data(), &ModemManager::Modem::bearersChanged, this, &MobileBroadbandSettings::bearersChanged);
+        m_modemInterface = m_modemDevice->modemInterface();
+        
+        // add capability list
+        if (m_modemInterface) {
+            QList<MMModemCapability> caps = m_modemInterface->supportedCapabilities();
+            QList<NetworkType *> types;
+            
+            // prettify capabilities
+            if (caps.contains(MM_MODEM_CAPABILITY_5GNR)) {
+                types.append(new NetworkType(this, "5G", MM_MODEM_CAPABILITY_5GNR));
+            }
+            if (caps.contains(MM_MODEM_CAPABILITY_LTE)) {
+                types.append(new NetworkType(this, "4G", MM_MODEM_CAPABILITY_LTE));
+            }
+            if (caps.contains(MM_MODEM_CAPABILITY_CDMA_EVDO) || caps.contains(MM_MODEM_CAPABILITY_GSM_UMTS)) {
+                types.append(new NetworkType(this, "3G", QFlags(MM_MODEM_CAPABILITY_CDMA_EVDO) | QFlags(MM_MODEM_CAPABILITY_GSM_UMTS)));
+            }
+            if (caps.contains(MM_MODEM_CAPABILITY_IRIDIUM)) {
+                types.append(new NetworkType(this, i18n("Iridium (Satellite)"), MM_MODEM_CAPABILITY_IRIDIUM));
+            }
+            if (caps.contains(MM_MODEM_CAPABILITY_POTS)) {
+                types.append(new NetworkType(this, "POTS", MM_MODEM_CAPABILITY_POTS));
+            }
+        }
     }
     
     this->updateActiveBearer();
-    APNProfileModel::instance()->refresh();
+    if (m_modemDevice) {
+        connect(m_modemInterface.data(), &ModemManager::Modem::bearersChanged, this, &MobileBroadbandSettings::bearersChanged);
+        APNProfileModel::instance()->refresh(m_modemDevice->bearers());
+    }
 }
 
 MobileBroadbandSettings::~MobileBroadbandSettings()
@@ -75,7 +103,7 @@ void MobileBroadbandSettings::setMobileDataActive(bool active)
 {
     if (m_mobileDataActive != active) {
         m_mobileDataActive = active;
-        emit mobileDataActiveChanged();
+        Q_EMIT mobileDataActiveChanged();
     }
 }
 
@@ -92,7 +120,7 @@ void MobileBroadbandSettings::setAllowRoaming(bool allowRoaming)
 {
     if (m_bearer) {
         m_bearer->properties()["allow-roaming"] = allowRoaming;
-        emit bearersChanged(); // TODO may be unnecessary as the modem possibly already emits bearersChanged signal
+        Q_EMIT bearersChanged(); // TODO may be unnecessary as the modem possibly already emits bearersChanged signal
     }
 }
 
@@ -126,6 +154,22 @@ void MobileBroadbandSettings::setActiveAPNProfileUni(QString uni)
     }
 }
 
+QList<NetworkType *> MobileBroadbandSettings::capabilities()
+{
+    return m_capabilities;
+}
+
+void MobileBroadbandSettings::toggleCapability(NetworkType *nt)
+{
+    if (m_modemInterface) {
+        ModemManager::Modem::Capabilities cap = m_modemInterface->currentCapabilities();
+        cap ^= nt->flag();
+        m_modemInterface->setCurrentCapabilities(cap);
+        
+        nt->setEnabled(m_modemInterface->currentCapabilities() & nt->flag());
+    }
+}
+
 QString MobileBroadbandSettings::getModemDevice()
 {
     ModemManager::ModemDevice::List list = ModemManager::modemDevices();
@@ -154,18 +198,6 @@ QString MobileBroadbandSettings::getModemDevice()
     return QString();
 }
 
-// void MobileBroadbandSettings::setupMobileNetwork()
-// {
-//     if (!m_modemDevice) return;
-//     if (m_modemDevice->bearers().empty()) {
-//         qWarning() << "No bearers in modem found";
-//     } else {
-//         foreach (const ModemManager::Bearer::Ptr &p, m_modemDevice->bearers()) {
-//             qWarning() << p->properties();
-//         }
-//     }
-// }
-
 void MobileBroadbandSettings::updateActiveBearer()
 {
     m_bearer = nullptr;
@@ -178,12 +210,12 @@ void MobileBroadbandSettings::updateActiveBearer()
         // TODO determine what to do if several bearers are connected (if that's possible)?
         if (bearer->isConnected()) {
             m_bearer = bearer;
-            emit allowRoamingChanged();
-            emit activeBearerChanged();
+            Q_EMIT allowRoamingChanged();
+            Q_EMIT activeBearerChanged();
             
             // TODO
 //             QMetaObject::Connection * const connection = new QMetaObject::Connection;
-//             connection = connect(&bearer, &ModemManager::Bearer::connectedChanged, this, [this, connection]() -> void { 
+//             connection = connect(bearer.data(), &ModemManager::Bearer::connectedChanged, this, [this, connection]() -> void { 
 //                 updateActiveBearer(); 
 //                 delete connection; // singleshot
 //             });
