@@ -1,5 +1,6 @@
 /*
  *   Copyright 2018 Martin Kacej <m.kacej@atlas.sk>
+ *             2020 Devin Lin <espidev@gmail.com>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as
@@ -17,20 +18,16 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import QtQuick 2.6
-import QtQuick.Controls 2.2 as Controls
+import QtQuick 2.12
+import QtQuick.Layouts 1.2
+import QtQuick.Controls 2.12 as Controls
 import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
-import org.kde.kirigami 2.2 as Kirigami
+import org.kde.kirigami 2.12 as Kirigami
+import org.kde.kcm 1.2
 
-Kirigami.ApplicationItem {
+SimpleKCM {
     id: main
     objectName: "mobileDataMain"
-
-    pageStack.defaultColumnWidth: Kirigami.Units.gridUnit * 25
-    pageStack.initialPage: MobileSettings {}
-    Kirigami.Theme.colorSet: Kirigami.Theme.Window
-
-    anchors.fill: parent
 
     PlasmaNM.Handler {
         id: handler
@@ -49,6 +46,64 @@ Kirigami.ApplicationItem {
 
         onWwanHwEnabledChanged: {
             mobileDataCheckbox.enabled = enabled && availableDevices.modemDeviceAvailable
+        }
+    }
+    
+    //Kirigami.PlaceholderMessage {
+        //anchors.centerIn: parent
+        //anchors.left: parent.left
+        //anchors.right: parent.right
+        //anchors.margins: Kirigami.Units.largeSpacing
+        
+        //visible: !enabledConnections.wwanHwEnabled || !availableDevices.modemDeviceAvailable
+        //icon.name: "auth-sim-missing"
+        //text: i18n("Device not available")
+    //}
+    
+    Flickable {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        Kirigami.FormLayout {
+            Layout.fillWidth: true
+            wideMode: false
+            //visible: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable
+            Kirigami.Separator {
+                Kirigami.FormData.isSection: true
+                Kirigami.FormData.label: i18n("Mobile Data")
+                weight: 0
+            }
+            Controls.Switch {
+                id: mobileDataCheckbox
+                Kirigami.FormData.label: i18n("Mobile data:")
+                text: checked ? i18n("On") : i18n("Off")
+                enabled: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable
+                checked: false // TODO
+            }
+            
+            Kirigami.Separator {
+                Kirigami.FormData.isSection: true
+                Kirigami.FormData.label: i18n("SIM")
+                weight: 0
+            }
+            Controls.Switch {
+                Kirigami.FormData.label: i18n("Data roaming:")
+                text: checked ? i18n("On") : i18n("Off")
+                enabled: mobileDataCheckbox.checked
+                onEnabledChanged: {
+                    if (!enabled) {
+                        checked = false;
+                    }
+                }
+                checked: false // TODO
+            }
+            Controls.Button {
+                icon.name: "globe"
+                text: "Access point names"
+                onClicked: {
+                    kcm.push("APNProfileList.qml");
+                }
+            }
+            
         }
     }
 }

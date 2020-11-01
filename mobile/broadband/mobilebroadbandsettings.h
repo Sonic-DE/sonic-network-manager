@@ -1,5 +1,6 @@
 /*
  *   Copyright 2018 Martin Kacej <m.kacej@atlas.sk>
+ *             2020 Devin Lin <espidev@gmail.com>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as
@@ -22,24 +23,48 @@
 
 #include <KQuickAddons/ConfigModule>
 
+#include "mobileproviders.h"
+#include "apnprofilemodel.h"
+
+#include <ModemManagerQt/Manager>
+#include <ModemManagerQt/GenericTypes>
+#include <ModemManagerQt/ModemDevice>
+
 class MobileBroadbandSettings : public KQuickAddons::ConfigModule
 {
     Q_OBJECT
     Q_PROPERTY(bool mobileDataActive READ mobileDataActive WRITE setMobileDataActive NOTIFY mobileDataActiveChanged)
-
+    Q_PROPERTY(bool allowRoaming READ allowRoaming WRITE setAllowRoaming NOTIFY allowRoamingChanged)
+    Q_PROPERTY(bool activeAPNProfileUni READ activeAPNProfileUni WRITE setActiveAPNProfileUni NOTIFY activeBearerChanged)
+    
 public:
     MobileBroadbandSettings(QObject *parent, const QVariantList &args);
     virtual ~MobileBroadbandSettings();
 
     bool mobileDataActive();
     void setMobileDataActive(bool active);
-    Q_SIGNAL void mobileDataActiveChanged(bool active);
-    Q_INVOKABLE QString getModemDevice();
-    void setupMobileNetwork();
-    Q_INVOKABLE QString getAPN();
+    bool allowRoaming();
+    void setAllowRoaming(bool allowRoaming);
+    QString activeAPNProfileUni();
+    void setActiveAPNProfileUni(QString uni);
+
+    Q_INVOKABLE QString getModemDevice(); // get modem identifier
+    
+    void updateActiveBearer();
+    void updateBearerProfileModel();
+    
+Q_SIGNALS:
+    void mobileDataActiveChanged();
+    void allowRoamingChanged();
+    void activeBearerChanged();
+    void bearersChanged();
 
 private:
     bool m_mobileDataActive;
+    
+    ModemManager::Bearer::Ptr m_bearer = nullptr;
+    ModemManager::ModemDevice::Ptr m_modemDevice = nullptr;
+    MobileProviders* m_providers;
 };
 
 #endif // MOBILEBROADBANDSETTINGS_H
