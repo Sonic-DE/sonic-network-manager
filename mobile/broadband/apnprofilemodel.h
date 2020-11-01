@@ -60,32 +60,37 @@ class APNProfile : public QObject
     Q_PROPERTY(QString user READ user WRITE setUser NOTIFY userChanged)
     Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged)
     Q_PROPERTY(bool allowRoaming READ allowRoaming WRITE setAllowRoaming NOTIFY allowRoamingChanged)
-    Q_PROPERTY(int authType READ authType WRITE setAuthType NOTIFY authTypeChanged)
-    Q_PROPERTY(int ipType READ ipType WRITE setIpType NOTIFY ipTypeChanged)
+    Q_PROPERTY(QString authType READ authType WRITE setAuthType NOTIFY authTypeChanged)
+    Q_PROPERTY(QString ipType READ ipType WRITE setIpType NOTIFY ipTypeChanged)
 
     // Flags:
-    // https://www.freedesktop.org/software/ModemManager/api/1.0.0/ModemManager-Flags-and-Enumerations.html
+    // https://www.freedesktop.org/software/ModemManager/api/latest/ModemManager-Flags-and-Enumerations.html
     
     // authType: MMBearerAllowedAuth
-    // MM_BEARER_ALLOWED_AUTH_UNKNOWN  = 0,
-    // MM_BEARER_ALLOWED_AUTH_NONE     = 1 << 0
-    // MM_BEARER_ALLOWED_AUTH_PAP      = 1 << 1
-    // MM_BEARER_ALLOWED_AUTH_CHAP     = 1 << 2
-    // MM_BEARER_ALLOWED_AUTH_MSCHAP   = 1 << 3
-    // MM_BEARER_ALLOWED_AUTH_MSCHAPV2 = 1 << 4
-    // MM_BEARER_ALLOWED_AUTH_EAP      = 1 << 5
+    // MM_BEARER_ALLOWED_AUTH_UNKNOWN  = "Unknown"
+    // MM_BEARER_ALLOWED_AUTH_NONE     = "None"
+    // MM_BEARER_ALLOWED_AUTH_PAP      = "PAP"
+    // MM_BEARER_ALLOWED_AUTH_CHAP     = "CHAP
+    // MM_BEARER_ALLOWED_AUTH_MSCHAP   = "MSCHAP"
+    // MM_BEARER_ALLOWED_AUTH_MSCHAPV2 = "MSCHAPV2"
+    // MM_BEARER_ALLOWED_AUTH_EAP      = "EAP"
     
     // ipType: MMBearerIpFamily
-    // MM_BEARER_IP_FAMILY_NONE - 0
-    // MM_BEARER_IP_FAMILY_IPV4 - 1 << 0
-    // MM_BEARER_IP_FAMILY_IPV6 - 1 << 1
-    // MM_BEARER_IP_FAMILY_IPV4V6 - 1 << 2
-    // MM_BEARER_IP_FAMILY_ANY - 0xFFFFFFFF (-1)
+    // MM_BEARER_IP_FAMILY_NONE - "None"
+    // MM_BEARER_IP_FAMILY_IPV4 - "IPv4"
+    // MM_BEARER_IP_FAMILY_IPV6 - "IPv6"
+    // MM_BEARER_IP_FAMILY_IPV4V6 - "IPv4/IPv6"
+    // MM_BEARER_IP_FAMILY_ANY - "Any"
     
 public:
     APNProfile(QObject* parent = nullptr) {}
-    APNProfile(QObject* parent, QString apn, QString user, QString password, bool allowRoaming, int authType, int ipType, QString uni = "");
+    APNProfile(QObject* parent, QString apn, QString user, QString password, bool allowRoaming, MMBearerAllowedAuth authType, MMBearerIpFamily ipType, QString uni = "");
     APNProfile(QObject* parent, ModemManager::Bearer::Ptr bearer);
+    
+    QString authTypeStr(MMBearerAllowedAuth authType);
+    MMBearerAllowedAuth authTypeFlag();
+    QString ipTypeStr(MMBearerIpFamily ipType);
+    MMBearerIpFamily ipTypeFlag();
     
     QString apn();
     void setApn(QString apn);
@@ -95,10 +100,10 @@ public:
     void setPassword(QString password);
     bool allowRoaming();
     void setAllowRoaming(bool allowRoaming);
-    int authType();
-    void setAuthType(int authType);
-    int ipType();
-    void setIpType(int ipType);
+    QString authType();
+    void setAuthType(QString authType);
+    QString ipType();
+    void setIpType(QString ipType);
     
     QString uni(); // if this profile was created off of an existing bearer
     
@@ -110,11 +115,12 @@ Q_SIGNALS:
     void passwordChanged();
     void allowRoamingChanged();
     void authTypeChanged();
+    void ipTypeChanged();
 
 private:
     QString m_apn, m_user, m_password;
     bool m_allowRoaming;
-    int m_authType, m_ipType;
+    QString m_authType, m_ipType;
     QString m_uni;
 };
 
