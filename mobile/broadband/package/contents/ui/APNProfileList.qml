@@ -60,6 +60,8 @@ Kirigami.ScrollablePage {
         }
         
         delegate: Kirigami.SwipeListItem {
+            property APNProfile apnProfile: APNProfileModel.get(index)
+            
             onClicked: {
                 
             }
