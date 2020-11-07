@@ -118,10 +118,8 @@ Q_SIGNALS:
     void ipTypeChanged();
 
 private:
-    QString m_apn, m_user, m_password;
+    QString m_apn, m_user, m_password, m_authType, m_ipType, m_uni;
     bool m_allowRoaming;
-    QString m_authType, m_ipType;
-    QString m_uni;
 };
 
 #endif // APNPROFILEMODEL_H

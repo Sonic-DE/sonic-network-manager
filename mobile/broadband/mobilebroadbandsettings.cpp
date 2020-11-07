@@ -52,6 +52,7 @@ MobileBroadbandSettings::MobileBroadbandSettings(QObject* parent, const QVariant
     // update ui bearers list when changed
     connect(this, &MobileBroadbandSettings::bearersChanged, this, &MobileBroadbandSettings::updateBearerProfileModel);
     
+    // find modem
     ModemManager::scanDevices();
     m_modemDevice = ModemManager::findModemDevice(getModemDevice()); // TODO check if modem changes?
     
@@ -82,6 +83,7 @@ MobileBroadbandSettings::MobileBroadbandSettings(QObject* parent, const QVariant
         }
     }
     
+    // find active bearer
     this->updateActiveBearer();
     if (m_modemDevice) {
         connect(m_modemInterface.data(), &ModemManager::Modem::bearersChanged, this, &MobileBroadbandSettings::bearersChanged);
@@ -206,19 +208,21 @@ void MobileBroadbandSettings::updateActiveBearer()
         qWarning() << "No bearers in modem found";
         return;
     }
+    
     for (const ModemManager::Bearer::Ptr bearer : m_modemDevice->bearers()) {
         // TODO determine what to do if several bearers are connected (if that's possible)?
         if (bearer->isConnected()) {
             m_bearer = bearer;
+            
+            qInfo() << "Found active bearer with properties:" << bearer->properties();
+            
             Q_EMIT allowRoamingChanged();
             Q_EMIT activeBearerChanged();
             
-            // TODO
-//             QMetaObject::Connection * const connection = new QMetaObject::Connection;
-//             connection = connect(bearer.data(), &ModemManager::Bearer::connectedChanged, this, [this, connection]() -> void { 
-//                 updateActiveBearer(); 
-//                 delete connection; // singleshot
-//             });
+            // TODO determine if this needs to be deleted when nullptr (singleshot)
+            connect(bearer.data(), &ModemManager::Bearer::connectedChanged, this, [this]() -> void { 
+                updateActiveBearer(); 
+            });
             
             break;
         }
