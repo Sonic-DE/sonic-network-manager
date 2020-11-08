@@ -169,8 +169,6 @@ void MobileBroadbandSettings::detectProfileSettings()
     if (m_modemDevice) {
         QString op = m_modemDevice->sim()->operatorName();
         
-        // currently we use operator names directly, it may be better to switch to lookup through mcc-mnc ids fetched from ModemManager's 3GPP interface
-        // m_providers->getProvider(mccmnc)
         ModemManager::Modem3gpp::Ptr modem3gpp;
         
         qWarning() << "Detecting profile settings. Operator:" << op;
@@ -180,6 +178,7 @@ void MobileBroadbandSettings::detectProfileSettings()
             
             qWarning() << "Detecting profile settings. MCCMNC:" << modem3gpp->operatorCode() << "Provider:" << m_providers->getProvider(modem3gpp->operatorCode());
 
+            // lookup apns with mccmnc codes
             QStringList apns = m_providers->getApns(m_providers->getProvider(modem3gpp->operatorCode()));
             
             for (auto apn : apns) {
@@ -198,6 +197,7 @@ void MobileBroadbandSettings::detectProfileSettings()
                 // in the future for MMS settings, add else if here for == "mms"
             }
         } else if (m_nmModemType == NetworkManager::ConnectionSettings::Cdma) {
+            // lookup apns with mccmnc codes
             modem3gpp = m_modemDevice->interface(ModemManager::ModemDevice::CdmaInterface).objectCast<ModemManager::Modem3gpp>();
             
             qWarning() << "Detecting profile settings. MCCMNC:" << modem3gpp->operatorCode() << "Provider:" << m_providers->getProvider(modem3gpp->operatorCode());
