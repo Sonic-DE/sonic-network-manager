@@ -58,7 +58,7 @@ SimpleKCM {
         
         //visible: !enabledConnections.wwanHwEnabled || !availableDevices.modemDeviceAvailable
         //icon.name: "auth-sim-missing"
-        //text: i18n("Device not available")
+        //text: i18n("Modem not available")
     //}
     
     Flickable {
@@ -94,39 +94,15 @@ SimpleKCM {
                 Kirigami.FormData.label: i18n("Data roaming")
                 text: checked ? i18n("On") : i18n("Off")
                 enabled: mobileDataCheckbox.checked
-                checked: APNProfileModel.allowRoaming
-                onCheckedChanged: APNProfileModel.allowRoaming = checked
-            }
-            
-            ColumnLayout {
-                Layout.rowSpan: 3
-                Kirigami.FormData.label: "Network types enabled"
-                Repeater {
-                    model: ListModel {
-                        ListElement {
-                            enabled: false
-                            name: "4G"
-                        }
-                        ListElement {
-                            enabled: true
-                            name: "3G"
-                        }
-                    }
-                    //model: APNProfileModel.capabilities
-                    
-                    Controls.CheckBox {
-                        checked: model.enabled
-                        text: model.name
-                        onCheckedChanged: APNProfileModel.toggleCapability(model)
-                    }
-                }
+                checked: kcm.allowRoaming
+                onCheckedChanged: kcm.allowRoaming = checked
             }
             
             Controls.Button {
                 icon.name: "globe"
                 text: "Access point names"
                 onClicked: {
-                    kcm.push("APNProfileList.qml");
+                    kcm.push("ProfileList.qml");
                 }
             }
             

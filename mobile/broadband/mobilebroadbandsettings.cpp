@@ -23,10 +23,7 @@
 #include <KPluginFactory>
 #include <KLocalizedString>
 #include <KAboutData>
-
-#include <NetworkManagerQt/ConnectionSettings>
-#include <NetworkManagerQt/GsmSetting>
-#include <NetworkManagerQt/CdmaSetting>
+#include <KUser>
 
 #include <QQmlEngine>
 
@@ -40,17 +37,8 @@ MobileBroadbandSettings::MobileBroadbandSettings(QObject* parent, const QVariant
     about->addAuthor(i18n("Devin Lin"), QString(), "espidev@gmail.com");
     setAboutData(about);
     
-    qmlRegisterSingletonInstance("mobilebroadbandkcm", 1, 0, "APNProfileModel", APNProfileModel::instance());
-    qmlRegisterType<APNProfile>("mobilebroadbandkcm", 1, 0, "APNProfile");
-    qmlRegisterType<NetworkType>("mobilebroadbandkcm", 1, 0, "NetworkType");
-    
-//     m_providers = new MobileProviders();
-//     m_providers->getApns();
-    
-    APNProfileModel::instance();
-    
-    // update ui bearers list when changed
-    connect(this, &MobileBroadbandSettings::bearersChanged, this, &MobileBroadbandSettings::updateBearerProfileModel);
+    qmlRegisterSingletonInstance("mobilebroadbandkcm", 1, 0, "ProfileModel", ProfileModel::instance());
+    qmlRegisterType<ProfileSettings>("mobilebroadbandkcm", 1, 0, "ProfileSettings");
     
     // find modem
     ModemManager::scanDevices();
@@ -59,35 +47,27 @@ MobileBroadbandSettings::MobileBroadbandSettings(QObject* parent, const QVariant
     if (m_modemDevice) {
         m_modemInterface = m_modemDevice->modemInterface();
         
-        // add capability list
-        if (m_modemInterface) {
-            QList<MMModemCapability> caps = m_modemInterface->supportedCapabilities();
-            QList<NetworkType *> types;
+        // add NetworkManager device
+        m_nmModem = NetworkManager::findNetworkInterface(m_modemDevice->uni()).objectCast<NetworkManager::ModemDevice>();
+        
+        // determine type
+        if (m_nmModem) {
+            if (m_nmModem->currentCapabilities() & NetworkManager::ModemDevice::CdmaEvdo) {
+                m_nmModemType = NetworkManager::ConnectionSettings::Cdma;
+            } else if ((m_nmModem->currentCapabilities() & NetworkManager::ModemDevice::GsmUmts) || (m_nmModem->currentCapabilities() & NetworkManager::ModemDevice::Lte)) {
+                m_nmModemType = NetworkManager::ConnectionSettings::Gsm;
+            }
             
-            // prettify capabilities
-            if (caps.contains(MM_MODEM_CAPABILITY_5GNR)) {
-                types.append(new NetworkType(this, "5G", MM_MODEM_CAPABILITY_5GNR));
-            }
-            if (caps.contains(MM_MODEM_CAPABILITY_LTE)) {
-                types.append(new NetworkType(this, "4G", MM_MODEM_CAPABILITY_LTE));
-            }
-            if (caps.contains(MM_MODEM_CAPABILITY_CDMA_EVDO) || caps.contains(MM_MODEM_CAPABILITY_GSM_UMTS)) {
-                types.append(new NetworkType(this, "3G", QFlags(MM_MODEM_CAPABILITY_CDMA_EVDO) | QFlags(MM_MODEM_CAPABILITY_GSM_UMTS)));
-            }
-            if (caps.contains(MM_MODEM_CAPABILITY_IRIDIUM)) {
-                types.append(new NetworkType(this, i18n("Iridium (Satellite)"), MM_MODEM_CAPABILITY_IRIDIUM));
-            }
-            if (caps.contains(MM_MODEM_CAPABILITY_POTS)) {
-                types.append(new NetworkType(this, "POTS", MM_MODEM_CAPABILITY_POTS));
-            }
+            // modem device signals
+            connect(m_nmModem.data(), &NetworkManager::ModemDevice::availableConnectionChanged, this, [this]() -> void { 
+                ProfileModel::instance()->refresh(m_nmModem->availableConnections());
+                Q_EMIT allowRoamingChanged();
+            });
+            connect (m_nmModem.data(), &NetworkManager::ModemDevice::activeConnectionChanged, this, [this]() -> void {
+                Q_EMIT allowRoamingChanged();
+                Q_EMIT activeConnectionUniChanged();
+            });
         }
-    }
-    
-    // find active bearer
-    this->updateActiveBearer();
-    if (m_modemDevice) {
-        connect(m_modemInterface.data(), &ModemManager::Modem::bearersChanged, this, &MobileBroadbandSettings::bearersChanged);
-        APNProfileModel::instance()->refresh(m_modemDevice->bearers());
     }
 }
 
@@ -103,73 +83,69 @@ bool MobileBroadbandSettings::mobileDataActive()
 
 void MobileBroadbandSettings::setMobileDataActive(bool active)
 {
-    if (m_mobileDataActive != active) {
-        m_mobileDataActive = active;
-        Q_EMIT mobileDataActiveChanged();
+    if (m_nmModem) {
+        if (m_mobileDataActive != active && active) { // turn on mobile data
+            m_mobileDataActive = active;
+            
+            // activate connection that already has autoconnect set to true
+            for (auto connection : m_nmModem->availableConnections()) {
+                if (connection->settings()->autoconnect()) {
+                    activateProfile(connection->uuid());
+                }
+            }
+            Q_EMIT mobileDataActiveChanged();
+        } else if (m_mobileDataActive == active && !active) { // turn off mobile data
+            QDBusPendingReply reply = m_nmModem->disconnectInterface(); 
+            reply.waitForFinished();
+            
+            if (reply.isError()) {
+                qWarning() << "Error disconnecting modem interface" << reply.error().message();
+            }
+            Q_EMIT mobileDataActiveChanged();
+        }
     }
 }
 
 bool MobileBroadbandSettings::allowRoaming()
 {
-    if (m_bearer) {
-        return m_bearer->properties()["allow-roaming"].toBool(); // TODO actually determine qvariantmap key (this is a guess)
-    } else {
-        return false;
+    if (m_nmModem && m_nmModem->activeConnection() && m_nmModem->activeConnection()->connection()) {
+        if (m_nmModemType == NetworkManager::ConnectionSettings::Gsm) { // gsm
+            NetworkManager::Setting::Ptr setting = m_nmModem->activeConnection()->connection()->settings()->setting(NetworkManager::Setting::Gsm);
+            NetworkManager::GsmSetting::Ptr gsmSetting = setting.staticCast<NetworkManager::GsmSetting>();
+            return !gsmSetting->homeOnly();
+        } else { // cdma
+            return false; // TODO
+        }
     }
+    return false;
 }
 
 void MobileBroadbandSettings::setAllowRoaming(bool allowRoaming)
 {
-    if (m_bearer) {
-        m_bearer->properties()["allow-roaming"] = allowRoaming;
-        Q_EMIT bearersChanged(); // TODO may be unnecessary as the modem possibly already emits bearersChanged signal
+    if (m_nmModem && m_nmModem->activeConnection() && m_nmModem->activeConnection()->connection()) {
+        if (m_nmModemType == NetworkManager::ConnectionSettings::Gsm) { // gsm
+            NetworkManager::Setting::Ptr setting = m_nmModem->activeConnection()->connection()->settings()->setting(NetworkManager::Setting::Gsm);
+            setting.staticCast<NetworkManager::GsmSetting>()->setHomeOnly(allowRoaming);
+        } else { // cdma
+            // TODO
+        }
     }
 }
 
-QString MobileBroadbandSettings::activeAPNProfileUni()
+QString MobileBroadbandSettings::activeConnectionUni()
 {
-    if (m_bearer) {
-        return m_bearer->uni();
+    if (m_nmModem && m_nmModem->activeConnection() && m_nmModem->activeConnection()->connection()) {
+        return m_nmModem->activeConnection()->connection()->uuid();
     }
     return QString();
 }
 
-void MobileBroadbandSettings::setActiveAPNProfileUni(QString uni)
+void MobileBroadbandSettings::detectProfileSettings()
 {
-    if (m_modemDevice) {
-        ModemManager::Bearer::Ptr bearer = m_modemDevice->findBearer(uni);
-        if (bearer == nullptr) return;
-        
-        QDBusPendingReply<void> reply;
-        if (m_bearer) {
-            reply = m_bearer->disconnectBearer();
-            reply.waitForFinished();
-            if (reply.isError()) {
-                qWarning() << "Error disconnecting bearer" << reply.error().message();
-            }
-        }
+    // TODO
     
-        reply = bearer->connectBearer();
-        if (reply.isError()) {
-            qWarning() << "Error connecting bearer" << reply.error().message();
-        }
-    }
-}
-
-QList<NetworkType *> MobileBroadbandSettings::capabilities()
-{
-    return m_capabilities;
-}
-
-void MobileBroadbandSettings::toggleCapability(NetworkType *nt)
-{
-    if (m_modemInterface) {
-        ModemManager::Modem::Capabilities cap = m_modemInterface->currentCapabilities();
-        cap ^= nt->flag();
-        m_modemInterface->setCurrentCapabilities(cap);
-        
-        nt->setEnabled(m_modemInterface->currentCapabilities() & nt->flag());
-    }
+    //     m_providers = new MobileProviders();
+    //     m_providers->getApns();
 }
 
 QString MobileBroadbandSettings::getModemDevice()
@@ -187,10 +163,10 @@ QString MobileBroadbandSettings::getModemDevice()
         // TODO powerState ???
         if (m->state() <= MM_MODEM_STATE_REGISTERED)
             continue; // needs inspection
-        if (m->accessTechnologies() <= MM_MODEM_ACCESS_TECHNOLOGY_GSM)
-            continue;
-        if (m->currentCapabilities() <= MM_MODEM_CAPABILITY_GSM_UMTS)
-            continue;
+//         if (m->accessTechnologies() <= MM_MODEM_ACCESS_TECHNOLOGY_GSM)
+//             continue;
+//         if (m->currentCapabilities() <= MM_MODEM_CAPABILITY_GSM_UMTS)
+//             continue;
         device = md;
     }
     if (device) {
@@ -200,42 +176,68 @@ QString MobileBroadbandSettings::getModemDevice()
     return QString();
 }
 
-void MobileBroadbandSettings::updateActiveBearer()
+void MobileBroadbandSettings::activateProfile(const QString &connectionUni)
 {
-    m_bearer = nullptr;
-    if (!m_modemDevice) return;
-    if (m_modemDevice->bearers().empty()) {
-        qWarning() << "No bearers in modem found";
-        return;
-    }
-    
-    for (const ModemManager::Bearer::Ptr bearer : m_modemDevice->bearers()) {
-        // TODO determine what to do if several bearers are connected (if that's possible)?
-        if (bearer->isConnected()) {
-            m_bearer = bearer;
-            
-            qInfo() << "Found active bearer with properties:" << bearer->properties();
-            
-            Q_EMIT allowRoamingChanged();
-            Q_EMIT activeBearerChanged();
-            
-            // TODO determine if this needs to be deleted when nullptr (singleshot)
-            connect(bearer.data(), &ModemManager::Bearer::connectedChanged, this, [this]() -> void { 
-                updateActiveBearer(); 
-            });
-            
-            break;
+    if (m_nmModem) {
+        // disable autoconnect for all other connections
+        for (auto connection : m_nmModem->availableConnections()) {
+            if (connection->uuid() == connectionUni) {
+                connection->settings()->setAutoconnect(true);
+            } else {
+                connection->settings()->setAutoconnect(false);
+            }
+        }
+        
+        // activate connection manually
+        QDBusPendingReply<QDBusObjectPath> reply = NetworkManager::activateConnection(connectionUni, m_nmModem->uni(), "");
+        reply.waitForFinished(); // TODO async is better
+        if (reply.isError()) {
+            qWarning() << "Error activating connection" << reply.error().message();
         }
     }
 }
 
-void MobileBroadbandSettings::updateBearerProfileModel()
+void MobileBroadbandSettings::addProfile(const QString &name, const QString &apn, const QString &username, const QString &password, NetworkManager::GsmSetting::NetworkType networkType)
 {
-    if (m_modemDevice) {
-        updateActiveBearer();
-        APNProfileModel::instance()->refresh(m_modemDevice->bearers());
+    if (m_nmModem) {
+        NetworkManager::ConnectionSettings::Ptr settings;
+    
+        if (m_nmModemType == NetworkManager::ConnectionSettings::Gsm) {
+            settings = NetworkManager::ConnectionSettings::Ptr(new NetworkManager::ConnectionSettings(NetworkManager::ConnectionSettings::Gsm));
+            settings->setId(name);
+            settings->setUuid(NetworkManager::ConnectionSettings::createNewUuid());
+            settings->setAutoconnect(true);
+            settings->addToPermissions(KUser().loginName(), QString());
+            
+            NetworkManager::GsmSetting::Ptr gsmSetting = settings->setting(NetworkManager::Setting::Gsm).dynamicCast<NetworkManager::GsmSetting>();
+            gsmSetting->setApn(apn);
+            gsmSetting->setUsername(username);
+            gsmSetting->setPassword(password);
+            gsmSetting->setNetworkType(networkType);
+            gsmSetting->setHomeOnly(false); // TODO set roaming to user's preferences
+            
+        } else if (m_nmModemType == NetworkManager::ConnectionSettings::Cdma){
+            settings = NetworkManager::ConnectionSettings::Ptr(new NetworkManager::ConnectionSettings(NetworkManager::ConnectionSettings::Cdma));
+            settings->setId(name);
+            settings->setUuid(NetworkManager::ConnectionSettings::createNewUuid());
+            settings->setAutoconnect(true);
+            settings->addToPermissions(KUser().loginName(), QString());
+            
+            NetworkManager::CdmaSetting::Ptr cdmaSetting = settings->setting(NetworkManager::Setting::Cdma).dynamicCast<NetworkManager::CdmaSetting>();
+            cdmaSetting->setUsername(username);
+            cdmaSetting->setPassword(password);
+        }
+        
+        QDBusPendingReply<QDBusObjectPath> reply = NetworkManager::addConnection(settings->toMap());
+        reply.waitForFinished(); // TODO do it async
+        if (reply.isError()) {
+            qWarning() << "Error adding connection" << reply.error().message();
+        }
+        
+        activateProfile(settings->uuid());
     }
 }
+
 
 
 #include "mobilebroadbandsettings.moc"

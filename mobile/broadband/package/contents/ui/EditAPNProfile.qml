@@ -20,7 +20,6 @@
 import QtQuick 2.12
 import QtQuick.Layouts 1.2
 import QtQuick.Controls 2.12 as Controls
-import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
 import org.kde.kirigami 2.12 as Kirigami
 import mobilebroadbandkcm 1.0
 
@@ -28,7 +27,7 @@ Kirigami.ScrollablePage {
     id: editAPNPage
     title: i18n("Edit APN")
     
-    property APNProfile apnProfile
+    property ProfileSettings profile
     
     footer: ColumnLayout {
         anchors.left: parent.left
@@ -42,6 +41,10 @@ Kirigami.ScrollablePage {
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             icon.name: "dialog-ok"
             text: i18n("Done")
+            
+            onClicked: {
+                // TODO
+            }
         }
     }
     
@@ -53,29 +56,30 @@ Kirigami.ScrollablePage {
             wideMode: false
             
             Controls.TextField {
+                id: profileName
+                Kirigami.FormData.label: i18n("Name")
+                text: profile.name
+            }
+            Controls.TextField {
                 id: profileApn
                 Kirigami.FormData.label: i18n("APN")
-                text: apnProfile.apn
+                text: profile.apn
             }
             Controls.TextField {
                 id: profileUsername
                 Kirigami.FormData.label: i18n("Username")
-                text: apnProfile.user
+                text: profile.user
             }
             Controls.TextField {
                 id: profilePassword
                 Kirigami.FormData.label: i18n("Password")
-                text: apnProfile.password
+                text: profile.password
             }
             Controls.ComboBox {
-                id: profileAuthType
-                Kirigami.FormData.label: i18n("Authentication type")
-                model: ["None", "PAP", "CHAP", "MSCHAP", "MSCHAPV2", "EAP"]
-            }
-            Controls.ComboBox {
-                id: profileProtocol
-                Kirigami.FormData.label: i18n("APN Protocol")
-                model: ["IPv4", "IPv6", "IPv4/IPv6"]
+                id: profileNetworkType
+                Kirigami.FormData.label: i18n("Network type")
+                model: ["4G/3G/2G", "3G/2G", "2G", "Only 4G", "Only 3G", "Only 2G", "Any"]
+                Component.onCompleted: currentIndex = indexOfValue(profile.networkType)
             }
         }
     }
