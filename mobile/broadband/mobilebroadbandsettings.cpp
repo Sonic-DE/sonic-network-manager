@@ -46,6 +46,7 @@ MobileBroadbandSettings::MobileBroadbandSettings(QObject* parent, const QVariant
     
     // parse mobile providers list
     m_providers = new MobileProviders();
+    m_providers->fillProvidersList();
     
     if (m_modemDevice) {
         m_modemInterface = m_modemDevice->modemInterface();
@@ -167,7 +168,8 @@ void MobileBroadbandSettings::detectProfileSettings()
     if (m_modemDevice) {
         QString op = m_modemDevice->sim()->operatorName();
         
-        // currently we use operator names, it may be better to switch to lookup through mcc/mnc ids fetched from ModemManager's 3GPP interface
+        // currently we use operator names directly, it may be better to switch to lookup through mcc-mnc ids fetched from ModemManager's 3GPP interface
+        // m_providers->getProvider(mccmnc)
         
         qWarning() << "Detecting profile settings. Operator:" << op;
         
