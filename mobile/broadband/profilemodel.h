@@ -53,8 +53,12 @@ public:
     Q_INVOKABLE int count();
     Q_INVOKABLE ProfileSettings *get(int index);
     
+    
     void refresh(NetworkManager::Connection::List connections);
 
+    QString networkTypeStr(NetworkManager::GsmSetting::NetworkType networkType);
+    NetworkManager::GsmSetting::NetworkType networkTypeFlag(const QString &networkType);
+    
 Q_SIGNALS:
     
 private:
@@ -76,9 +80,6 @@ public:
     ProfileSettings(QObject* parent = nullptr) {}
     ProfileSettings(QObject* parent, QString name, QString apn, QString user, QString password, NetworkManager::GsmSetting::NetworkType networkType, bool allowRoaming, QString connectionUni);
     ProfileSettings(QObject* parent, NetworkManager::Setting::Ptr settings, NetworkManager::Connection::Ptr connection);
-    
-    QString networkTypeStr(NetworkManager::GsmSetting::NetworkType networkType);
-    NetworkManager::GsmSetting::NetworkType networkTypeFlag();
     
     QString name();
     QString apn();

@@ -37,13 +37,27 @@ Kirigami.ScrollablePage {
             weight: Kirigami.Separator.Weight.Normal
         }
         
-        Controls.Button {
+        RowLayout {
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-            icon.name: "dialog-ok"
-            text: i18n("Done")
-            
-            onClicked: {
-                // TODO
+            Controls.Button {
+                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                icon.name: "dialog-cancel"
+                text: i18n("Cancel")
+                onClicked: kcm.pop()
+            }
+            Controls.Button {
+                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                icon.name: "dialog-ok"
+                text: i18n("Done")
+                
+                onClicked: {
+                    if (profile == null) { // create new profile
+                        kcm.addProfile(profileName.text, profileApn.text, profileUsername.text, profilePassword.text, profileNetworkType.value);
+                    } else { // edit existing profile
+                        kcm.updateProfile(profile.connectionUni, profileName.text, profileApn.text, profileUsername.text, profilePassword.text, profileNetworkType.value);
+                    }
+                    kcm.pop();
+                }
             }
         }
     }
@@ -58,28 +72,32 @@ Kirigami.ScrollablePage {
             Controls.TextField {
                 id: profileName
                 Kirigami.FormData.label: i18n("Name")
-                text: profile.name
+                text: profile != null ? profile.name : ""
             }
             Controls.TextField {
                 id: profileApn
                 Kirigami.FormData.label: i18n("APN")
-                text: profile.apn
+                text: profile != null ? profile.apn : ""
             }
             Controls.TextField {
                 id: profileUsername
                 Kirigami.FormData.label: i18n("Username")
-                text: profile.user
+                text: profile != null ? profile.user : ""
             }
             Controls.TextField {
                 id: profilePassword
                 Kirigami.FormData.label: i18n("Password")
-                text: profile.password
+                text: profile != null ? profile.password : ""
             }
             Controls.ComboBox {
                 id: profileNetworkType
                 Kirigami.FormData.label: i18n("Network type")
                 model: ["4G/3G/2G", "3G/2G", "2G", "Only 4G", "Only 3G", "Only 2G", "Any"]
-                Component.onCompleted: currentIndex = indexOfValue(profile.networkType)
+                Component.onCompleted: {
+                    if (profile != null) {
+                        currentIndex = indexOfValue(profile.networkType)
+                    }
+                }
             }
         }
     }
