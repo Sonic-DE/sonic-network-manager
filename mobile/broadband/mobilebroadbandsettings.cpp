@@ -26,6 +26,7 @@
 #include <KUser>
 
 #include <QQmlEngine>
+#include <modem3gpp.h>
 
 K_PLUGIN_CLASS_WITH_JSON(MobileBroadbandSettings, "mobilebroadbandsettings.json")
 
@@ -170,11 +171,16 @@ void MobileBroadbandSettings::detectProfileSettings()
         
         // currently we use operator names directly, it may be better to switch to lookup through mcc-mnc ids fetched from ModemManager's 3GPP interface
         // m_providers->getProvider(mccmnc)
+        ModemManager::Modem3gpp::Ptr modem3gpp;
         
         qWarning() << "Detecting profile settings. Operator:" << op;
         
         if (m_nmModemType == NetworkManager::ConnectionSettings::Gsm) {
-            QStringList apns = m_providers->getApns(op);
+            modem3gpp = m_modemDevice->interface(ModemManager::ModemDevice::GsmInterface).objectCast<ModemManager::Modem3gpp>();
+            
+            qWarning() << "Detecting profile settings. MCCMNC:" << modem3gpp->operatorCode() << "Provider:" << m_providers->getProvider(modem3gpp->operatorCode());
+
+            QStringList apns = m_providers->getApns(m_providers->getProvider(modem3gpp->operatorCode()));
             
             for (auto apn : apns) {
                 QVariantMap apnInfo = m_providers->getApnInfo(apn);
@@ -192,7 +198,11 @@ void MobileBroadbandSettings::detectProfileSettings()
                 // in the future for MMS settings, add else if here for == "mms"
             }
         } else if (m_nmModemType == NetworkManager::ConnectionSettings::Cdma) {
-            QVariantMap cdmaInfo = m_providers->getCdmaInfo(op);
+            modem3gpp = m_modemDevice->interface(ModemManager::ModemDevice::CdmaInterface).objectCast<ModemManager::Modem3gpp>();
+            
+            qWarning() << "Detecting profile settings. MCCMNC:" << modem3gpp->operatorCode() << "Provider:" << m_providers->getProvider(modem3gpp->operatorCode());
+            
+            QVariantMap cdmaInfo = m_providers->getCdmaInfo(m_providers->getProvider(modem3gpp->operatorCode()));
             // TODO determine what sid is for cdma
             addProfile(op, "", cdmaInfo["username"].toString(), cdmaInfo["password"].toString(), "4G/3G/2G");
         }

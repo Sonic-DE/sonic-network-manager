@@ -168,7 +168,7 @@ QStringList MobileProviders::getApns(const QString & provider)
                         mApns.insert(e2.attribute("value"), e2.firstChild());
                     }
                 } else if (!e2.isNull() && e2.tagName().toLower() == "network-id") {
-                    mNetworkIds.insert(e2.attribute("mcc") + '-' + e2.attribute("mnc"), provider);
+                    mNetworkIds.insert(e2.attribute("mcc") + e2.attribute("mnc"), provider);
                 }
 
                 n2 = n2.nextSibling();
@@ -188,7 +188,7 @@ QString MobileProviders::getProvider(const QString &mccmnc)
     return mNetworkIds[mccmnc];
 }
 
-QVariantMap MobileProviders::getApnInfo(const QString & apn)
+QVariantMap MobileProviders::getApnInfo(const QString &apn)
 {
     QVariantMap temp;
     QDomNode n = mApns[apn];
