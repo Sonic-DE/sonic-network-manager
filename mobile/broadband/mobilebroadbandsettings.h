@@ -68,9 +68,6 @@ Q_SIGNALS:
     void activeConnectionUniChanged();
 
 private:
-    
-    bool m_mobileDataActive;
-    
     NetworkManager::ConnectionSettings::ConnectionType m_nmModemType;
     
     NetworkManager::ModemDevice::Ptr m_nmModem = nullptr;
