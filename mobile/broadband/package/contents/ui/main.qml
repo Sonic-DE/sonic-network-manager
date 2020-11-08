@@ -81,8 +81,9 @@ SimpleKCM {
                 id: mobileDataCheckbox
                 Kirigami.FormData.label: i18n("Mobile data")
                 text: checked ? i18n("On") : i18n("Off")
-                enabled: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable
-                checked: false // TODO
+//                 enabled: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable
+                checked: kcm.mobileDataActive
+                onCheckedChanged: kcm.mobileDataActive = checked
             }
             
             Kirigami.Separator {

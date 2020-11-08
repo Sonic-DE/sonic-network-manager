@@ -50,20 +50,28 @@ MobileBroadbandSettings::MobileBroadbandSettings(QObject* parent, const QVariant
         // add NetworkManager device
         m_nmModem = NetworkManager::findNetworkInterface(m_modemDevice->uni()).objectCast<NetworkManager::ModemDevice>();
         
-        // determine type
         if (m_nmModem) {
+            // determine type
             if (m_nmModem->currentCapabilities() & NetworkManager::ModemDevice::CdmaEvdo) {
                 m_nmModemType = NetworkManager::ConnectionSettings::Cdma;
             } else if ((m_nmModem->currentCapabilities() & NetworkManager::ModemDevice::GsmUmts) || (m_nmModem->currentCapabilities() & NetworkManager::ModemDevice::Lte)) {
                 m_nmModemType = NetworkManager::ConnectionSettings::Gsm;
             }
             
+            // determine if no connections are added, and the default settings should be found
+            if (m_nmModem->availableConnections().empty()) {
+                detectProfileSettings();
+            }
+            
+            // determine if mobile data is on
+            m_mobileDataActive = m_nmModem->activeConnection() != nullptr;
+            
             // modem device signals
             connect(m_nmModem.data(), &NetworkManager::ModemDevice::availableConnectionChanged, this, [this]() -> void { 
                 ProfileModel::instance()->refresh(m_nmModem->availableConnections());
                 Q_EMIT allowRoamingChanged();
             });
-            connect (m_nmModem.data(), &NetworkManager::ModemDevice::activeConnectionChanged, this, [this]() -> void {
+            connect(m_nmModem.data(), &NetworkManager::ModemDevice::activeConnectionChanged, this, [this]() -> void {
                 Q_EMIT allowRoamingChanged();
                 Q_EMIT activeConnectionUniChanged();
             });
@@ -163,10 +171,6 @@ QString MobileBroadbandSettings::getModemDevice()
         // TODO powerState ???
         if (m->state() <= MM_MODEM_STATE_REGISTERED)
             continue; // needs inspection
-//         if (m->accessTechnologies() <= MM_MODEM_ACCESS_TECHNOLOGY_GSM)
-//             continue;
-//         if (m->currentCapabilities() <= MM_MODEM_CAPABILITY_GSM_UMTS)
-//             continue;
         device = md;
     }
     if (device) {
@@ -197,7 +201,7 @@ void MobileBroadbandSettings::activateProfile(const QString &connectionUni)
     }
 }
 
-void MobileBroadbandSettings::addProfile(const QString &name, const QString &apn, const QString &username, const QString &password, NetworkManager::GsmSetting::NetworkType networkType)
+void MobileBroadbandSettings::addProfile(const QString &name, const QString &apn, const QString &username, const QString &password, const QString &networkType)
 {
     if (m_nmModem) {
         NetworkManager::ConnectionSettings::Ptr settings;
@@ -213,7 +217,7 @@ void MobileBroadbandSettings::addProfile(const QString &name, const QString &apn
             gsmSetting->setApn(apn);
             gsmSetting->setUsername(username);
             gsmSetting->setPassword(password);
-            gsmSetting->setNetworkType(networkType);
+            gsmSetting->setNetworkType(ProfileModel::instance()->networkTypeFlag(networkType));
             gsmSetting->setHomeOnly(false); // TODO set roaming to user's preferences
             
         } else if (m_nmModemType == NetworkManager::ConnectionSettings::Cdma){
@@ -238,6 +242,39 @@ void MobileBroadbandSettings::addProfile(const QString &name, const QString &apn
     }
 }
 
+void MobileBroadbandSettings::removeProfile(const QString &connectionUni)
+{
+    NetworkManager::Connection::Ptr con = NetworkManager::findConnectionByUuid(connectionUni);
+    if (con) {
+        QDBusPendingReply reply = con->remove();
+        reply.waitForFinished(); // TODO do it async
+        if (reply.isError()) {
+            qWarning() << "Error removing connection" << reply.error().message();
+        }
+    }
+}
 
+void MobileBroadbandSettings::updateProfile(const QString &uni, const QString &name, const QString &apn, const QString &username, const QString &password, const QString &networkType)
+{
+    NetworkManager::Connection::Ptr con = NetworkManager::findConnectionByUuid(uni);
+    if (con) {
+        NetworkManager::ConnectionSettings::Ptr conSettings = con->settings();
+        if (conSettings) {
+            conSettings->setId(name);
+            
+            if (m_nmModemType == NetworkManager::ConnectionSettings::Gsm) {
+                NetworkManager::GsmSetting::Ptr gsmSetting = conSettings->setting(NetworkManager::Setting::Gsm).dynamicCast<NetworkManager::GsmSetting>();
+                gsmSetting->setApn(apn);
+                gsmSetting->setUsername(username);
+                gsmSetting->setPassword(password);
+                gsmSetting->setNetworkType(ProfileModel::instance()->networkTypeFlag(networkType));
+            } else if (m_nmModemType == NetworkManager::ConnectionSettings::Cdma) {
+                NetworkManager::CdmaSetting::Ptr cdmaSetting = conSettings->setting(NetworkManager::Setting::Cdma).dynamicCast<NetworkManager::CdmaSetting>();
+                cdmaSetting->setUsername(username);
+                cdmaSetting->setPassword(password);
+            }
+        }
+    }
+}
 
 #include "mobilebroadbandsettings.moc"
