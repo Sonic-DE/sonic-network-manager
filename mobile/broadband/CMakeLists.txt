@@ -4,7 +4,7 @@ include_directories(${CMAKE_SOURCE_DIR}/libs/editor)
 
 set (mobilebroadbandsettings_SRCS 
     mobilebroadbandsettings.cpp 
-    apnprofilemodel.cpp
+    profilemodel.cpp
 )
 
 add_library(kcm_mobile_broadband MODULE ${mobilebroadbandsettings_SRCS})

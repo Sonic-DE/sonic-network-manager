@@ -20,7 +20,6 @@
 import QtQuick 2.12
 import QtQuick.Layouts 1.2
 import QtQuick.Controls 2.12 as Controls
-import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
 import org.kde.kirigami 2.12 as Kirigami
 import mobilebroadbandkcm 1.0
 
@@ -60,7 +59,7 @@ Kirigami.ScrollablePage {
         }
         
         delegate: Kirigami.SwipeListItem {
-            property APNProfile apnProfile: APNProfileModel.get(index)
+            property ProfileSettings profile: ProfileModel.get(index)
             
             onClicked: {
                 
@@ -105,7 +104,7 @@ Kirigami.ScrollablePage {
         }
         
         header: Kirigami.SwipeListItem {
-            onClicked: kcm.push("EditAPNProfile.qml", {"apnProfile": APNProfileModel.defaultProfile()})
+            onClicked: kcm.push("EditAPNProfile.qml", {"profile": ProfileModel.defaultProfile()})
             
             contentItem: Row {
                 anchors.fill: parent
