@@ -28,57 +28,40 @@ Kirigami.ScrollablePage {
     title: i18n("APNs")
     
     ListView {
-        model: ListModel {
-            ListElement {
-                name: "Telus SP"
-                apn: "sp.telus.com"
-            }
-            ListElement {
-                name: "Public Mobile"
-                apn: "sb.mb.com"
-            }
-        }
-        //model: APNProfileModel
+        id: profileListView
+        model: ProfileModel
      
         Kirigami.PlaceholderMessage {
             anchors.centerIn: parent
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: Kirigami.Units.largeSpacing
-            visible: parent.model.count === 0
+            visible: ProfileModel.count() === 0
             text: i18n("No APNs configured")
             icon.name: "globe"
             
             helpfulAction: Kirigami.Action {
                 iconName: "list-add"
                 text: i18n("Add APN")
-                onTriggered: {
-                    kcm.push("EditAPN.qml");
-                }
+                onTriggered: kcm.push("EditProfile.qml", {"profile": null})
             }
         }
         
         delegate: Kirigami.SwipeListItem {
             property ProfileSettings profile: ProfileModel.get(index)
             
-            onClicked: {
-                
-            }
+            onClicked: kcm.activateProfile(profile.connectionUni)
             
             actions: [
                 Kirigami.Action {
                     iconName: "entry-edit"
                     text: i18n("Edit")
-                    onTriggered: {
-                        // TODO
-                    }
+                    onTriggered: kcm.push("EditProfile.qml", {"profile": profile})
                 },
                 Kirigami.Action {
                     iconName: "delete"
                     text: i18n("Delete")
-                    onTriggered: {
-                        // TODO
-                    }
+                    onTriggered: kcm.removeProfile(profile.connectionUni)
                 }
             ]
             
@@ -89,22 +72,23 @@ Kirigami.ScrollablePage {
                     spacing: Kirigami.Units.smallSpacing
                     Kirigami.Heading {
                         level: 3
-                        text: model.name
+                        text: profile.name
                     }
                     Controls.Label {
-                        text: model.apn
+                        text: profile.apn
                     }
                 }
                 Controls.RadioButton {
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                    checked: true // TODO
-                    // TODO onClicked
+                    checked: kcm.activeConnectionUni == profile.connectionUni
+                    onClicked: kcm.activateProfile(profile.connectionUni)
                 }
             }
         }
         
         header: Kirigami.SwipeListItem {
-            onClicked: kcm.push("EditAPNProfile.qml", {"profile": ProfileModel.defaultProfile()})
+            visible: ProfileModel.count() !== 0
+            onClicked: kcm.push("EditProfile.qml", {"profile": null})
             
             contentItem: Row {
                 anchors.fill: parent

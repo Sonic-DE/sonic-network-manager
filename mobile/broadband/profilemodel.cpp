@@ -60,11 +60,6 @@ void ProfileModel::remove(int index)
     Q_EMIT endRemoveRows();
 }
 
-// ProfileSettings *ProfileModel::defaultProfile()
-// {
-//     return new ProfileSettings(this, "", "", "", NetworkManager::GsmSetting::NetworkType::Prefer4GLte, false);
-// }
-
 void ProfileModel::refresh(NetworkManager::Connection::List connections)
 {
     Q_EMIT beginRemoveRows(QModelIndex(), 0, count()-1);
@@ -84,12 +79,52 @@ void ProfileModel::refresh(NetworkManager::Connection::List connections)
     Q_EMIT endInsertRows();
 }
 
+QString ProfileModel::networkTypeStr(NetworkManager::GsmSetting::NetworkType networkType)
+{
+    if (networkType == NetworkManager::GsmSetting::NetworkType::Any) {
+        return "Any";
+    } else if (networkType == NetworkManager::GsmSetting::NetworkType::GprsEdgeOnly) {
+        return "Only 2G";
+    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Only3G) {
+        return "Only 3G";
+    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Only4GLte) {
+        return "Only 4G";
+    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Prefer2G) {
+        return "2G";
+    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Prefer3G) {
+        return "3G/2G";
+    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Prefer4GLte) {
+        return "4G/3G/2G";
+    }
+    return "Any";
+}
+
+NetworkManager::GsmSetting::NetworkType ProfileModel::networkTypeFlag(const QString &networkType)
+{
+    if (networkType == "Any") {
+        return NetworkManager::GsmSetting::NetworkType::Any;
+    } else if (networkType == "Only 2G") {
+        return NetworkManager::GsmSetting::NetworkType::GprsEdgeOnly;
+    } else if (networkType == "Only 3G") {
+        return NetworkManager::GsmSetting::NetworkType::Only3G;
+    } else if (networkType == "Only 4G") {
+        return NetworkManager::GsmSetting::NetworkType::Only4GLte;
+    } else if (networkType == "2G") {
+        return NetworkManager::GsmSetting::NetworkType::Prefer2G;
+    } else if (networkType == "3G/2G") {
+        return NetworkManager::GsmSetting::NetworkType::Prefer3G;
+    } else if (networkType == "4G/3G/2G") {
+        return NetworkManager::GsmSetting::NetworkType::Prefer4GLte;
+    }
+    return NetworkManager::GsmSetting::NetworkType::Any;
+}
+
 ProfileSettings::ProfileSettings(QObject* parent, QString name, QString apn, QString user, QString password, NetworkManager::GsmSetting::NetworkType networkType, bool allowRoaming, QString connectionUni)
     : m_name(name)
     , m_apn(apn)
     , m_user(user)
     , m_password(password)
-    , m_networkType(networkTypeStr(networkType))
+    , m_networkType(ProfileModel::instance()->networkTypeStr(networkType))
     , m_allowRoaming(allowRoaming)
     , m_connectionUni(connectionUni)
 {
@@ -109,7 +144,7 @@ ProfileSettings::ProfileSettings(QObject* parent, NetworkManager::Setting::Ptr s
         m_apn = gsmSetting->apn();
         m_user = gsmSetting->username();
         m_password = gsmSetting->password();
-        m_networkType = networkTypeStr(gsmSetting->networkType());
+        m_networkType = ProfileModel::instance()->networkTypeStr(gsmSetting->networkType());
         m_allowRoaming = !gsmSetting->homeOnly();
     } else {
         NetworkManager::CdmaSetting::Ptr cdmaSetting = setting.staticCast<NetworkManager::CdmaSetting>();
@@ -130,7 +165,7 @@ QVariantMap ProfileSettings::toSettings()
         gsmSetting.setApn(m_apn);
         gsmSetting.setUsername(m_user);
         gsmSetting.setPassword(m_password);
-        gsmSetting.setNetworkType(networkTypeFlag());
+        gsmSetting.setNetworkType(ProfileModel::instance()->networkTypeFlag(m_networkType));
         gsmSetting.setHomeOnly(!m_allowRoaming);
         return gsmSetting.toMap();
     } else {
@@ -139,46 +174,6 @@ QVariantMap ProfileSettings::toSettings()
         cdmaSetting.setPassword(m_password);
         return cdmaSetting.toMap();
     }
-}
-
-QString ProfileSettings::networkTypeStr(NetworkManager::GsmSetting::NetworkType networkType)
-{
-    if (networkType == NetworkManager::GsmSetting::NetworkType::Any) {
-        return "Any";
-    } else if (networkType == NetworkManager::GsmSetting::NetworkType::GprsEdgeOnly) {
-        return "Only 2G";
-    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Only3G) {
-        return "Only 3G";
-    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Only4GLte) {
-        return "Only 4G";
-    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Prefer2G) {
-        return "2G";
-    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Prefer3G) {
-        return "3G/2G";
-    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Prefer4GLte) {
-        return "4G/3G/2G";
-    }
-    return "Any";
-}
-
-NetworkManager::GsmSetting::NetworkType ProfileSettings::networkTypeFlag()
-{
-    if (m_networkType == "Any") {
-        return NetworkManager::GsmSetting::NetworkType::Any;
-    } else if (m_networkType == "Only 2G") {
-        return NetworkManager::GsmSetting::NetworkType::GprsEdgeOnly;
-    } else if (m_networkType == "Only 3G") {
-        return NetworkManager::GsmSetting::NetworkType::Only3G;
-    } else if (m_networkType == "Only 4G") {
-        return NetworkManager::GsmSetting::NetworkType::Only4GLte;
-    } else if (m_networkType == "2G") {
-        return NetworkManager::GsmSetting::NetworkType::Prefer2G;
-    } else if (m_networkType == "3G/2G") {
-        return NetworkManager::GsmSetting::NetworkType::Prefer3G;
-    } else if (m_networkType == "4G/3G/2G") {
-        return NetworkManager::GsmSetting::NetworkType::Prefer4GLte;
-    }
-    return NetworkManager::GsmSetting::NetworkType::Any;
 }
 
 QString ProfileSettings::name()

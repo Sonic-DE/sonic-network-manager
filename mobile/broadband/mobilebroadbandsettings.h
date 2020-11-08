@@ -58,7 +58,9 @@ public:
     
     Q_INVOKABLE QString getModemDevice(); // get modem identifier
     Q_INVOKABLE void activateProfile(const QString &connectionUni);
-    Q_INVOKABLE void addProfile(const QString &name, const QString &apn, const QString &username, const QString &password, NetworkManager::GsmSetting::NetworkType networkType);
+    Q_INVOKABLE void addProfile(const QString &name, const QString &apn, const QString &username, const QString &password, const QString &networkType);
+    Q_INVOKABLE void removeProfile(const QString &connectionUni);
+    Q_INVOKABLE void updateProfile(const QString &uni, const QString &name, const QString &apn, const QString &username, const QString &password, const QString &networkType);
     
 Q_SIGNALS:
     void mobileDataActiveChanged();
@@ -72,7 +74,6 @@ private:
     NetworkManager::ConnectionSettings::ConnectionType m_nmModemType;
     
     NetworkManager::ModemDevice::Ptr m_nmModem = nullptr;
-    ModemManager::Bearer::Ptr m_bearer = nullptr;
     ModemManager::ModemDevice::Ptr m_modemDevice = nullptr;
     ModemManager::Modem::Ptr m_modemInterface = nullptr;
     MobileProviders* m_providers;
