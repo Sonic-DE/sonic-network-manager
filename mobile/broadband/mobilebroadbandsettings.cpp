@@ -44,6 +44,9 @@ MobileBroadbandSettings::MobileBroadbandSettings(QObject* parent, const QVariant
     ModemManager::scanDevices();
     m_modemDevice = ModemManager::findModemDevice(getModemDevice()); // TODO check if modem changes?
     
+    // parse mobile providers list
+    m_providers = new MobileProviders();
+    
     if (m_modemDevice) {
         m_modemInterface = m_modemDevice->modemInterface();
         
@@ -63,9 +66,6 @@ MobileBroadbandSettings::MobileBroadbandSettings(QObject* parent, const QVariant
                 detectProfileSettings();
             }
             
-            // determine if mobile data is on
-            m_mobileDataActive = m_nmModem->activeConnection() != nullptr;
-            
             // modem device signals
             connect(m_nmModem.data(), &NetworkManager::ModemDevice::availableConnectionChanged, this, [this]() -> void { 
                 ProfileModel::instance()->refresh(m_nmModem->availableConnections());
@@ -73,6 +73,10 @@ MobileBroadbandSettings::MobileBroadbandSettings(QObject* parent, const QVariant
             });
             connect(m_nmModem.data(), &NetworkManager::ModemDevice::activeConnectionChanged, this, [this]() -> void {
                 Q_EMIT allowRoamingChanged();
+                Q_EMIT activeConnectionUniChanged();
+            });
+            connect(m_nmModem.data(), &NetworkManager::ModemDevice::stateChanged, this, [this](NetworkManager::Device::State newstate, NetworkManager::Device::State oldstate, NetworkManager::Device::StateChangeReason reason) -> void {
+                Q_EMIT mobileDataActiveChanged();
                 Q_EMIT activeConnectionUniChanged();
             });
         }
@@ -86,15 +90,25 @@ MobileBroadbandSettings::~MobileBroadbandSettings()
 
 bool MobileBroadbandSettings::mobileDataActive()
 {
-    return m_mobileDataActive;
+    if (m_nmModem) {
+        if (m_nmModem->state() == NetworkManager::Device::State::UnknownState ||
+            m_nmModem->state() == NetworkManager::Device::State::Unmanaged ||
+            m_nmModem->state() == NetworkManager::Device::State::Unavailable ||
+            m_nmModem->state() == NetworkManager::Device::State::Disconnected ||
+            m_nmModem->state() == NetworkManager::Device::State::Deactivating ||
+            m_nmModem->state() == NetworkManager::Device::State::Failed) {
+                return false;
+        } else {
+            return m_nmModem->activeConnection() != nullptr;
+        }
+    }
+    return false;
 }
 
 void MobileBroadbandSettings::setMobileDataActive(bool active)
 {
     if (m_nmModem) {
-        if (m_mobileDataActive != active && active) { // turn on mobile data
-            m_mobileDataActive = active;
-            
+        if (!mobileDataActive() && active) { // turn on mobile data
             // activate connection that already has autoconnect set to true
             for (auto connection : m_nmModem->availableConnections()) {
                 if (connection->settings()->autoconnect()) {
@@ -102,7 +116,7 @@ void MobileBroadbandSettings::setMobileDataActive(bool active)
                 }
             }
             Q_EMIT mobileDataActiveChanged();
-        } else if (m_mobileDataActive == active && !active) { // turn off mobile data
+        } else if (mobileDataActive() && !active) { // turn off mobile data
             QDBusPendingReply reply = m_nmModem->disconnectInterface(); 
             reply.waitForFinished();
             
@@ -150,10 +164,37 @@ QString MobileBroadbandSettings::activeConnectionUni()
 
 void MobileBroadbandSettings::detectProfileSettings()
 {
-    // TODO
-    
-    //     m_providers = new MobileProviders();
-    //     m_providers->getApns();
+    if (m_modemDevice) {
+        QString op = m_modemDevice->sim()->operatorName();
+        
+        // currently we use operator names, it may be better to switch to lookup through mcc/mnc ids fetched from ModemManager's 3GPP interface
+        
+        qWarning() << "Detecting profile settings. Operator:" << op;
+        
+        if (m_nmModemType == NetworkManager::ConnectionSettings::Gsm) {
+            QStringList apns = m_providers->getApns(op);
+            
+            for (auto apn : apns) {
+                QVariantMap apnInfo = m_providers->getApnInfo(apn);
+                qWarning() << "Found gsm profile settings. Type:" << apnInfo["usageType"];
+                
+                // only add mobile data apns (not mms)
+                if (apnInfo["usageType"].toString() == "internet") {
+                    QString name = op;
+                    if (!apnInfo["name"].isNull()) {
+                        name += " - " + apnInfo["name"].toString();
+                    }
+                    
+                    addProfile(name, apn, apnInfo["username"].toString(), apnInfo["password"].toString(), "4G/3G/2G");
+                }
+                // in the future for MMS settings, add else if here for == "mms"
+            }
+        } else if (m_nmModemType == NetworkManager::ConnectionSettings::Cdma) {
+            QVariantMap cdmaInfo = m_providers->getCdmaInfo(op);
+            // TODO determine what sid is for cdma
+            addProfile(op, "", cdmaInfo["username"].toString(), cdmaInfo["password"].toString(), "4G/3G/2G");
+        }
+    }
 }
 
 QString MobileBroadbandSettings::getModemDevice()
@@ -194,7 +235,7 @@ void MobileBroadbandSettings::activateProfile(const QString &connectionUni)
         
         // activate connection manually
         QDBusPendingReply<QDBusObjectPath> reply = NetworkManager::activateConnection(connectionUni, m_nmModem->uni(), "");
-        reply.waitForFinished(); // TODO async is better
+        reply.waitForFinished();
         if (reply.isError()) {
             qWarning() << "Error activating connection" << reply.error().message();
         }
@@ -217,8 +258,9 @@ void MobileBroadbandSettings::addProfile(const QString &name, const QString &apn
             gsmSetting->setApn(apn);
             gsmSetting->setUsername(username);
             gsmSetting->setPassword(password);
+            gsmSetting->setPasswordFlags(password == "" ? NetworkManager::Setting::NotRequired : NetworkManager::Setting::AgentOwned);
             gsmSetting->setNetworkType(ProfileModel::instance()->networkTypeFlag(networkType));
-            gsmSetting->setHomeOnly(false); // TODO set roaming to user's preferences
+            gsmSetting->setHomeOnly(allowRoaming());
             
         } else if (m_nmModemType == NetworkManager::ConnectionSettings::Cdma){
             settings = NetworkManager::ConnectionSettings::Ptr(new NetworkManager::ConnectionSettings(NetworkManager::ConnectionSettings::Cdma));
@@ -230,15 +272,16 @@ void MobileBroadbandSettings::addProfile(const QString &name, const QString &apn
             NetworkManager::CdmaSetting::Ptr cdmaSetting = settings->setting(NetworkManager::Setting::Cdma).dynamicCast<NetworkManager::CdmaSetting>();
             cdmaSetting->setUsername(username);
             cdmaSetting->setPassword(password);
+            cdmaSetting->setPasswordFlags(password == "" ? NetworkManager::Setting::NotRequired : NetworkManager::Setting::AgentOwned);
         }
         
         QDBusPendingReply<QDBusObjectPath> reply = NetworkManager::addConnection(settings->toMap());
-        reply.waitForFinished(); // TODO do it async
+        reply.waitForFinished();
         if (reply.isError()) {
             qWarning() << "Error adding connection" << reply.error().message();
         }
         
-        activateProfile(settings->uuid());
+        activateProfile(settings->uuid()); // TODO the uuid may have have to be Connection's uuid, not ConnectionSettings's uuid
     }
 }
 
@@ -247,7 +290,7 @@ void MobileBroadbandSettings::removeProfile(const QString &connectionUni)
     NetworkManager::Connection::Ptr con = NetworkManager::findConnectionByUuid(connectionUni);
     if (con) {
         QDBusPendingReply reply = con->remove();
-        reply.waitForFinished(); // TODO do it async
+        reply.waitForFinished();
         if (reply.isError()) {
             qWarning() << "Error removing connection" << reply.error().message();
         }
@@ -267,11 +310,13 @@ void MobileBroadbandSettings::updateProfile(const QString &uni, const QString &n
                 gsmSetting->setApn(apn);
                 gsmSetting->setUsername(username);
                 gsmSetting->setPassword(password);
+                gsmSetting->setPasswordFlags(password == "" ? NetworkManager::Setting::NotRequired : NetworkManager::Setting::AgentOwned);
                 gsmSetting->setNetworkType(ProfileModel::instance()->networkTypeFlag(networkType));
             } else if (m_nmModemType == NetworkManager::ConnectionSettings::Cdma) {
                 NetworkManager::CdmaSetting::Ptr cdmaSetting = conSettings->setting(NetworkManager::Setting::Cdma).dynamicCast<NetworkManager::CdmaSetting>();
                 cdmaSetting->setUsername(username);
                 cdmaSetting->setPassword(password);
+                cdmaSetting->setPasswordFlags(password == "" ? NetworkManager::Setting::NotRequired : NetworkManager::Setting::AgentOwned);
             }
         }
     }

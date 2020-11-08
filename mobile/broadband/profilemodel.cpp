@@ -153,7 +153,7 @@ ProfileSettings::ProfileSettings(QObject* parent, NetworkManager::Setting::Ptr s
         m_apn = "";
         m_user = cdmaSetting->username();
         m_password = cdmaSetting->password();
-        m_networkType = NetworkManager::GsmSetting::NetworkType::Only3G; // TODO
+        m_networkType = NetworkManager::GsmSetting::NetworkType::Prefer4GLte; // TODO
         m_allowRoaming = false;
     }
 }
