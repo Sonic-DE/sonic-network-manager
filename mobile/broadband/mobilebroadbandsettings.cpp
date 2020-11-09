@@ -52,6 +52,9 @@ MobileBroadbandSettings::MobileBroadbandSettings(QObject* parent, const QVariant
     if (m_modemDevice) {
         m_modemInterface = m_modemDevice->modemInterface();
         
+        connect(m_modemDevice.data(), &ModemManager::ModemDevice::simAdded, this, [this]() -> void { Q_EMIT hasSimChanged(); });
+        connect(m_modemDevice.data(), &ModemManager::ModemDevice::simRemoved, this, [this]() -> void { Q_EMIT hasSimChanged(); });
+        
         // add NetworkManager device
         m_nmModem = NetworkManager::findNetworkInterface(m_modemDevice->uni()).objectCast<NetworkManager::ModemDevice>();
         
@@ -89,6 +92,12 @@ MobileBroadbandSettings::~MobileBroadbandSettings()
 {
 //     delete m_providers;
 }
+
+bool MobileBroadbandSettings::hasSim()
+{
+    return m_modemDevice->sim() != nullptr;
+}
+
 
 bool MobileBroadbandSettings::mobileDataActive()
 {
@@ -166,7 +175,7 @@ QString MobileBroadbandSettings::activeConnectionUni()
 
 void MobileBroadbandSettings::detectProfileSettings()
 {
-    if (m_modemDevice) {
+    if (m_modemDevice && hasSim()) {
         QString op = m_modemDevice->sim()->operatorName();
         
         ModemManager::Modem3gpp::Ptr modem3gpp;
