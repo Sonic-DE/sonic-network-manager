@@ -40,6 +40,7 @@
 class MobileBroadbandSettings : public KQuickAddons::ConfigModule
 {
     Q_OBJECT
+    Q_PROPERTY(bool hasSim READ hasSim NOTIFY hasSimChanged)
     Q_PROPERTY(bool mobileDataActive READ mobileDataActive WRITE setMobileDataActive NOTIFY mobileDataActiveChanged)
     Q_PROPERTY(bool allowRoaming READ allowRoaming WRITE setAllowRoaming NOTIFY allowRoamingChanged)
     Q_PROPERTY(QString activeConnectionUni READ activeConnectionUni NOTIFY activeConnectionUniChanged)
@@ -48,6 +49,7 @@ public:
     MobileBroadbandSettings(QObject *parent, const QVariantList &args);
     virtual ~MobileBroadbandSettings();
 
+    bool hasSim();
     bool mobileDataActive();
     void setMobileDataActive(bool active);
     bool allowRoaming();
@@ -63,6 +65,7 @@ public:
     Q_INVOKABLE void updateProfile(const QString &uni, const QString &name, const QString &apn, const QString &username, const QString &password, const QString &networkType);
     
 Q_SIGNALS:
+    void hasSimChanged();
     void mobileDataActiveChanged();
     void allowRoamingChanged();
     void activeConnectionUniChanged();
