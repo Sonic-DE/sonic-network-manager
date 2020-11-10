@@ -221,17 +221,14 @@ void MobileBroadbandSettings::detectProfileSettings()
 QString MobileBroadbandSettings::getModemDevice()
 {
     ModemManager::ModemDevice::List list = ModemManager::modemDevices();
-    if (list.length() == 0) {
-        return QString();
-    }
-    
+
     ModemManager::ModemDevice::Ptr device;
     foreach (const ModemManager::ModemDevice::Ptr &md, list) {
         ModemManager::Modem::Ptr m = md->modemInterface();
         if (!m->isEnabled())
             continue;
         // TODO powerState ???
-        if (m->state() <= MM_MODEM_STATE_REGISTERED)
+        if (m->state() <= MM_MODEM_STATE_DISABLING)
             continue; // needs inspection
         device = md;
     }
