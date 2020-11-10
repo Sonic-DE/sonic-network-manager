@@ -95,7 +95,7 @@ MobileBroadbandSettings::~MobileBroadbandSettings()
 
 bool MobileBroadbandSettings::hasSim()
 {
-    return m_modemDevice->sim() != nullptr;
+    return m_modemDevice && m_modemDevice->sim() != nullptr;
 }
 
 
