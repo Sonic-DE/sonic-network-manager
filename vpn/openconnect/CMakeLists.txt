@@ -5,6 +5,27 @@ set (MINIMUM_OPENCONNECT_VERSION_REQUIRED "3.99")
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_MODULE_PATH})
 
 find_package(OpenConnect ${MINIMUM_OPENCONNECT_VERSION_REQUIRED} MODULE)
+
+macro(add_openconnect_plugin name)
+    add_library(plasmanetworkmanagement_openconnect_${name} MODULE ${openconnect_SRCS} openconnect_${name}.cpp)
+
+    target_link_libraries(plasmanetworkmanagement_openconnect_${name}
+        plasmanm_internal
+        plasmanm_editor
+        ${NETWORKMANAGERQT5_LDFLAGS}
+        KF5::CoreAddons
+        KF5::I18n
+        KF5::KIOWidgets
+        KF5::WidgetsAddons
+        Qt::Xml
+        ${OPENCONNECT_LIBRARIES}
+        ${maybe_OPENSSL_LIBRARIES}
+    )
+
+    kcoreaddons_desktop_to_json(plasmanetworkmanagement_openconnect_${name} "plasmanetworkmanagement_openconnect_${name}.desktop")
+    install(TARGETS plasmanetworkmanagement_openconnect_${name}  DESTINATION ${KDE_INSTALL_PLUGINDIR}/plasma/network/vpn)
+endmacro()
+
 if (OPENCONNECT_FOUND)
 
     find_package(Qt5Xml ${QT_MIN_VERSION} CONFIG REQUIRED)
@@ -41,25 +62,11 @@ if (OPENCONNECT_FOUND)
 
         ki18n_wrap_ui(openconnect_SRCS openconnectprop.ui openconnectauth.ui openconnecttoken.ui)
 
-        add_library(plasmanetworkmanagement_openconnectui ${openconnect_SRCS})
+        add_openconnect_plugin(anyconnect)
+        add_openconnect_plugin(juniperui)
+        add_openconnect_plugin(globalprotectui)
+        add_openconnect_plugin(pulseui)
 
-        target_link_libraries(plasmanetworkmanagement_openconnectui
-            plasmanm_internal
-            plasmanm_editor
-            ${NETWORKMANAGERQT5_LDFLAGS}
-            KF5::CoreAddons
-            KF5::I18n
-            KF5::KIOWidgets
-            KF5::WidgetsAddons
-            Qt::Xml
-            ${OPENCONNECT_LIBRARIES}
-            ${maybe_OPENSSL_LIBRARIES}
-        )
-        install(TARGETS plasmanetworkmanagement_openconnectui  DESTINATION ${KDE_INSTALL_PLUGINDIR})
-        install(FILES plasmanetworkmanagement_openconnectui.desktop  DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
-        install(FILES plasmanetworkmanagement_openconnect_juniperui.desktop  DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
-        install(FILES plasmanetworkmanagement_openconnect_globalprotectui.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
-        install(FILES plasmanetworkmanagement_openconnect_pulseui.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
     else()
         message("ERROR: OpenConnection version '${OPENCONNECT_VERSION}' does not match minimum required (${MINIMUM_OPENCONNECT_VERSION_REQUIRED})")
         message("OpenConnect plugin will not be built")
