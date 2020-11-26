@@ -43,11 +43,17 @@ Kirigami.OverlaySheet {
         wrapMode: Text.WordWrap
     }
     footer: RowLayout {
+        Controls.Button {
+            text: i18nc("@action:button", "Cancel")
+            icon.name: "dialog-close"
+            onClicked: sheetRoot.close();
+        }
+
         Item {
             Layout.fillWidth: true
         }
         Controls.Button {
-            text: i18n("Done")
+            text: i18nc("@action:button", "Done")
             icon.name: "dialog-ok"
             onClicked: {
                 if (passwordField.acceptableInput) {
