@@ -43,14 +43,13 @@ Kirigami.OverlaySheet {
         wrapMode: Text.WordWrap
     }
     footer: RowLayout {
+        Item {
+            Layout.fillWidth: true
+        }
         Controls.Button {
             text: i18nc("@action:button", "Cancel")
             icon.name: "dialog-close"
             onClicked: sheetRoot.close();
-        }
-
-        Item {
-            Layout.fillWidth: true
         }
         Controls.Button {
             text: i18nc("@action:button", "Done")
