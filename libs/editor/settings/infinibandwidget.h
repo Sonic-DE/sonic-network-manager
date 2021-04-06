@@ -36,7 +36,7 @@ class Q_DECL_EXPORT InfinibandWidget : public SettingWidget
 {
     Q_OBJECT
 public:
-    explicit InfinibandWidget(const NetworkManager::Setting::Ptr &setting = NetworkManager::Setting::Ptr(), QWidget* parent = nullptr, Qt::WindowFlags f = {});
+    explicit InfinibandWidget(const NetworkManager::Setting::Ptr &setting = NetworkManager::Setting::Ptr(), QWidget *parent = nullptr, Qt::WindowFlags f = {});
     ~InfinibandWidget() override;
 
     void loadConfig(const NetworkManager::Setting::Ptr &setting) override;
@@ -46,7 +46,7 @@ public:
     bool isValid() const override;
 
 private:
-    Ui::InfinibandWidget * m_ui;
+    Ui::InfinibandWidget *m_ui;
 };
 
 #endif // PLASMA_NM_INFI_WIDGET_H

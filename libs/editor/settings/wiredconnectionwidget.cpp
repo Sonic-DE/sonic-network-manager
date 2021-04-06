@@ -27,9 +27,9 @@
 
 #include <QRandomGenerator>
 
-WiredConnectionWidget::WiredConnectionWidget(const NetworkManager::Setting::Ptr &setting, QWidget* parent, Qt::WindowFlags f):
-    SettingWidget(setting, parent, f),
-    m_widget(new Ui::WiredConnectionWidget)
+WiredConnectionWidget::WiredConnectionWidget(const NetworkManager::Setting::Ptr &setting, QWidget *parent, Qt::WindowFlags f)
+    : SettingWidget(setting, parent, f)
+    , m_widget(new Ui::WiredConnectionWidget)
 {
     m_widget->setupUi(this);
 
@@ -41,7 +41,7 @@ WiredConnectionWidget::WiredConnectionWidget(const NetworkManager::Setting::Ptr 
     // Connect for validity check
     connect(m_widget->clonedMacAddress, &KLineEdit::textChanged, this, &WiredConnectionWidget::slotWidgetChanged);
     connect(m_widget->macAddress, &HwAddrComboBox::hwAddressChanged, this, &WiredConnectionWidget::slotWidgetChanged);
-    connect(m_widget->linkNegotiation, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this] (int index) {
+    connect(m_widget->linkNegotiation, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index) {
         m_widget->duplex->setEnabled(index == LinkNegotiation::Manual);
         m_widget->speed->setEnabled(index == LinkNegotiation::Manual);
     });
@@ -79,19 +79,19 @@ void WiredConnectionWidget::loadConfig(const NetworkManager::Setting::Ptr &setti
     }
 
     if (wiredSetting->speed()) {
-        switch(wiredSetting->speed()) {
-            case 10:
-                m_widget->speed->setCurrentIndex(0);
-                break;
-            case 100:
-                m_widget->speed->setCurrentIndex(1);
-                break;
-            case 1000:
-                m_widget->speed->setCurrentIndex(2);
-                break;
-            case 10000:
-                m_widget->speed->setCurrentIndex(3);
-                break;
+        switch (wiredSetting->speed()) {
+        case 10:
+            m_widget->speed->setCurrentIndex(0);
+            break;
+        case 100:
+            m_widget->speed->setCurrentIndex(1);
+            break;
+        case 1000:
+            m_widget->speed->setCurrentIndex(2);
+            break;
+        case 10000:
+            m_widget->speed->setCurrentIndex(3);
+            break;
         }
     }
 
@@ -121,18 +121,18 @@ QVariantMap WiredConnectionWidget::setting() const
         wiredSetting.setSpeed(0);
     } else {
         switch (m_widget->speed->currentIndex()) {
-            case 0:
-                wiredSetting.setSpeed(10);
-                break;
-            case 1:
-                wiredSetting.setSpeed(100);
-                break;
-            case 2:
-                wiredSetting.setSpeed(1000);
-                break;
-            case 3:
-                wiredSetting.setSpeed(10000);
-                break;
+        case 0:
+            wiredSetting.setSpeed(10);
+            break;
+        case 1:
+            wiredSetting.setSpeed(100);
+            break;
+        case 2:
+            wiredSetting.setSpeed(1000);
+            break;
+        case 3:
+            wiredSetting.setSpeed(10000);
+            break;
         }
 
         if (m_widget->duplex->currentIndex() == Duplex::Full) {
@@ -143,7 +143,6 @@ QVariantMap WiredConnectionWidget::setting() const
     }
 
     wiredSetting.setAutoNegotiate(m_widget->linkNegotiation->currentIndex() == LinkNegotiation::Automatic);
-
 
     return wiredSetting.toMap();
 }
@@ -160,7 +159,7 @@ void WiredConnectionWidget::generateRandomClonedMac()
 
     // Disable the multicast bit and enable the locally administered bit.
     mac[0] = mac[0] & ~0x1;
-    mac[0] = mac[0] |  0x2;
+    mac[0] = mac[0] | 0x2;
 
     m_widget->clonedMacAddress->setText(NetworkManager::macAddressAsString(mac));
 }

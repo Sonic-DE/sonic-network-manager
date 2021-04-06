@@ -41,7 +41,7 @@ public:
     void loadConfig(const NetworkManager::VpnSetting::Ptr &setting);
 
 private:
-    Ui::VpncAdvancedWidget * m_ui;
+    Ui::VpncAdvancedWidget *m_ui;
 };
 
 #endif // PLASMA_NM_VPNC_ADVANCED_WIDGET_H

@@ -19,20 +19,20 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "l2tpipsecwidget.h"
+#include "nm-l2tp-service.h"
+#include "ui_l2tpipsec.h"
 #include <QProcess>
 #include <QStandardPaths>
-#include "l2tpipsecwidget.h"
-#include "ui_l2tpipsec.h"
-#include "nm-l2tp-service.h"
 
-#include <KLocalizedString>
 #include <KAcceleratorManager>
+#include <KLocalizedString>
 
 #define DEFAULT_IPSEC_STRONGSWAN_IKELIFETIME_HOURS 3
-#define DEFAULT_IPSEC_STRONGSWAN_LIFETIME_HOURS    1
+#define DEFAULT_IPSEC_STRONGSWAN_LIFETIME_HOURS 1
 
-#define DEFAULT_IPSEC_LIBRESWAN_IKELIFETIME_HOURS  1
-#define DEFAULT_IPSEC_LIBRESWAN_SALIFETIME_HOURS   8
+#define DEFAULT_IPSEC_LIBRESWAN_IKELIFETIME_HOURS 1
+#define DEFAULT_IPSEC_LIBRESWAN_SALIFETIME_HOURS 8
 
 L2tpIpsecWidget::L2tpIpsecWidget(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent)
     : QDialog(parent)
@@ -82,8 +82,7 @@ void L2tpIpsecWidget::loadConfig(const NetworkManager::VpnSetting::Ptr &setting)
     } else if (dataMap[NM_L2TP_KEY_IPSEC_ENABLE] == yesString) {
         m_ui->gbEnableTunnelToHost->setChecked(true);
 
-        if (dataMap[NM_L2TP_KEY_MACHINE_AUTH_TYPE].isEmpty()
-            || dataMap[NM_L2TP_KEY_MACHINE_AUTH_TYPE] == QLatin1String(NM_L2TP_AUTHTYPE_PSK)) {
+        if (dataMap[NM_L2TP_KEY_MACHINE_AUTH_TYPE].isEmpty() || dataMap[NM_L2TP_KEY_MACHINE_AUTH_TYPE] == QLatin1String(NM_L2TP_AUTHTYPE_PSK)) {
             m_ui->cmbAuthType->setCurrentIndex(AuthType::PSK);
             m_ui->stackedWidget->setCurrentIndex(AuthType::PSK);
 
@@ -103,7 +102,8 @@ void L2tpIpsecWidget::loadConfig(const NetworkManager::VpnSetting::Ptr &setting)
             m_ui->machineCert->setUrl(QUrl::fromLocalFile(dataMap[NM_L2TP_KEY_MACHINE_CERT]));
             m_ui->machineKey->setUrl(QUrl::fromLocalFile(dataMap[NM_L2TP_KEY_MACHINE_KEY]));
 
-            const NetworkManager::Setting::SecretFlags machineKeyPassType = static_cast<NetworkManager::Setting::SecretFlags>(dataMap[NM_L2TP_KEY_MACHINE_CERTPASS"-flags"].toInt());
+            const NetworkManager::Setting::SecretFlags machineKeyPassType =
+                static_cast<NetworkManager::Setting::SecretFlags>(dataMap[NM_L2TP_KEY_MACHINE_CERTPASS "-flags"].toInt());
             if (machineKeyPassType.testFlag(NetworkManager::Setting::None)) {
                 m_ui->machineKeyPassword->setPasswordOption(PasswordField::StoreForAllUsers);
             } else if (machineKeyPassType.testFlag(NetworkManager::Setting::AgentOwned)) {
@@ -207,20 +207,16 @@ NMStringMap L2tpIpsecWidget::setting() const
 
             switch (m_ui->machineKeyPassword->passwordOption()) {
             case PasswordField::StoreForAllUsers:
-                result.insert(NM_L2TP_KEY_MACHINE_CERTPASS"-flags",
-                              QString::number(NetworkManager::Setting::None));
+                result.insert(NM_L2TP_KEY_MACHINE_CERTPASS "-flags", QString::number(NetworkManager::Setting::None));
                 break;
             case PasswordField::StoreForUser:
-                result.insert(NM_L2TP_KEY_MACHINE_CERTPASS"-flags",
-                              QString::number(NetworkManager::Setting::AgentOwned));
+                result.insert(NM_L2TP_KEY_MACHINE_CERTPASS "-flags", QString::number(NetworkManager::Setting::AgentOwned));
                 break;
             case PasswordField::AlwaysAsk:
-                result.insert(NM_L2TP_KEY_MACHINE_CERTPASS"-flags",
-                              QString::number(NetworkManager::Setting::NotSaved));
+                result.insert(NM_L2TP_KEY_MACHINE_CERTPASS "-flags", QString::number(NetworkManager::Setting::NotSaved));
                 break;
             case PasswordField::NotRequired:
-                result.insert(NM_L2TP_KEY_MACHINE_CERTPASS"-flags",
-                              QString::number(NetworkManager::Setting::NotRequired));
+                result.insert(NM_L2TP_KEY_MACHINE_CERTPASS "-flags", QString::number(NetworkManager::Setting::NotRequired));
                 break;
             };
         }
@@ -276,7 +272,6 @@ NMStringMap L2tpIpsecWidget::secrets() const
 
     if (m_ui->gbEnableTunnelToHost->isChecked()) {
         if (m_ui->cmbAuthType->currentIndex() == AuthType::TLS) {
-
             // private key password
             if (!m_ui->machineKeyPassword->text().isEmpty()) {
                 result.insert(NM_L2TP_KEY_MACHINE_CERTPASS, m_ui->machineKeyPassword->text());
@@ -349,18 +344,19 @@ L2tpIpsecWidget::IpsecDaemonType L2tpIpsecWidget::m_ipsecDaemonType = IpsecDaemo
 bool L2tpIpsecWidget::hasIpsecDaemon()
 {
     // NetworkManager-l2tp currently only supports libreswan and strongswan
-    if (m_ipsecDaemonType == IpsecDaemonType::Libreswan
-        || m_ipsecDaemonType == IpsecDaemonType::Strongswan) {
+    if (m_ipsecDaemonType == IpsecDaemonType::Libreswan || m_ipsecDaemonType == IpsecDaemonType::Strongswan) {
         return true;
     }
 
     QString ipsecBinary = QStandardPaths::findExecutable("ipsec",
-                                                         QStringList() << "/sbin" << "/usr/sbin");
+                                                         QStringList() << "/sbin"
+                                                                       << "/usr/sbin");
 
     // On some Linux distributions, ipsec executable has been renamed strongswan
     if (ipsecBinary.isEmpty()) {
         ipsecBinary = QStandardPaths::findExecutable("strongswan",
-                                                     QStringList() << "/sbin" << "/usr/sbin");
+                                                     QStringList() << "/sbin"
+                                                                   << "/usr/sbin");
     }
 
     if (ipsecBinary.isEmpty()) {
@@ -375,7 +371,7 @@ bool L2tpIpsecWidget::hasIpsecDaemon()
     ipsecVersionProcess.waitForFinished(-1);
 
     if (ipsecVersionProcess.exitStatus() == QProcess::NormalExit) {
-        QString ipsecStdout  = ipsecVersionProcess.readAllStandardOutput();
+        QString ipsecStdout = ipsecVersionProcess.readAllStandardOutput();
 
         if (ipsecStdout.contains(" strongSwan ", Qt::CaseSensitive)) {
             L2tpIpsecWidget::m_ipsecDaemonType = IpsecDaemonType::Strongswan;
@@ -388,8 +384,7 @@ bool L2tpIpsecWidget::hasIpsecDaemon()
         }
     }
 
-    if (m_ipsecDaemonType == IpsecDaemonType::Libreswan
-        || m_ipsecDaemonType == IpsecDaemonType::Strongswan) {
+    if (m_ipsecDaemonType == IpsecDaemonType::Libreswan || m_ipsecDaemonType == IpsecDaemonType::Strongswan) {
         return true;
     }
     return false;

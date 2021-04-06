@@ -27,8 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QPushButton>
 #include <Solid/Device>
 
-#include <ModemManagerQt/modem.h>
 #include "ui_pinwidget.h"
+#include <ModemManagerQt/modem.h>
 
 class PinWidget;
 
@@ -53,7 +53,7 @@ public:
         ModemNetworkSubsetPin,
         ModemNetworkSubsetPuk,
     };
-    enum ErrorCode {PinCodeTooShort, PinCodesDoNotMatch, PukCodeTooShort};
+    enum ErrorCode { PinCodeTooShort, PinCodesDoNotMatch, PukCodeTooShort };
 
     explicit PinDialog(ModemManager::Modem *modem, const Type type = SimPin, QWidget *parent = nullptr);
     ~PinDialog() override;
@@ -74,8 +74,8 @@ private:
     void showErrorMessage(const PinDialog::ErrorCode);
     bool isPukDialog() const;
     bool isPinDialog() const;
-    Ui::PinWidget * ui;
-    QLabel* pixmapLabel;
+    Ui::PinWidget *ui;
+    QLabel *pixmapLabel;
     QString m_name;
     Type m_type;
     QString m_udi;

@@ -24,8 +24,8 @@
 
 #include <QComboBox>
 
-#include <NetworkManagerQt/Device>
 #include <NetworkManagerQt/AccessPoint>
+#include <NetworkManagerQt/Device>
 
 class Q_DECL_EXPORT BssidComboBox : public QComboBox
 {
@@ -40,14 +40,14 @@ Q_SIGNALS:
     void bssidChanged();
 
 public Q_SLOTS:
-    void init(const QString & bssid, const QString &ssid);
+    void init(const QString &bssid, const QString &ssid);
 
 private Q_SLOTS:
     void slotEditTextChanged(const QString &);
     void slotCurrentIndexChanged(int);
 
 private:
-    void addBssidsToCombo(const QList<NetworkManager::AccessPoint::Ptr> & aps);
+    void addBssidsToCombo(const QList<NetworkManager::AccessPoint::Ptr> &aps);
 
     QString m_initialBssid;
     bool m_dirty;

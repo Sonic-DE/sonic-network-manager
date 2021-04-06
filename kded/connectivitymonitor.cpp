@@ -80,7 +80,7 @@ void ConnectivityMonitor::connectivityChanged(NetworkManager::Connectivity conne
                 m_notification->setComponentName(QStringLiteral("networkmanagement"));
                 m_notification->setTitle(title);
                 m_notification->setText(i18n("You need to log in to this network"));
-                connect(m_notification, &KNotification::action1Activated, this, [this] () {
+                connect(m_notification, &KNotification::action1Activated, this, [this]() {
                     QDesktopServices::openUrl(QUrl("http://networkcheck.kde.org"));
                 });
                 m_notification->sendEvent();
@@ -106,7 +106,7 @@ void ConnectivityMonitor::checkConnectivity()
 {
     QDBusPendingReply<uint> pendingReply = NetworkManager::checkConnectivity();
     QDBusPendingCallWatcher *callWatcher = new QDBusPendingCallWatcher(pendingReply);
-    connect(callWatcher, &QDBusPendingCallWatcher::finished, this, [this] (QDBusPendingCallWatcher *watcher) {
+    connect(callWatcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher *watcher) {
         QDBusPendingReply<uint> reply = *watcher;
         if (reply.isValid()) {
             connectivityChanged((NetworkManager::Connectivity)reply.value());

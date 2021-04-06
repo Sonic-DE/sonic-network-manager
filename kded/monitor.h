@@ -21,8 +21,8 @@
 #ifndef PLASMA_NM_MONITOR_H
 #define PLASMA_NM_MONITOR_H
 
-#include <QObject>
 #include <QDBusPendingCallWatcher>
+#include <QObject>
 
 #include "bluetoothmonitor.h"
 #if WITH_MODEMMANAGER_SUPPORT
@@ -31,10 +31,10 @@
 
 class Q_DECL_EXPORT Monitor : public QObject
 {
-Q_OBJECT
-Q_CLASSINFO("D-Bus Interface", "org.kde.plasmanetworkmanagement")
+    Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.kde.plasmanetworkmanagement")
 public:
-    explicit Monitor(QObject * parent);
+    explicit Monitor(QObject *parent);
     ~Monitor() override;
 
 public Q_SLOTS:
@@ -44,11 +44,10 @@ public Q_SLOTS:
     Q_SCRIPTABLE void unlockModem(const QString &modem);
 #endif
 private:
-    BluetoothMonitor * m_bluetoothMonitor;
+    BluetoothMonitor *m_bluetoothMonitor;
 #if WITH_MODEMMANAGER_SUPPORT
-    ModemMonitor * m_modemMonitor;
+    ModemMonitor *m_modemMonitor;
 #endif
 };
-
 
 #endif // PLASMA_NM_MONITOR_H

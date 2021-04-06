@@ -23,8 +23,8 @@
 
 #include <KLocalizedString>
 
-VpnUiPlugin::VpnUiPlugin(QObject * parent, const QVariantList & /*args*/):
-    QObject(parent)
+VpnUiPlugin::VpnUiPlugin(QObject *parent, const QVariantList & /*args*/)
+    : QObject(parent)
 {
     mError = NoError;
 }
@@ -46,14 +46,14 @@ VpnUiPlugin::ErrorType VpnUiPlugin::lastError() const
 QString VpnUiPlugin::lastErrorMessage()
 {
     switch (mError) {
-        case NoError:
-            mErrorMessage.clear();
-            break;
-        case NotImplemented:
-            return i18nc("Error message in VPN import/export dialog", "Operation not supported for this VPN type.");
-            break;
-        case Error:
-            break;
+    case NoError:
+        mErrorMessage.clear();
+        break;
+    case NotImplemented:
+        return i18nc("Error message in VPN import/export dialog", "Operation not supported for this VPN type.");
+        break;
+    case Error:
+        break;
     }
     return mErrorMessage;
 }

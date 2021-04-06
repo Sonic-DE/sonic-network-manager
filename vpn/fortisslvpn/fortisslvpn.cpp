@@ -35,12 +35,12 @@ FortisslvpnUiPlugin::~FortisslvpnUiPlugin()
 {
 }
 
-SettingWidget * FortisslvpnUiPlugin::widget(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent)
+SettingWidget *FortisslvpnUiPlugin::widget(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent)
 {
     return new FortisslvpnWidget(setting, parent);
 }
 
-SettingWidget * FortisslvpnUiPlugin::askUser(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent)
+SettingWidget *FortisslvpnUiPlugin::askUser(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent)
 {
     return new FortisslvpnAuthDialog(setting, parent);
 }

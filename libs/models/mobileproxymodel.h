@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
-*/
+ */
 
 #ifndef PLASMA_NM_MOBILE_PROXY_MODEL_H
 #define PLASMA_NM_MOBILE_PROXY_MODEL_H
@@ -27,11 +27,11 @@
 
 class Q_DECL_EXPORT MobileProxyModel : public QSortFilterProxyModel
 {
-Q_OBJECT
-    Q_PROPERTY(QAbstractItemModel * sourceModel READ sourceModel WRITE setSourceModel)
+    Q_OBJECT
+    Q_PROPERTY(QAbstractItemModel *sourceModel READ sourceModel WRITE setSourceModel)
     Q_PROPERTY(bool showSavedMode READ showSavedMode WRITE setShowSavedMode NOTIFY showSavedModeChanged)
 public:
-    explicit MobileProxyModel(QObject* parent = 0);
+    explicit MobileProxyModel(QObject *parent = 0);
     virtual ~MobileProxyModel();
     void setShowSavedMode(bool mode);
     bool showSavedMode() const;
@@ -39,8 +39,9 @@ signals:
     void showSavedModeChanged(bool mode);
 
 protected:
-    bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const Q_DECL_OVERRIDE;
-    bool lessThan(const QModelIndex& left, const QModelIndex& right) const Q_DECL_OVERRIDE;
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const Q_DECL_OVERRIDE;
+    bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
+
 private:
     bool m_showSavedMode;
 };

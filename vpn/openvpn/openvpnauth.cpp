@@ -22,15 +22,15 @@
 #include "openvpnauth.h"
 #include "passwordfield.h"
 
-#include <QString>
+#include <QCheckBox>
 #include <QFormLayout>
 #include <QLabel>
-#include <QCheckBox>
+#include <QString>
 
 #include <KLocalizedString>
 
-#include "nm-openvpn-service.h"
 #include "debug.h"
+#include "nm-openvpn-service.h"
 
 class OpenVpnAuthWidgetPrivate
 {
@@ -39,7 +39,7 @@ public:
     QFormLayout *layout;
 };
 
-OpenVpnAuthWidget::OpenVpnAuthWidget(const NetworkManager::VpnSetting::Ptr &setting, QWidget * parent)
+OpenVpnAuthWidget::OpenVpnAuthWidget(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent)
     : SettingWidget(setting, parent)
     , d_ptr(new OpenVpnAuthWidgetPrivate)
 {
@@ -67,9 +67,9 @@ void OpenVpnAuthWidget::readSecrets()
     QLabel *label;
     PasswordField *lineEdit;
 
-    NetworkManager::Setting::SecretFlags certType = (NetworkManager::Setting::SecretFlags)dataMap.value(NM_OPENVPN_KEY_CERTPASS"-flags").toInt();
-    NetworkManager::Setting::SecretFlags passType = (NetworkManager::Setting::SecretFlags)dataMap.value(NM_OPENVPN_KEY_PASSWORD"-flags").toInt();
-    NetworkManager::Setting::SecretFlags proxyType = (NetworkManager::Setting::SecretFlags)dataMap.value(NM_OPENVPN_KEY_HTTP_PROXY_PASSWORD"-flags").toInt();
+    NetworkManager::Setting::SecretFlags certType = (NetworkManager::Setting::SecretFlags)dataMap.value(NM_OPENVPN_KEY_CERTPASS "-flags").toInt();
+    NetworkManager::Setting::SecretFlags passType = (NetworkManager::Setting::SecretFlags)dataMap.value(NM_OPENVPN_KEY_PASSWORD "-flags").toInt();
+    NetworkManager::Setting::SecretFlags proxyType = (NetworkManager::Setting::SecretFlags)dataMap.value(NM_OPENVPN_KEY_HTTP_PROXY_PASSWORD "-flags").toInt();
 
     if (cType == QLatin1String(NM_OPENVPN_CONTYPE_TLS) && !(certType.testFlag(NetworkManager::Setting::NotRequired))) {
         label = new QLabel(this);
@@ -108,7 +108,7 @@ void OpenVpnAuthWidget::readSecrets()
         }
     }
 
-    if (dataMap.contains(NM_OPENVPN_KEY_HTTP_PROXY_PASSWORD"-flags") && !(proxyType.testFlag(NetworkManager::Setting::NotRequired))) {
+    if (dataMap.contains(NM_OPENVPN_KEY_HTTP_PROXY_PASSWORD "-flags") && !(proxyType.testFlag(NetworkManager::Setting::NotRequired))) {
         label = new QLabel(this);
         label->setText(i18n("Proxy Password:"));
         lineEdit = new PasswordField(this);
@@ -119,7 +119,7 @@ void OpenVpnAuthWidget::readSecrets()
     }
 
     for (int i = 0; i < d->layout->rowCount(); i++) {
-        PasswordField *le = qobject_cast<PasswordField*>(d->layout->itemAt(i, QFormLayout::FieldRole)->widget());
+        PasswordField *le = qobject_cast<PasswordField *>(d->layout->itemAt(i, QFormLayout::FieldRole)->widget());
         if (le && le->text().isEmpty()) {
             le->setFocus(Qt::OtherFocusReason);
             break;
@@ -134,7 +134,7 @@ QVariantMap OpenVpnAuthWidget::setting() const
     NMStringMap secrets;
     QVariantMap secretData;
     for (int i = 0; i < d->layout->rowCount(); i++) {
-        PasswordField *le = qobject_cast<PasswordField*>(d->layout->itemAt(i, QFormLayout::FieldRole)->widget());
+        PasswordField *le = qobject_cast<PasswordField *>(d->layout->itemAt(i, QFormLayout::FieldRole)->widget());
         if (le && !le->text().isEmpty()) {
             const QString key = le->property("nm_secrets_key").toString();
             secrets.insert(key, le->text());

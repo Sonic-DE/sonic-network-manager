@@ -18,25 +18,26 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QNetworkAddressEntry>
 #include <QStandardItem>
 #include <QStandardItemModel>
-#include <QNetworkAddressEntry>
 
 #include <KAcceleratorManager>
 #include <KLocalizedString>
 
 #include "ui_ipv6routes.h"
 
-#include "ipv6delegate.h"
 #include "intdelegate.h"
+#include "ipv6delegate.h"
 #include "ipv6routeswidget.h"
 
 class IpV6RoutesWidget::Private
 {
 public:
-    Private() : model(0,4)
+    Private()
+        : model(0, 4)
     {
-        QStandardItem * headerItem = new QStandardItem(i18nc("Header text for IPv6 address", "Address"));
+        QStandardItem *headerItem = new QStandardItem(i18nc("Header text for IPv6 address", "Address"));
         model.setHorizontalHeaderItem(0, headerItem);
         headerItem = new QStandardItem(i18nc("Header text for IPv6 netmask", "Netmask"));
         model.setHorizontalHeaderItem(1, headerItem);
@@ -49,15 +50,16 @@ public:
     QStandardItemModel model;
 };
 
-IpV6RoutesWidget::IpV6RoutesWidget(QWidget * parent)
-    : QDialog(parent), d(new IpV6RoutesWidget::Private())
+IpV6RoutesWidget::IpV6RoutesWidget(QWidget *parent)
+    : QDialog(parent)
+    , d(new IpV6RoutesWidget::Private())
 {
     d->ui.setupUi(this);
     d->ui.tableViewAddresses->setModel(&d->model);
     d->ui.tableViewAddresses->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 
     IpV6Delegate *ipDelegate = new IpV6Delegate(this);
-    IntDelegate *netmaskDelegate = new IntDelegate(0,128,this);
+    IntDelegate *netmaskDelegate = new IntDelegate(0, 128, this);
     IntDelegate *metricDelegate = new IntDelegate(this);
     d->ui.tableViewAddresses->setItemDelegateForColumn(0, ipDelegate);
     d->ui.tableViewAddresses->setItemDelegateForColumn(1, netmaskDelegate);
@@ -68,7 +70,6 @@ IpV6RoutesWidget::IpV6RoutesWidget(QWidget * parent)
     connect(d->ui.pushButtonRemove, &QPushButton::clicked, this, &IpV6RoutesWidget::removeRoute);
 
     connect(d->ui.tableViewAddresses->selectionModel(), &QItemSelectionModel::selectionChanged, this, &IpV6RoutesWidget::selectionChanged);
-
 
     connect(&d->model, &QStandardItemModel::itemChanged, this, &IpV6RoutesWidget::tableViewItemChanged);
 
@@ -129,7 +130,7 @@ QList<NetworkManager::IpRoute> IpV6RoutesWidget::routes()
 
     for (int i = 0, rowCount = d->model.rowCount(); i < rowCount; i++) {
         NetworkManager::IpRoute route;
-        QStandardItem *item = d->model.item(i,0);
+        QStandardItem *item = d->model.item(i, 0);
         if (item) {
             route.setIp(QHostAddress(item->text()));
         }
@@ -160,7 +161,7 @@ void IpV6RoutesWidget::addRoute()
     if (rowCount > 0) {
         d->ui.tableViewAddresses->selectRow(rowCount - 1);
 
-        QItemSelectionModel * selectionModel = d->ui.tableViewAddresses->selectionModel();
+        QItemSelectionModel *selectionModel = d->ui.tableViewAddresses->selectionModel();
         QModelIndexList list = selectionModel->selectedIndexes();
         if (list.size()) {
             // QTableView is configured to select only rows.
@@ -172,7 +173,7 @@ void IpV6RoutesWidget::addRoute()
 
 void IpV6RoutesWidget::removeRoute()
 {
-    QItemSelectionModel * selectionModel = d->ui.tableViewAddresses->selectionModel();
+    QItemSelectionModel *selectionModel = d->ui.tableViewAddresses->selectionModel();
     if (selectionModel->hasSelection()) {
         QModelIndexList indexes = selectionModel->selectedIndexes();
         d->model.takeRow(indexes[0].row());
@@ -180,7 +181,7 @@ void IpV6RoutesWidget::removeRoute()
     d->ui.pushButtonRemove->setEnabled(false);
 }
 
-void IpV6RoutesWidget::selectionChanged(const QItemSelection & selected)
+void IpV6RoutesWidget::selectionChanged(const QItemSelection &selected)
 {
     // qCDebug(PLASMA_NM) << "selectionChanged";
     d->ui.pushButtonRemove->setEnabled(!selected.isEmpty());
@@ -203,7 +204,7 @@ void IpV6RoutesWidget::tableViewItemChanged(QStandardItem *item)
             QHostAddress addr(item->text());
             quint32 netmask = suggestNetmask(addr.toIPv6Address());
             if (netmask) {
-                netmaskItem->setText(QString::number(netmask,10));
+                netmaskItem->setText(QString::number(netmask, 10));
             }
         }
     }

@@ -27,15 +27,15 @@
 
 class NetworkStatus : public QObject
 {
-/**
- * Returns a formated list of active connections or NM status when there is no active connection
- */
-Q_PROPERTY(QString activeConnections READ activeConnections NOTIFY activeConnectionsChanged)
-/**
- * Returns the current status of NetworkManager
- */
-Q_PROPERTY(QString networkStatus READ networkStatus NOTIFY networkStatusChanged)
-Q_OBJECT
+    /**
+     * Returns a formated list of active connections or NM status when there is no active connection
+     */
+    Q_PROPERTY(QString activeConnections READ activeConnections NOTIFY activeConnectionsChanged)
+    /**
+     * Returns the current status of NetworkManager
+     */
+    Q_PROPERTY(QString networkStatus READ networkStatus NOTIFY networkStatusChanged)
+    Q_OBJECT
 public:
     enum SortedConnectionType {
         Wired,
@@ -54,7 +54,7 @@ public:
 
     static SortedConnectionType connectionTypeToSortedType(NetworkManager::ConnectionSettings::ConnectionType type);
 
-    explicit NetworkStatus(QObject* parent = nullptr);
+    explicit NetworkStatus(QObject *parent = nullptr);
     ~NetworkStatus() override;
 
     QString activeConnections() const;
@@ -67,8 +67,8 @@ private Q_SLOTS:
     void changeActiveConnections();
 
 Q_SIGNALS:
-    void activeConnectionsChanged(const QString & activeConnections);
-    void networkStatusChanged(const QString & status);
+    void activeConnectionsChanged(const QString &activeConnections);
+    void networkStatusChanged(const QString &status);
 
 private:
     QString m_activeConnections;

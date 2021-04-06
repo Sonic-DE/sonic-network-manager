@@ -18,24 +18,25 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QNetworkAddressEntry>
 #include <QStandardItem>
 #include <QStandardItemModel>
-#include <QNetworkAddressEntry>
 
 #include <KAcceleratorManager>
 #include <KLocalizedString>
 
-#include "ui_ipv4routes.h"
-#include "ipv4routeswidget.h"
-#include "ipv4delegate.h"
 #include "intdelegate.h"
+#include "ipv4delegate.h"
+#include "ipv4routeswidget.h"
+#include "ui_ipv4routes.h"
 
 class IpV4RoutesWidget::Private
 {
 public:
-    Private() : model(0,4)
+    Private()
+        : model(0, 4)
     {
-        QStandardItem * headerItem = new QStandardItem(i18nc("Header text for IPv4 address", "Address"));
+        QStandardItem *headerItem = new QStandardItem(i18nc("Header text for IPv4 address", "Address"));
         model.setHorizontalHeaderItem(0, headerItem);
         headerItem = new QStandardItem(i18nc("Header text for IPv4 netmask", "Netmask"));
         model.setHorizontalHeaderItem(1, headerItem);
@@ -48,8 +49,9 @@ public:
     QStandardItemModel model;
 };
 
-IpV4RoutesWidget::IpV4RoutesWidget(QWidget * parent)
-    : QDialog(parent), d(new IpV4RoutesWidget::Private())
+IpV4RoutesWidget::IpV4RoutesWidget(QWidget *parent)
+    : QDialog(parent)
+    , d(new IpV4RoutesWidget::Private())
 {
     d->ui.setupUi(this);
     d->ui.tableViewAddresses->setModel(&d->model);
@@ -126,7 +128,7 @@ QList<NetworkManager::IpRoute> IpV4RoutesWidget::routes()
 
     for (int i = 0, rowCount = d->model.rowCount(); i < rowCount; i++) {
         NetworkManager::IpRoute route;
-        QStandardItem *item = d->model.item(i,0);
+        QStandardItem *item = d->model.item(i, 0);
         if (item) {
             route.setIp(QHostAddress(item->text()));
         }
@@ -157,7 +159,7 @@ void IpV4RoutesWidget::addRoute()
     if (rowCount > 0) {
         d->ui.tableViewAddresses->selectRow(rowCount - 1);
 
-        QItemSelectionModel * selectionModel = d->ui.tableViewAddresses->selectionModel();
+        QItemSelectionModel *selectionModel = d->ui.tableViewAddresses->selectionModel();
         QModelIndexList list = selectionModel->selectedIndexes();
         if (list.size()) {
             // QTableView is configured to select only rows.
@@ -169,7 +171,7 @@ void IpV4RoutesWidget::addRoute()
 
 void IpV4RoutesWidget::removeRoute()
 {
-    QItemSelectionModel * selectionModel = d->ui.tableViewAddresses->selectionModel();
+    QItemSelectionModel *selectionModel = d->ui.tableViewAddresses->selectionModel();
     if (selectionModel->hasSelection()) {
         QModelIndexList indexes = selectionModel->selectedIndexes();
         d->model.takeRow(indexes[0].row());
@@ -177,7 +179,7 @@ void IpV4RoutesWidget::removeRoute()
     d->ui.pushButtonRemove->setEnabled(d->ui.tableViewAddresses->selectionModel()->hasSelection());
 }
 
-void IpV4RoutesWidget::selectionChanged(const QItemSelection & selected)
+void IpV4RoutesWidget::selectionChanged(const QItemSelection &selected)
 {
     // qCDebug(PLASMA_NM) << "selectionChanged";
     d->ui.pushButtonRemove->setEnabled(!selected.isEmpty());

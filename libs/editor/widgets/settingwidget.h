@@ -21,8 +21,8 @@
 #ifndef SETTING_WIDGET_H
 #define SETTING_WIDGET_H
 
-#include <QWidget>
 #include <NetworkManagerQt/Setting>
+#include <QWidget>
 
 #include <KAcceleratorManager>
 
@@ -33,10 +33,10 @@ public:
     class EnumPasswordStorageType
     {
     public:
-        enum PasswordStorageType {Store = 0, AlwaysAsk, NotRequired};
+        enum PasswordStorageType { Store = 0, AlwaysAsk, NotRequired };
     };
 
-    explicit SettingWidget(const NetworkManager::Setting::Ptr &setting = NetworkManager::Setting::Ptr(), QWidget* parent = nullptr, Qt::WindowFlags f = {});
+    explicit SettingWidget(const NetworkManager::Setting::Ptr &setting = NetworkManager::Setting::Ptr(), QWidget *parent = nullptr, Qt::WindowFlags f = {});
     ~SettingWidget() override;
 
     virtual void loadConfig(const NetworkManager::Setting::Ptr &setting);
@@ -49,7 +49,10 @@ public:
 
     QString type() const;
 
-    virtual bool isValid() const { return true; }
+    virtual bool isValid() const
+    {
+        return true;
+    }
 
 protected Q_SLOTS:
     void slotWidgetChanged();
@@ -57,6 +60,7 @@ protected Q_SLOTS:
 Q_SIGNALS:
     void validChanged(bool isValid);
     void settingChanged();
+
 private:
     QString m_type;
 };

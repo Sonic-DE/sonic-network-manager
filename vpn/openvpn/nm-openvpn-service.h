@@ -23,9 +23,9 @@
 #ifndef NM_OPENVPN_SERVICE_H
 #define NM_OPENVPN_SERVICE_H
 
-#define NM_DBUS_SERVICE_OPENVPN    "org.freedesktop.NetworkManager.openvpn"
-#define NM_DBUS_INTERFACE_OPENVPN  "org.freedesktop.NetworkManager.openvpn"
-#define NM_DBUS_PATH_OPENVPN       "/org/freedesktop/NetworkManager/openvpn"
+#define NM_DBUS_SERVICE_OPENVPN "org.freedesktop.NetworkManager.openvpn"
+#define NM_DBUS_INTERFACE_OPENVPN "org.freedesktop.NetworkManager.openvpn"
+#define NM_DBUS_PATH_OPENVPN "/org/freedesktop/NetworkManager/openvpn"
 
 #define NM_OPENVPN_KEY_AUTH "auth"
 #define NM_OPENVPN_KEY_CA "ca"
@@ -83,7 +83,7 @@
 
 #define NM_OPENVPN_AUTH_NONE "none"
 #define NM_OPENVPN_AUTH_RSA_MD4 "RSA-MD4"
-#define NM_OPENVPN_AUTH_MD5  "MD5"
+#define NM_OPENVPN_AUTH_MD5 "MD5"
 #define NM_OPENVPN_AUTH_SHA1 "SHA1"
 #define NM_OPENVPN_AUTH_SHA224 "SHA224"
 #define NM_OPENVPN_AUTH_SHA256 "SHA256"
@@ -91,9 +91,9 @@
 #define NM_OPENVPN_AUTH_SHA512 "SHA512"
 #define NM_OPENVPN_AUTH_RIPEMD160 "RIPEMD160"
 
-#define NM_OPENVPN_CONTYPE_TLS          "tls"
-#define NM_OPENVPN_CONTYPE_STATIC_KEY   "static-key"
-#define NM_OPENVPN_CONTYPE_PASSWORD     "password"
+#define NM_OPENVPN_CONTYPE_TLS "tls"
+#define NM_OPENVPN_CONTYPE_STATIC_KEY "static-key"
+#define NM_OPENVPN_CONTYPE_PASSWORD "password"
 #define NM_OPENVPN_CONTYPE_PASSWORD_TLS "password-tls"
 
 /* arguments of "--remote-cert-tls" */
@@ -105,8 +105,8 @@
 #define NM_OPENVPN_NS_CERT_TYPE_SERVER "server"
 
 /* possible types for verify-x509-name */
-#define NM_OPENVPN_VERIFY_X509_NAME_TYPE_SUBJECT     "subject"
-#define NM_OPENVPN_VERIFY_X509_NAME_TYPE_NAME        "name"
+#define NM_OPENVPN_VERIFY_X509_NAME_TYPE_SUBJECT "subject"
+#define NM_OPENVPN_VERIFY_X509_NAME_TYPE_NAME "name"
 #define NM_OPENVPN_VERIFY_X509_NAME_TYPE_NAME_PREFIX "name-prefix"
 
 #endif /* NM_OPENVPN_SERVICE_H */

@@ -24,11 +24,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QStandardItem>
 #include <QStandardItemModel>
 
+Delegate::Delegate(QObject *parent)
+    : QStyledItemDelegate(parent)
+{
+}
+Delegate::~Delegate()
+{
+}
 
-Delegate::Delegate(QObject * parent) : QStyledItemDelegate(parent) {}
-Delegate::~Delegate() {}
-
-QWidget * Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const
+QWidget *Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const
 {
     QLineEdit *editor = new QLineEdit(parent);
 
@@ -39,13 +43,13 @@ void Delegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
     QString value = index.model()->data(index, Qt::EditRole).toString();
 
-    QLineEdit *le = static_cast<QLineEdit*>(editor);
+    QLineEdit *le = static_cast<QLineEdit *>(editor);
     le->setText(value);
 }
 
 void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
-    QLineEdit *le = static_cast<QLineEdit*>(editor);
+    QLineEdit *le = static_cast<QLineEdit *>(editor);
 
     model->setData(index, le->text(), Qt::EditRole);
 }

@@ -27,7 +27,8 @@
 
 #include <QDialog>
 
-namespace Ui {
+namespace Ui
+{
 class PasswordDialog;
 }
 
@@ -39,7 +40,8 @@ class Q_DECL_EXPORT PasswordDialog : public QDialog
 public:
     explicit PasswordDialog(const NetworkManager::ConnectionSettings::Ptr &connectionSettings,
                             NetworkManager::SecretAgent::GetSecretsFlags flags,
-                            const QString &setting_name, const QStringList &hints = QStringList(),
+                            const QString &setting_name,
+                            const QStringList &hints = QStringList(),
                             QWidget *parent = nullptr);
     ~PasswordDialog() override;
 
@@ -62,7 +64,6 @@ private:
     NetworkManager::SecretAgent::GetSecretsFlags m_flags;
     SettingWidget *m_vpnWidget;
     QStringList m_hints;
-
 };
 
 #endif // PLASMA_NM_PASSWORD_DIALOG_H

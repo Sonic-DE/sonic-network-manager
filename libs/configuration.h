@@ -34,7 +34,7 @@ class Q_DECL_EXPORT Configuration : public QObject
     Q_PROPERTY(QString hotspotPassword READ hotspotPassword WRITE setHotspotPassword)
     Q_PROPERTY(QString hotspotConnectionPath READ hotspotConnectionPath WRITE setHotspotConnectionPath)
 
-    //Readonly constant property, as this value should only be set by the platform
+    // Readonly constant property, as this value should only be set by the platform
     Q_PROPERTY(bool showPasswordDialog READ showPasswordDialog CONSTANT)
     Q_OBJECT
 public:
@@ -62,4 +62,3 @@ public:
 };
 
 #endif // PLAMA_NM_CONFIGURATION_H
-

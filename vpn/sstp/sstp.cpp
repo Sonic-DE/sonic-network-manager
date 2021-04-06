@@ -19,8 +19,8 @@
 */
 
 #include "sstp.h"
-#include "sstpwidget.h"
 #include "sstpauth.h"
+#include "sstpwidget.h"
 
 #include <KPluginFactory>
 
@@ -35,12 +35,12 @@ SstpUiPlugin::~SstpUiPlugin()
 {
 }
 
-SettingWidget * SstpUiPlugin::widget(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent)
+SettingWidget *SstpUiPlugin::widget(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent)
 {
     return new SstpSettingWidget(setting, parent);
 }
 
-SettingWidget * SstpUiPlugin::askUser(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent)
+SettingWidget *SstpUiPlugin::askUser(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent)
 {
     return new SstpAuthWidget(setting, parent);
 }

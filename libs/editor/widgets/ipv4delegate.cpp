@@ -24,10 +24,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "simpleipv4addressvalidator.h"
 
-IpV4Delegate::IpV4Delegate(QObject * parent) : Delegate(parent) {}
-IpV4Delegate::~IpV4Delegate() {}
+IpV4Delegate::IpV4Delegate(QObject *parent)
+    : Delegate(parent)
+{
+}
+IpV4Delegate::~IpV4Delegate()
+{
+}
 
-QWidget * IpV4Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const
+QWidget *IpV4Delegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const
 {
     QLineEdit *editor = new QLineEdit(parent);
     editor->setValidator(new SimpleIpV4AddressValidator(SimpleIpV4AddressValidator::Base, editor));

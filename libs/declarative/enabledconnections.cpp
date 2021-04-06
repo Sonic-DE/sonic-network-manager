@@ -18,10 +18,9 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include "enabledconnections.h"
 
-EnabledConnections::EnabledConnections(QObject* parent)
+EnabledConnections::EnabledConnections(QObject *parent)
     : QObject(parent)
     , m_networkingEnabled(NetworkManager::isNetworkingEnabled())
     , m_wirelessEnabled(NetworkManager::isWirelessEnabled())

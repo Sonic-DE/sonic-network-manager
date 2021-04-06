@@ -18,16 +18,17 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "debug.h"
 #include "mobileproviders.h"
+#include "debug.h"
 
 #include <QFile>
-#include <QTextStream>
 #include <QLocale>
+#include <QTextStream>
 
 const QString MobileProviders::ProvidersFile = "/usr/share/mobile-broadband-provider-info/serviceproviders.xml";
 
-bool localeAwareCompare(const QString & one, const QString & two) {
+bool localeAwareCompare(const QString &one, const QString &two)
+{
     return one.localeAwareCompare(two) < 0;
 }
 
@@ -66,7 +67,8 @@ MobileProviders::MobileProviders()
                     mError = ProvidersWrongFormat;
                 } else {
                     if (docElement.attribute("format") != "2.0") {
-                        qCWarning(PLASMA_NM) << ProvidersFile << ": mobile broadband provider database format '" << docElement.attribute("format") << "' not supported.";
+                        qCWarning(PLASMA_NM) << ProvidersFile << ": mobile broadband provider database format '" << docElement.attribute("format")
+                                             << "' not supported.";
                         mError = ProvidersFormatNotSupported;
                     } else {
                         // qCDebug(PLASMA_NM) << "Everything is alright so far";
@@ -140,10 +142,10 @@ QStringList MobileProviders::getProvidersList(QString country, NetworkManager::C
                             } else if (e3.tagName().toLower() == "name") {
                                 QString lang = e3.attribute("xml:lang");
                                 if (lang.isEmpty()) {
-                                    lang = "en";     // English is default
+                                    lang = "en"; // English is default
                                 } else {
                                     lang = lang.toLower();
-                                    lang.remove(QRegExp("\\-.*$"));  // Remove everything after '-' in xml:lang attribute.
+                                    lang.remove(QRegExp("\\-.*$")); // Remove everything after '-' in xml:lang attribute.
                                 }
                                 localizedProviderNames.insert(lang, e3.text());
                             }
@@ -173,7 +175,7 @@ QStringList MobileProviders::getProvidersList(QString country, NetworkManager::C
     return sortedCdma.values();
 }
 
-QStringList MobileProviders::getApns(const QString & provider)
+QStringList MobileProviders::getApns(const QString &provider)
 {
     mApns.clear();
     mNetworkIds.clear();
@@ -196,10 +198,8 @@ QStringList MobileProviders::getApns(const QString & provider)
                     QDomNode n3 = e2.firstChild();
                     while (!n3.isNull()) {
                         QDomElement e3 = n3.toElement(); // <usage>
-                        if (!e3.isNull() &&
-                            e3.tagName().toLower() == "usage" &&
-                            !e3.attribute("type").isNull() &&
-                            e3.attribute("type").toLower() != "internet") {
+                        if (!e3.isNull() && e3.tagName().toLower() == "usage" && !e3.attribute("type").isNull()
+                            && e3.attribute("type").toLower() != "internet") {
                             // qCDebug(PLASMA_NM) << "apn" << e2.attribute("value") << "ignored because of usage" << e3.attribute("type");
                             isInternet = false;
                             break;
@@ -224,8 +224,7 @@ QStringList MobileProviders::getApns(const QString & provider)
     return temp;
 }
 
-
-QStringList MobileProviders::getNetworkIds(const QString & provider)
+QStringList MobileProviders::getNetworkIds(const QString &provider)
 {
     if (mNetworkIds.isEmpty()) {
         getApns(provider);
@@ -233,7 +232,7 @@ QStringList MobileProviders::getNetworkIds(const QString & provider)
     return mNetworkIds;
 }
 
-QVariantMap MobileProviders::getApnInfo(const QString & apn)
+QVariantMap MobileProviders::getApnInfo(const QString &apn)
 {
     QVariantMap temp;
     QDomNode n = mApns[apn];
@@ -247,10 +246,10 @@ QVariantMap MobileProviders::getApnInfo(const QString & apn)
             if (e.tagName().toLower() == "name") {
                 QString lang = e.attribute("xml:lang");
                 if (lang.isEmpty()) {
-                    lang = "en";     // English is default
+                    lang = "en"; // English is default
                 } else {
                     lang = lang.toLower();
-                    lang.remove(QRegExp("\\-.*$"));  // Remove everything after '-' in xml:lang attribute.
+                    lang.remove(QRegExp("\\-.*$")); // Remove everything after '-' in xml:lang attribute.
                 }
                 localizedPlanNames.insert(lang, e.text());
             } else if (e.tagName().toLower() == "username") {
@@ -276,7 +275,7 @@ QVariantMap MobileProviders::getApnInfo(const QString & apn)
     return temp;
 }
 
-QVariantMap MobileProviders::getCdmaInfo(const QString & provider)
+QVariantMap MobileProviders::getCdmaInfo(const QString &provider)
 {
     if (!mProvidersCdma.contains(provider)) {
         return QVariantMap();

@@ -20,13 +20,13 @@
 */
 
 #include "strongswanauth.h"
-#include "ui_strongswanauth.h"
 #include "nm-strongswan-service.h"
+#include "ui_strongswanauth.h"
 
-#include <QDialog>
 #include <KMessageBox>
-#include <QString>
+#include <QDialog>
 #include <QProcessEnvironment>
+#include <QString>
 
 #include <KLocalizedString>
 
@@ -38,7 +38,7 @@ public:
     NetworkManager::VpnSetting::Ptr setting;
 };
 
-StrongswanAuthWidget::StrongswanAuthWidget(const NetworkManager::VpnSetting::Ptr &setting, QWidget * parent)
+StrongswanAuthWidget::StrongswanAuthWidget(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent)
     : SettingWidget(setting, parent)
     , d_ptr(new StrongswanAuthWidgetPrivate)
 {
@@ -97,7 +97,7 @@ void StrongswanAuthWidget::setVisible(bool visible)
 
 void StrongswanAuthWidget::acceptDialog()
 {
-    QDialog *dialog = qobject_cast<QDialog*>(parentWidget());
+    QDialog *dialog = qobject_cast<QDialog *>(parentWidget());
     if (dialog) {
         dialog->accept();
     }
@@ -115,7 +115,9 @@ QVariantMap StrongswanAuthWidget::setting() const
         if (!agent.isEmpty()) {
             secrets.insert(NM_STRONGSWAN_AUTH_AGENT, agent);
         } else {
-            KMessageBox::error(nullptr, i18nc("@label:textbox error message while saving configuration", "Configuration uses ssh-agent for authentication, but no ssh-agent found running."));
+            KMessageBox::error(nullptr,
+                               i18nc("@label:textbox error message while saving configuration",
+                                     "Configuration uses ssh-agent for authentication, but no ssh-agent found running."));
         }
     } else {
         secrets.insert(NM_STRONGSWAN_SECRET, d->ui.password->text());

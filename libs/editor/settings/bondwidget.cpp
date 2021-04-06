@@ -19,16 +19,16 @@
 */
 
 #include "bondwidget.h"
-#include "ui_bond.h"
 #include "connectioneditordialog.h"
 #include "debug.h"
+#include "ui_bond.h"
 
 #include <QDBusPendingReply>
 
-#include <NetworkManagerQt/GenericTypes>
 #include <NetworkManagerQt/Connection>
-#include <NetworkManagerQt/Settings>
 #include <NetworkManagerQt/ConnectionSettings>
+#include <NetworkManagerQt/GenericTypes>
+#include <NetworkManagerQt/Settings>
 
 #include <KLocalizedString>
 #include <KMessageBox>
@@ -36,18 +36,17 @@
 #define NM_SETTING_BOND_OPTION_MII_MONITOR "mii"
 #define NM_SETTING_BOND_OPTION_ARP_MONITOR "arp"
 
-BondWidget::BondWidget(const QString & masterUuid, const QString &masterId,
-                       const NetworkManager::Setting::Ptr &setting, QWidget* parent, Qt::WindowFlags f):
-    SettingWidget(setting, parent, f),
-    m_uuid(masterUuid),
-    m_id(masterId),
-    m_ui(new Ui::BondWidget)
+BondWidget::BondWidget(const QString &masterUuid, const QString &masterId, const NetworkManager::Setting::Ptr &setting, QWidget *parent, Qt::WindowFlags f)
+    : SettingWidget(setting, parent, f)
+    , m_uuid(masterUuid)
+    , m_id(masterId)
+    , m_ui(new Ui::BondWidget)
 {
     m_ui->setupUi(this);
 
     // Action buttons and menu
     m_menu = new QMenu(this);
-    QAction * action = new QAction(i18n("Ethernet"), this);
+    QAction *action = new QAction(i18n("Ethernet"), this);
     action->setData(NetworkManager::ConnectionSettings::Wired);
     m_menu->addAction(action);
     action = new QAction(i18n("InfiniBand"), this);
@@ -173,27 +172,26 @@ void BondWidget::addBond(QAction *action)
     qCDebug(PLASMA_NM) << "Slave type:" << type();
 
     NetworkManager::ConnectionSettings::ConnectionType connectionType = static_cast<NetworkManager::ConnectionSettings::ConnectionType>(action->data().toInt());
-    NetworkManager::ConnectionSettings::Ptr connectionSettings = NetworkManager::ConnectionSettings::Ptr(new NetworkManager::ConnectionSettings(connectionType));
+    NetworkManager::ConnectionSettings::Ptr connectionSettings =
+        NetworkManager::ConnectionSettings::Ptr(new NetworkManager::ConnectionSettings(connectionType));
     connectionSettings->setUuid(NetworkManager::ConnectionSettings::createNewUuid());
     connectionSettings->setMaster(m_uuid);
     connectionSettings->setSlaveType(type());
     connectionSettings->setAutoconnect(false);
 
     QPointer<ConnectionEditorDialog> bondEditor = new ConnectionEditorDialog(connectionSettings);
-    connect(bondEditor.data(), &ConnectionEditorDialog::accepted,
-            [bondEditor, this] () {
-                qCDebug(PLASMA_NM) << "Saving slave connection";
-                // qCDebug(PLASMA_NM) << bondEditor->setting();
-                QDBusPendingReply<QDBusObjectPath> reply = NetworkManager::addConnection(bondEditor->setting());
-                QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, this);
-                connect(watcher, &QDBusPendingCallWatcher::finished, this, &BondWidget::bondAddComplete);
-            });
-    connect(bondEditor.data(), &ConnectionEditorDialog::finished,
-            [bondEditor] () {
-                if (bondEditor) {
-                    bondEditor->deleteLater();
-                }
-            });
+    connect(bondEditor.data(), &ConnectionEditorDialog::accepted, [bondEditor, this]() {
+        qCDebug(PLASMA_NM) << "Saving slave connection";
+        // qCDebug(PLASMA_NM) << bondEditor->setting();
+        QDBusPendingReply<QDBusObjectPath> reply = NetworkManager::addConnection(bondEditor->setting());
+        QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, this);
+        connect(watcher, &QDBusPendingCallWatcher::finished, this, &BondWidget::bondAddComplete);
+    });
+    connect(bondEditor.data(), &ConnectionEditorDialog::finished, [bondEditor]() {
+        if (bondEditor) {
+            bondEditor->deleteLater();
+        }
+    });
     bondEditor->setModal(true);
     bondEditor->show();
 }
@@ -206,7 +204,7 @@ void BondWidget::currentBondChanged(QListWidgetItem *current, QListWidgetItem *p
     m_ui->btnDelete->setEnabled(current);
 }
 
-void BondWidget::bondAddComplete(QDBusPendingCallWatcher * watcher)
+void BondWidget::bondAddComplete(QDBusPendingCallWatcher *watcher)
 {
     QDBusPendingReply<QDBusObjectPath> reply = *watcher;
 
@@ -214,8 +212,9 @@ void BondWidget::bondAddComplete(QDBusPendingCallWatcher * watcher)
         // find the slave connection with matching UUID
         NetworkManager::Connection::Ptr connection = NetworkManager::findConnection(reply.value().path());
         if (connection && connection->settings()->master() == m_uuid) {
-            const QString label = QString("%1 (%2)").arg(connection->name()).arg(connection->settings()->typeAsString(connection->settings()->connectionType()));
-            QListWidgetItem * slaveItem = new QListWidgetItem(label, m_ui->bonds);
+            const QString label =
+                QString("%1 (%2)").arg(connection->name()).arg(connection->settings()->typeAsString(connection->settings()->connectionType()));
+            QListWidgetItem *slaveItem = new QListWidgetItem(label, m_ui->bonds);
             slaveItem->setData(Qt::UserRole, connection->uuid());
             slotWidgetChanged();
         }
@@ -226,7 +225,7 @@ void BondWidget::bondAddComplete(QDBusPendingCallWatcher * watcher)
 
 void BondWidget::editBond()
 {
-    QListWidgetItem * currentItem = m_ui->bonds->currentItem();
+    QListWidgetItem *currentItem = m_ui->bonds->currentItem();
     if (!currentItem)
         return;
 
@@ -236,17 +235,15 @@ void BondWidget::editBond()
     if (connection) {
         // qCDebug(PLASMA_NM) << "Editing bonded connection" << currentItem->text() << uuid;
         QPointer<ConnectionEditorDialog> bondEditor = new ConnectionEditorDialog(connection->settings());
-        connect(bondEditor.data(), &ConnectionEditorDialog::accepted,
-                [connection, bondEditor, this] () {
-                    connection->update(bondEditor->setting());
-                    connect(connection.data(), &NetworkManager::Connection::updated, this, &BondWidget::populateBonds);
-                });
-        connect(bondEditor.data(), &ConnectionEditorDialog::finished,
-                [bondEditor] () {
-                    if (bondEditor) {
-                        bondEditor->deleteLater();
-                    }
-                });
+        connect(bondEditor.data(), &ConnectionEditorDialog::accepted, [connection, bondEditor, this]() {
+            connection->update(bondEditor->setting());
+            connect(connection.data(), &NetworkManager::Connection::updated, this, &BondWidget::populateBonds);
+        });
+        connect(bondEditor.data(), &ConnectionEditorDialog::finished, [bondEditor]() {
+            if (bondEditor) {
+                bondEditor->deleteLater();
+            }
+        });
         bondEditor->setModal(true);
         bondEditor->show();
     }
@@ -254,7 +251,7 @@ void BondWidget::editBond()
 
 void BondWidget::deleteBond()
 {
-    QListWidgetItem * currentItem = m_ui->bonds->currentItem();
+    QListWidgetItem *currentItem = m_ui->bonds->currentItem();
     if (!currentItem)
         return;
 
@@ -263,9 +260,14 @@ void BondWidget::deleteBond()
 
     if (connection) {
         // qCDebug(PLASMA_NM) << "About to delete bonded connection" << currentItem->text() << uuid;
-        if (KMessageBox::questionYesNo(this, i18n("Do you want to remove the connection '%1'?", connection->name()), i18n("Remove Connection"),
-                                       KStandardGuiItem::remove(), KStandardGuiItem::no(), QString(), KMessageBox::Dangerous)
-                == KMessageBox::Yes) {
+        if (KMessageBox::questionYesNo(this,
+                                       i18n("Do you want to remove the connection '%1'?", connection->name()),
+                                       i18n("Remove Connection"),
+                                       KStandardGuiItem::remove(),
+                                       KStandardGuiItem::no(),
+                                       QString(),
+                                       KMessageBox::Dangerous)
+            == KMessageBox::Yes) {
             connection->remove();
             delete currentItem;
             slotWidgetChanged();
@@ -285,8 +287,9 @@ void BondWidget::populateBonds()
         bool isSlave = ((master == m_uuid) || // by-uuid
                         (!m_id.isEmpty() && master == m_id)); // by-name
         if (isSlave && (settings->slaveType() == type())) {
-            const QString label = QString("%1 (%2)").arg(connection->name()).arg(connection->settings()->typeAsString(connection->settings()->connectionType()));
-            QListWidgetItem * slaveItem = new QListWidgetItem(label, m_ui->bonds);
+            const QString label =
+                QString("%1 (%2)").arg(connection->name()).arg(connection->settings()->typeAsString(connection->settings()->connectionType()));
+            QListWidgetItem *slaveItem = new QListWidgetItem(label, m_ui->bonds);
             slaveItem->setData(Qt::UserRole, connection->uuid());
         }
     }

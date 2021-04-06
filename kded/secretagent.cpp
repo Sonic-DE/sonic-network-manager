@@ -20,36 +20,35 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "passworddialog.h"
 #include "secretagent.h"
+#include "passworddialog.h"
 
 #include "debug.h"
 
 #include "configuration.h"
 
-#include <NetworkManagerQt/Settings>
 #include <NetworkManagerQt/ConnectionSettings>
 #include <NetworkManagerQt/GenericTypes>
 #include <NetworkManagerQt/GsmSetting>
 #include <NetworkManagerQt/Security8021xSetting>
+#include <NetworkManagerQt/Settings>
 #include <NetworkManagerQt/VpnSetting>
+#include <NetworkManagerQt/WireguardSetting>
 #include <NetworkManagerQt/WirelessSecuritySetting>
 #include <NetworkManagerQt/WirelessSetting>
-#include <NetworkManagerQt/WireguardSetting>
 
 #include <QDBusConnection>
-#include <QStringBuilder>
 #include <QDialog>
-#include <QDBusConnection>
+#include <QStringBuilder>
 
-#include <KLocalizedString>
-#include <KPluginFactory>
-#include <KWindowSystem>
 #include <KConfig>
 #include <KConfigGroup>
+#include <KLocalizedString>
+#include <KPluginFactory>
 #include <KWallet>
+#include <KWindowSystem>
 
-SecretAgent::SecretAgent(QObject* parent)
+SecretAgent::SecretAgent(QObject *parent)
     : NetworkManager::SecretAgent("org.kde.plasma.networkmanagement", NetworkManager::SecretAgent::Capability::VpnHints, parent)
     , m_openWalletFailed(false)
     , m_wallet(nullptr)
@@ -65,8 +64,11 @@ SecretAgent::~SecretAgent()
 {
 }
 
-NMVariantMapMap SecretAgent::GetSecrets(const NMVariantMapMap &connection, const QDBusObjectPath &connection_path, const QString &setting_name,
-                                        const QStringList &hints, uint flags)
+NMVariantMapMap SecretAgent::GetSecrets(const NMVariantMapMap &connection,
+                                        const QDBusObjectPath &connection_path,
+                                        const QString &setting_name,
+                                        const QStringList &hints,
+                                        uint flags)
 {
     qCDebug(PLASMA_NM) << Q_FUNC_INFO;
     qCDebug(PLASMA_NM) << "Path:" << connection_path.path();
@@ -151,9 +153,7 @@ void SecretAgent::CancelGetSecrets(const QDBusObjectPath &connection_path, const
                 m_dialog = nullptr;
             }
             delete request.dialog;
-            sendError(SecretAgent::AgentCanceled,
-                      QLatin1String("Agent canceled the password dialog"),
-                      request.message);
+            sendError(SecretAgent::AgentCanceled, QLatin1String("Agent canceled the password dialog"), request.message);
             m_calls.removeAt(i);
             break;
         }
@@ -178,7 +178,8 @@ void SecretAgent::dialogAccepted()
             }
 
             sendSecrets(connection, request.message);
-            NetworkManager::ConnectionSettings::Ptr connectionSettings = NetworkManager::ConnectionSettings::Ptr(new NetworkManager::ConnectionSettings(connection));
+            NetworkManager::ConnectionSettings::Ptr connectionSettings =
+                NetworkManager::ConnectionSettings::Ptr(new NetworkManager::ConnectionSettings(connection));
             NetworkManager::ConnectionSettings::Ptr completeConnectionSettings;
             NetworkManager::Connection::Ptr con = NetworkManager::findConnectionByUuid(connectionSettings->uuid());
             if (con) {
@@ -189,26 +190,29 @@ void SecretAgent::dialogAccepted()
             if (request.saveSecretsWithoutReply && completeConnectionSettings->connectionType() != NetworkManager::ConnectionSettings::Vpn) {
                 bool requestOffline = true;
                 if (completeConnectionSettings->connectionType() == NetworkManager::ConnectionSettings::Gsm) {
-                    NetworkManager::GsmSetting::Ptr gsmSetting = completeConnectionSettings->setting(NetworkManager::Setting::Gsm).staticCast<NetworkManager::GsmSetting>();
+                    NetworkManager::GsmSetting::Ptr gsmSetting =
+                        completeConnectionSettings->setting(NetworkManager::Setting::Gsm).staticCast<NetworkManager::GsmSetting>();
                     if (gsmSetting) {
                         if (gsmSetting->passwordFlags().testFlag(NetworkManager::Setting::NotSaved) //
                             || gsmSetting->passwordFlags().testFlag(NetworkManager::Setting::NotRequired)) {
                             requestOffline = false;
                         } else if (gsmSetting->pinFlags().testFlag(NetworkManager::Setting::NotSaved) //
-                                    || gsmSetting->pinFlags().testFlag(NetworkManager::Setting::NotRequired)) {
+                                   || gsmSetting->pinFlags().testFlag(NetworkManager::Setting::NotRequired)) {
                             requestOffline = false;
                         }
                     }
                 } else if (completeConnectionSettings->connectionType() == NetworkManager::ConnectionSettings::Wireless) {
-                    NetworkManager::WirelessSecuritySetting::Ptr wirelessSecuritySetting = completeConnectionSettings->setting(NetworkManager::Setting::WirelessSecurity).staticCast<NetworkManager::WirelessSecuritySetting>();
+                    NetworkManager::WirelessSecuritySetting::Ptr wirelessSecuritySetting =
+                        completeConnectionSettings->setting(NetworkManager::Setting::WirelessSecurity).staticCast<NetworkManager::WirelessSecuritySetting>();
                     if (wirelessSecuritySetting && wirelessSecuritySetting->keyMgmt() == NetworkManager::WirelessSecuritySetting::WpaEap) {
-                        NetworkManager::Security8021xSetting::Ptr security8021xSetting = completeConnectionSettings->setting(NetworkManager::Setting::Security8021x).staticCast<NetworkManager::Security8021xSetting>();
+                        NetworkManager::Security8021xSetting::Ptr security8021xSetting =
+                            completeConnectionSettings->setting(NetworkManager::Setting::Security8021x).staticCast<NetworkManager::Security8021xSetting>();
                         if (security8021xSetting) {
                             if (security8021xSetting->eapMethods().contains(NetworkManager::Security8021xSetting::EapMethodFast) //
                                 || security8021xSetting->eapMethods().contains(NetworkManager::Security8021xSetting::EapMethodTtls) //
                                 || security8021xSetting->eapMethods().contains(NetworkManager::Security8021xSetting::EapMethodPeap)) {
-                                if (security8021xSetting->passwordFlags().testFlag(NetworkManager::Setting::NotSaved) ||
-                                    security8021xSetting->passwordFlags().testFlag(NetworkManager::Setting::NotRequired)) {
+                                if (security8021xSetting->passwordFlags().testFlag(NetworkManager::Setting::NotSaved)
+                                    || security8021xSetting->passwordFlags().testFlag(NetworkManager::Setting::NotRequired)) {
                                     requestOffline = false;
                                 }
                             }
@@ -223,8 +227,10 @@ void SecretAgent::dialogAccepted()
                     requestOffline.saveSecretsWithoutReply = true;
                     m_calls << requestOffline;
                 }
-            } else if (request.saveSecretsWithoutReply && completeConnectionSettings->connectionType() == NetworkManager::ConnectionSettings::Vpn && !tmpOpenconnectSecrets.isEmpty()) {
-                NetworkManager::VpnSetting::Ptr vpnSetting = completeConnectionSettings->setting(NetworkManager::Setting::Vpn).staticCast<NetworkManager::VpnSetting>();
+            } else if (request.saveSecretsWithoutReply && completeConnectionSettings->connectionType() == NetworkManager::ConnectionSettings::Vpn
+                       && !tmpOpenconnectSecrets.isEmpty()) {
+                NetworkManager::VpnSetting::Ptr vpnSetting =
+                    completeConnectionSettings->setting(NetworkManager::Setting::Vpn).staticCast<NetworkManager::VpnSetting>();
                 if (vpnSetting) {
                     NMStringMap data = vpnSetting->data();
                     NMStringMap secrets = vpnSetting->secrets();
@@ -272,9 +278,7 @@ void SecretAgent::dialogRejected()
     for (int i = 0; i < m_calls.size(); ++i) {
         SecretsRequest request = m_calls[i];
         if (request.type == SecretsRequest::GetSecrets && request.dialog == m_dialog) {
-            sendError(SecretAgent::UserCanceled,
-                      QLatin1String("User canceled the password dialog"),
-                      request.message);
+            sendError(SecretAgent::UserCanceled, QLatin1String("User canceled the password dialog"), request.message);
             m_calls.removeAt(i);
             break;
         }
@@ -356,7 +360,8 @@ bool SecretAgent::processGetSecrets(SecretsRequest &request) const
         return false;
     }
 
-    NetworkManager::ConnectionSettings::Ptr connectionSettings = NetworkManager::ConnectionSettings::Ptr(new NetworkManager::ConnectionSettings(request.connection));
+    NetworkManager::ConnectionSettings::Ptr connectionSettings =
+        NetworkManager::ConnectionSettings::Ptr(new NetworkManager::ConnectionSettings(request.connection));
     NetworkManager::Setting::Ptr setting = connectionSettings->setting(request.setting_name);
 
     const bool requestNew = request.flags & RequestNew;
@@ -372,9 +377,7 @@ bool SecretAgent::processGetSecrets(SecretsRequest &request) const
             qCDebug(PLASMA_NM) << Q_FUNC_INFO << "Sending SSH auth socket" << authSock;
 
             if (authSock.isEmpty()) {
-                sendError(SecretAgent::NoSecrets,
-                          QLatin1String("SSH_AUTH_SOCK not present"),
-                          request.message);
+                sendError(SecretAgent::NoSecrets, QLatin1String("SSH_AUTH_SOCK not present"), request.message);
             } else {
                 NMStringMap secrets;
                 secrets.insert(QLatin1String("ssh-auth-sock"), authSock);
@@ -413,13 +416,14 @@ bool SecretAgent::processGetSecrets(SecretsRequest &request) const
 
     if (!Configuration::self().showPasswordDialog()) {
         sendError(SecretAgent::NoSecrets, "Cannot authenticate", request.message);
-        emit secretsError(request.connection_path.path(), i18n("Authentication to %1 failed. Wrong password?", request.connection.value("connection").value("id").toString()));
+        emit secretsError(request.connection_path.path(),
+                          i18n("Authentication to %1 failed. Wrong password?", request.connection.value("connection").value("id").toString()));
         return true;
     } else if (isWireGuard && userRequested) { // Just return what we have
         NMVariantMapMap result;
         NetworkManager::WireGuardSetting::Ptr wireGuardSetting;
         wireGuardSetting = connectionSettings->setting(NetworkManager::Setting::WireGuard).dynamicCast<NetworkManager::WireGuardSetting>();
-        //FIXME workaround when NM is asking for secrets which should be system-stored, if we send an empty map it
+        // FIXME workaround when NM is asking for secrets which should be system-stored, if we send an empty map it
         // won't ask for additional secrets with AllowInteraction flag which would display the authentication dialog
         if (wireGuardSetting->secretsToMap().isEmpty()) {
             // Insert an empty secrets map as it was before I fixed it in NetworkManagerQt to make sure NM will ask again
@@ -432,16 +436,14 @@ bool SecretAgent::processGetSecrets(SecretsRequest &request) const
         }
         sendSecrets(result, request.message);
         return true;
-    } else if (requestNew || (allowInteraction && !setting->needSecrets(requestNew).isEmpty()) || (allowInteraction && userRequested) || (isVpn && allowInteraction)) {
-
+    } else if (requestNew || (allowInteraction && !setting->needSecrets(requestNew).isEmpty()) || (allowInteraction && userRequested)
+               || (isVpn && allowInteraction)) {
         m_dialog = new PasswordDialog(connectionSettings, request.flags, request.setting_name, request.hints);
         connect(m_dialog, &PasswordDialog::accepted, this, &SecretAgent::dialogAccepted);
         connect(m_dialog, &PasswordDialog::rejected, this, &SecretAgent::dialogRejected);
 
         if (m_dialog->hasError()) {
-            sendError(m_dialog->error(),
-                      m_dialog->errorMessage(),
-                      request.message);
+            sendError(m_dialog->error(), m_dialog->errorMessage(), request.message);
             delete m_dialog;
             m_dialog = nullptr;
             return true;
@@ -457,7 +459,7 @@ bool SecretAgent::processGetSecrets(SecretsRequest &request) const
         NMVariantMapMap result;
         NetworkManager::VpnSetting::Ptr vpnSetting;
         vpnSetting = connectionSettings->setting(NetworkManager::Setting::Vpn).dynamicCast<NetworkManager::VpnSetting>();
-        //FIXME workaround when NM is asking for secrets which should be system-stored, if we send an empty map it
+        // FIXME workaround when NM is asking for secrets which should be system-stored, if we send an empty map it
         // won't ask for additional secrets with AllowInteraction flag which would display the authentication dialog
         if (vpnSetting->secretsToMap().isEmpty()) {
             // Insert an empty secrets map as it was before I fixed it in NetworkManagerQt to make sure NM will ask again
@@ -476,9 +478,7 @@ bool SecretAgent::processGetSecrets(SecretsRequest &request) const
         sendSecrets(result, request.message);
         return true;
     } else {
-        sendError(SecretAgent::InternalError,
-                  QLatin1String("Plasma-nm did not know how to handle the request"),
-                  request.message);
+        sendError(SecretAgent::InternalError, QLatin1String("Plasma-nm did not know how to handle the request"), request.message);
         return true;
     }
 }
@@ -503,9 +503,7 @@ bool SecretAgent::processSaveSecrets(SecretsRequest &request) const
                     }
                 }
             } else if (!request.saveSecretsWithoutReply) {
-                sendError(SecretAgent::InternalError,
-                          QLatin1String("Could not store secrets in the wallet."),
-                          request.message);
+                sendError(SecretAgent::InternalError, QLatin1String("Could not store secrets in the wallet."), request.message);
                 return true;
             }
         } else {
@@ -615,13 +613,15 @@ void SecretAgent::importSecretsFromPlainTextFiles()
             QString loadedSettingType = groupName.split(';').last();
             NetworkManager::Connection::Ptr connection = NetworkManager::findConnectionByUuid(loadedUuid);
             if (connection) {
-                NetworkManager::Setting::SecretFlags secretFlags = KWallet::Wallet::isEnabled() ? NetworkManager::Setting::AgentOwned : NetworkManager::Setting::None;
+                NetworkManager::Setting::SecretFlags secretFlags =
+                    KWallet::Wallet::isEnabled() ? NetworkManager::Setting::AgentOwned : NetworkManager::Setting::None;
                 QMap<QString, QString> secrets = config.entryMap(groupName);
                 NMVariantMapMap settings = connection->settings()->toMap();
 
                 for (const QString &setting : settings.keys()) {
                     if (setting == QLatin1String("vpn")) {
-                        NetworkManager::VpnSetting::Ptr vpnSetting = connection->settings()->setting(NetworkManager::Setting::Vpn).staticCast<NetworkManager::VpnSetting>();
+                        NetworkManager::VpnSetting::Ptr vpnSetting =
+                            connection->settings()->setting(NetworkManager::Setting::Vpn).staticCast<NetworkManager::VpnSetting>();
                         if (vpnSetting) {
                             // Add loaded secrets from the config file
                             vpnSetting->secretsFromStringMap(secrets);

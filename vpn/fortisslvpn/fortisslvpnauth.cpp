@@ -43,14 +43,15 @@ FortisslvpnAuthDialog::FortisslvpnAuthDialog(const NetworkManager::VpnSetting::P
 
     const NMStringMap data = d->setting->data();
 
-    const NetworkManager::Setting::SecretFlags otpFlag = static_cast<NetworkManager::Setting::SecretFlags>(data.value(NM_FORTISSLVPN_KEY_OTP"-flags").toInt());
+    const NetworkManager::Setting::SecretFlags otpFlag = static_cast<NetworkManager::Setting::SecretFlags>(data.value(NM_FORTISSLVPN_KEY_OTP "-flags").toInt());
     d->ui.otpFrame->setVisible(otpFlag == NetworkManager::Setting::NotSaved);
 
-    const NetworkManager::Setting::SecretFlags passwordFlag = static_cast<NetworkManager::Setting::SecretFlags>(data.value(NM_FORTISSLVPN_KEY_PASSWORD"-flags").toInt());
+    const NetworkManager::Setting::SecretFlags passwordFlag =
+        static_cast<NetworkManager::Setting::SecretFlags>(data.value(NM_FORTISSLVPN_KEY_PASSWORD "-flags").toInt());
     d->ui.passwordFrame->setVisible(passwordFlag == NetworkManager::Setting::NotSaved);
 
     const QString hint = data.value("hint");
-    if (!hint.isEmpty()){
+    if (!hint.isEmpty()) {
         const QString hintMsg = data.value("hint-msg");
         d->ui.otpLabel->setText(hint);
         d->ui.labelOtp->setText(hintMsg.section(":", -2));
@@ -77,14 +78,15 @@ QVariantMap FortisslvpnAuthDialog::setting() const
         secrets.insert(QLatin1String(NM_FORTISSLVPN_KEY_PASSWORD), d->ui.password->text());
     }
 
-    if (!data.value(NM_FORTISSLVPN_KEY_OTP"-flags").isEmpty()) {
-        const NetworkManager::Setting::SecretFlags otpFlag = static_cast<NetworkManager::Setting::SecretFlags>(data.value(NM_FORTISSLVPN_KEY_OTP"-flags").toInt());
+    if (!data.value(NM_FORTISSLVPN_KEY_OTP "-flags").isEmpty()) {
+        const NetworkManager::Setting::SecretFlags otpFlag =
+            static_cast<NetworkManager::Setting::SecretFlags>(data.value(NM_FORTISSLVPN_KEY_OTP "-flags").toInt());
         if (otpFlag == NetworkManager::Setting::NotSaved && !d->ui.otp->text().isEmpty()) {
             secrets.insert(QLatin1String(NM_FORTISSLVPN_KEY_OTP), d->ui.otp->text());
         }
     }
 
-    if (!data.value(NM_FORTISSLVPN_KEY_2FA"-flags").isEmpty()) {
+    if (!data.value(NM_FORTISSLVPN_KEY_2FA "-flags").isEmpty()) {
         secrets.insert(QLatin1String(NM_FORTISSLVPN_KEY_2FA), d->ui.otp->text());
     }
 

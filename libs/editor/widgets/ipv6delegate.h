@@ -21,8 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef IPV6DELEGATE_H
 #define IPV6DELEGATE_H
 
-#include <QWidget>
 #include <QStyledItemDelegate>
+#include <QWidget>
 
 #include "delegate.h"
 
@@ -30,10 +30,10 @@ class IpV6Delegate : public Delegate
 {
     Q_OBJECT
 public:
-    explicit IpV6Delegate(QObject * parent = nullptr);
+    explicit IpV6Delegate(QObject *parent = nullptr);
     ~IpV6Delegate() override;
 
-    QWidget * createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 };
 
 #endif

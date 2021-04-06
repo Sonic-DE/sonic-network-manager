@@ -32,7 +32,7 @@ class WiredConnectionWidget;
 
 class Q_DECL_EXPORT WiredConnectionWidget : public SettingWidget
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     enum LinkNegotiation {
@@ -46,7 +46,7 @@ public:
         Full,
     };
 
-    explicit WiredConnectionWidget(const NetworkManager::Setting::Ptr &setting, QWidget* parent = nullptr, Qt::WindowFlags f = {});
+    explicit WiredConnectionWidget(const NetworkManager::Setting::Ptr &setting, QWidget *parent = nullptr, Qt::WindowFlags f = {});
     ~WiredConnectionWidget() override;
 
     void loadConfig(const NetworkManager::Setting::Ptr &setting) override;
@@ -59,7 +59,7 @@ private Q_SLOTS:
     void generateRandomClonedMac();
 
 private:
-    Ui::WiredConnectionWidget * m_widget;
+    Ui::WiredConnectionWidget *m_widget;
 };
 
 #endif // PLASMA_NM_WIRED_CONNECTION_WIDGET_H

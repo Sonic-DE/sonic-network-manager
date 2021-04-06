@@ -19,36 +19,39 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "debug.h"
 #include "passworddialog.h"
+#include "debug.h"
 #include "ui_passworddialog.h"
 #include "uiutils.h"
 
 #include <vpnuiplugin.h>
 
-#include <NetworkManagerQt/WirelessSetting>
-#include <NetworkManagerQt/VpnSetting>
 #include <NetworkManagerQt/Utils>
+#include <NetworkManagerQt/VpnSetting>
+#include <NetworkManagerQt/WirelessSetting>
 
-#include <KServiceTypeTrader>
 #include <KLocalizedString>
+#include <KServiceTypeTrader>
 
 #include <QIcon>
 #include <QPushButton>
 
 using namespace NetworkManager;
 
-PasswordDialog::PasswordDialog(const NetworkManager::ConnectionSettings::Ptr &connectionSettings, SecretAgent::GetSecretsFlags flags,
-                               const QString &setting_name, const QStringList &hints, QWidget *parent) :
-    QDialog(parent),
-    m_ui(nullptr),
-    m_hasError(false),
-    m_settingName(setting_name),
-    m_connectionSettings(connectionSettings),
-    m_error(SecretAgent::NoSecrets),
-    m_flags(flags),
-    m_vpnWidget(nullptr),
-    m_hints(hints)
+PasswordDialog::PasswordDialog(const NetworkManager::ConnectionSettings::Ptr &connectionSettings,
+                               SecretAgent::GetSecretsFlags flags,
+                               const QString &setting_name,
+                               const QStringList &hints,
+                               QWidget *parent)
+    : QDialog(parent)
+    , m_ui(nullptr)
+    , m_hasError(false)
+    , m_settingName(setting_name)
+    , m_connectionSettings(connectionSettings)
+    , m_error(SecretAgent::NoSecrets)
+    , m_flags(flags)
+    , m_vpnWidget(nullptr)
+    , m_hints(hints)
 {
     setWindowIcon(QIcon::fromTheme(QStringLiteral("dialog-password")));
 
@@ -70,10 +73,10 @@ void PasswordDialog::initializeUi()
 
     connect(m_ui->buttonBox, &QDialogButtonBox::accepted, this, &PasswordDialog::accept);
     connect(m_ui->buttonBox, &QDialogButtonBox::rejected, this, &PasswordDialog::reject);
-    connect(m_ui->password, &PasswordField::textChanged, [this](const QString &text){
+    connect(m_ui->password, &PasswordField::textChanged, [this](const QString &text) {
         if (m_connectionSettings->connectionType() == NetworkManager::ConnectionSettings::Wireless) {
             NetworkManager::WirelessSecuritySetting::Ptr wirelessSecuritySetting =
-                    m_connectionSettings->setting(NetworkManager::Setting::WirelessSecurity).staticCast<NetworkManager::WirelessSecuritySetting>();
+                m_connectionSettings->setting(NetworkManager::Setting::WirelessSecurity).staticCast<NetworkManager::WirelessSecuritySetting>();
             bool valid = true;
 
             if (wirelessSecuritySetting) {
@@ -132,7 +135,9 @@ void PasswordDialog::initializeUi()
             const QString serviceType = vpnSetting->serviceType();
             vpnUiPlugin = KServiceTypeTrader::createInstanceFromQuery<VpnUiPlugin>(QLatin1String("PlasmaNetworkManagement/VpnUiPlugin"),
                                                                                    QString::fromLatin1("[X-NetworkManager-Services]=='%1'").arg(serviceType),
-                                                                                   this, QVariantList(), &error);
+                                                                                   this,
+                                                                                   QVariantList(),
+                                                                                   &error);
             if (vpnUiPlugin && error.isEmpty()) {
                 const QString shortName = serviceType.section('.', -1);
                 NMStringMap data = vpnSetting->data();

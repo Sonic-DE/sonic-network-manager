@@ -26,9 +26,9 @@
 #include "networkitemslist.h"
 
 #include <NetworkManagerQt/Manager>
+#include <NetworkManagerQt/Utils>
 #include <NetworkManagerQt/VpnConnection>
 #include <NetworkManagerQt/WirelessDevice>
-#include <NetworkManagerQt/Utils>
 
 #if WITH_MODEMMANAGER_SUPPORT
 #include <ModemManagerQt/modem.h>
@@ -36,7 +36,7 @@
 
 class Q_DECL_EXPORT NetworkModel : public QAbstractListModel
 {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit NetworkModel(QObject *parent = nullptr);
     ~NetworkModel() override;
@@ -86,7 +86,7 @@ private Q_SLOTS:
     void activeConnectionAdded(const QString &activeConnection);
     void activeConnectionRemoved(const QString &activeConnection);
     void activeConnectionStateChanged(NetworkManager::ActiveConnection::State state);
-    void activeVpnConnectionStateChanged(NetworkManager::VpnConnection::State state,NetworkManager::VpnConnection::StateChangeReason reason);
+    void activeVpnConnectionStateChanged(NetworkManager::VpnConnection::State state, NetworkManager::VpnConnection::StateChangeReason reason);
     void availableConnectionAppeared(const QString &connection);
     void availableConnectionDisappeared(const QString &connection);
     void connectionAdded(const QString &connection);
@@ -109,6 +109,7 @@ private Q_SLOTS:
     void wirelessNetworkReferenceApChanged(const QString &accessPoint);
 
     void initialize();
+
 private:
     NetworkItemsList m_list;
 
@@ -124,7 +125,8 @@ private:
     void initializeSignals(const NetworkManager::Device::Ptr &device);
     void initializeSignals(const NetworkManager::WirelessNetwork::Ptr &network);
     void updateItem(NetworkModelItem *item);
-    void updateFromWirelessNetwork(NetworkModelItem *item, const NetworkManager::WirelessNetwork::Ptr &network, const NetworkManager::WirelessDevice::Ptr &device);
+    void
+    updateFromWirelessNetwork(NetworkModelItem *item, const NetworkManager::WirelessNetwork::Ptr &network, const NetworkManager::WirelessDevice::Ptr &device);
 
     NetworkManager::WirelessSecurityType alternativeWirelessSecurity(const NetworkManager::WirelessSecurityType type);
 };

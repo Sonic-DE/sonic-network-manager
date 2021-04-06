@@ -24,17 +24,17 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "vpnuiplugin.h"
 
-#include <QVariant>
 #include <QDialog>
+#include <QVariant>
 
 class Q_DECL_EXPORT OpenconnectUiPlugin : public VpnUiPlugin
 {
     Q_OBJECT
 public:
-    explicit OpenconnectUiPlugin(QObject * parent = nullptr, const QVariantList& = QVariantList());
+    explicit OpenconnectUiPlugin(QObject *parent = nullptr, const QVariantList & = QVariantList());
     ~OpenconnectUiPlugin() override;
-    SettingWidget * widget(const NetworkManager::VpnSetting::Ptr &setting, QWidget * parent = nullptr) override;
-    SettingWidget * askUser(const NetworkManager::VpnSetting::Ptr &setting, QWidget * parent = nullptr) override;
+    SettingWidget *widget(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent = nullptr) override;
+    SettingWidget *askUser(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent = nullptr) override;
 
     QString suggestedFileName(const NetworkManager::ConnectionSettings::Ptr &connection) const override;
     QString supportedFileExtensions() const override;

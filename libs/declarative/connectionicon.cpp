@@ -35,7 +35,7 @@
 #include <ModemManagerQt/manager.h>
 #endif
 
-ConnectionIcon::ConnectionIcon(QObject* parent)
+ConnectionIcon::ConnectionIcon(QObject *parent)
     : QObject(parent)
     , m_signal(0)
     , m_wirelessNetwork(nullptr)
@@ -83,7 +83,7 @@ ConnectionIcon::ConnectionIcon(QObject* parent)
 
     QDBusPendingReply<uint> pendingReply = NetworkManager::checkConnectivity();
     QDBusPendingCallWatcher *callWatcher = new QDBusPendingCallWatcher(pendingReply);
-    connect(callWatcher, &QDBusPendingCallWatcher::finished, this, [this] (QDBusPendingCallWatcher *watcher) {
+    connect(callWatcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher *watcher) {
         QDBusPendingReply<uint> reply = *watcher;
         if (reply.isValid()) {
             connectivityChanged((NetworkManager::Connectivity)reply.value());
@@ -119,7 +119,7 @@ QString ConnectionIcon::connectionTooltipIcon() const
     return m_connectionTooltipIcon;
 }
 
-void ConnectionIcon::activatingConnectionChanged(const QString& connection)
+void ConnectionIcon::activatingConnectionChanged(const QString &connection)
 {
     Q_UNUSED(connection);
     setIcons();
@@ -174,7 +174,7 @@ void ConnectionIcon::connectivityChanged(NetworkManager::Connectivity conn)
     setLimited(conn == NetworkManager::Portal || conn == NetworkManager::Limited);
 }
 
-void ConnectionIcon::deviceAdded(const QString& device)
+void ConnectionIcon::deviceAdded(const QString &device)
 {
     NetworkManager::Device::Ptr dev = NetworkManager::findNetworkInterface(device);
 
@@ -188,7 +188,7 @@ void ConnectionIcon::deviceAdded(const QString& device)
     }
 }
 
-void ConnectionIcon::deviceRemoved(const QString& device)
+void ConnectionIcon::deviceRemoved(const QString &device)
 {
     Q_UNUSED(device);
 
@@ -207,8 +207,7 @@ void ConnectionIcon::modemSignalChanged(const ModemManager::SignalQualityPair &s
 {
     int diff = m_signal - signalQuality.signal;
 
-    if (diff >= 10 ||
-        diff <= -10) {
+    if (diff >= 10 || diff <= -10) {
         m_signal = signalQuality.signal;
 
         setIconForModem();
@@ -223,7 +222,7 @@ void ConnectionIcon::networkingEnabledChanged(bool enabled)
     }
 }
 
-void ConnectionIcon::primaryConnectionChanged(const QString& connection)
+void ConnectionIcon::primaryConnectionChanged(const QString &connection)
 {
     if (!connection.isEmpty()) {
         setIcons();
@@ -255,10 +254,9 @@ void ConnectionIcon::wwanEnabledChanged(bool enabled)
 {
     Q_UNUSED(enabled);
     setIcons();
-
 }
 
-void ConnectionIcon::wirelessNetworkAppeared(const QString& network)
+void ConnectionIcon::wirelessNetworkAppeared(const QString &network)
 {
     Q_UNUSED(network);
     setIcons();
@@ -315,8 +313,7 @@ void ConnectionIcon::setIcons()
 
     // Set icon based on the current primary connection if the activating connection is virtual
     // since we're not setting icons for virtual connections
-    if (!connection
-        || (connection && UiUtils::isConnectionTypeVirtual(connection->type()))
+    if (!connection || (connection && UiUtils::isConnectionTypeVirtual(connection->type()))
         || connection->type() == NetworkManager::ConnectionSettings::WireGuard) {
         connection = NetworkManager::primaryConnection();
     }
@@ -325,7 +322,7 @@ void ConnectionIcon::setIcons()
                  of generic type (some type of VPNs) we need to go through all other active connections and pick the one with
                  highest probability of being the main one (order is: vpn, wired, wireless, gsm, cdma, bluetooth) */
     if ((!connection && !NetworkManager::activeConnections().isEmpty()) || (connection && connection->type() == NetworkManager::ConnectionSettings::Generic)
-                                                                        || (connection && connection->type() == NetworkManager::ConnectionSettings::Tun)) {
+        || (connection && connection->type() == NetworkManager::ConnectionSettings::Tun)) {
         for (const NetworkManager::ActiveConnection::Ptr &activeConnection : NetworkManager::activeConnections()) {
             const NetworkManager::ConnectionSettings::ConnectionType type = activeConnection->type();
             if (type == NetworkManager::ConnectionSettings::Bluetooth) {
@@ -345,13 +342,15 @@ void ConnectionIcon::setIcons()
             } else if (type == NetworkManager::ConnectionSettings::WireGuard) {
                 connection = activeConnection;
             } else if (type == NetworkManager::ConnectionSettings::Wired) {
-                if (connection && (connection->type() != NetworkManager::ConnectionSettings::Vpn //
-                                  || connection->type() != NetworkManager::ConnectionSettings::WireGuard)) {
+                if (connection
+                    && (connection->type() != NetworkManager::ConnectionSettings::Vpn //
+                        || connection->type() != NetworkManager::ConnectionSettings::WireGuard)) {
                     connection = activeConnection;
                 }
             } else if (type == NetworkManager::ConnectionSettings::Wireless) {
-                if (connection && (connection->type() != NetworkManager::ConnectionSettings::Vpn //
-                                  && (connection->type() != NetworkManager::ConnectionSettings::Wired))) {
+                if (connection
+                    && (connection->type() != NetworkManager::ConnectionSettings::Vpn //
+                        && (connection->type() != NetworkManager::ConnectionSettings::Wired))) {
                     connection = activeConnection;
                 }
             }
@@ -398,7 +397,7 @@ void ConnectionIcon::setIcons()
                         setConnectionTooltipIcon("preferences-system-bluetooth");
                     }
                 }
-            } else if (type == 29) {      // TODO change to WireGuard enum value once it is added
+            } else if (type == 29) { // TODO change to WireGuard enum value once it is added
                 // WireGuard is a VPN but is not implemented
                 // in NetworkManager as a VPN, so we don't want to
                 // do anything just because it has a device
@@ -465,14 +464,14 @@ void ConnectionIcon::setDisconnectedIcon()
         setConnectionIcon("network-mobile-available");
         setConnectionTooltipIcon("phone");
         return;
-    }  else {
+    } else {
         setConnectionIcon("network-unavailable");
         setConnectionTooltipIcon("network-wired");
     }
 }
 
 #if WITH_MODEMMANAGER_SUPPORT
-void ConnectionIcon::setModemIcon(const NetworkManager::Device::Ptr & device)
+void ConnectionIcon::setModemIcon(const NetworkManager::Device::Ptr &device)
 {
     NetworkManager::ModemDevice::Ptr modemDevice = device.objectCast<NetworkManager::ModemDevice>();
 
@@ -526,7 +525,7 @@ void ConnectionIcon::setIconForModem()
 
     QString result;
 
-    switch(m_modemNetwork->accessTechnologies()) {
+    switch (m_modemNetwork->accessTechnologies()) {
     case MM_MODEM_ACCESS_TECHNOLOGY_GSM:
     case MM_MODEM_ACCESS_TECHNOLOGY_GSM_COMPACT:
         result = "network-mobile-%1";
@@ -563,7 +562,7 @@ void ConnectionIcon::setIconForModem()
 }
 #endif
 
-void ConnectionIcon::setWirelessIcon(const NetworkManager::Device::Ptr &device, const QString& ssid)
+void ConnectionIcon::setWirelessIcon(const NetworkManager::Device::Ptr &device, const QString &ssid)
 {
     NetworkManager::WirelessDevice::Ptr wirelessDevice = device.objectCast<NetworkManager::WirelessDevice>();
     if (device) {
@@ -573,7 +572,11 @@ void ConnectionIcon::setWirelessIcon(const NetworkManager::Device::Ptr &device, 
     }
 
     if (m_wirelessNetwork) {
-        connect(m_wirelessNetwork.data(), &NetworkManager::WirelessNetwork::signalStrengthChanged, this, &ConnectionIcon::setWirelessIconForSignalStrength, Qt::UniqueConnection);
+        connect(m_wirelessNetwork.data(),
+                &NetworkManager::WirelessNetwork::signalStrengthChanged,
+                this,
+                &ConnectionIcon::setWirelessIconForSignalStrength,
+                Qt::UniqueConnection);
 
         setWirelessIconForSignalStrength(m_wirelessNetwork->signalStrength());
     } else {
@@ -616,7 +619,7 @@ void ConnectionIcon::setConnecting(bool connecting)
     }
 }
 
-void ConnectionIcon::setConnectionIcon(const QString & icon)
+void ConnectionIcon::setConnectionIcon(const QString &icon)
 {
     if (icon != m_connectionIcon) {
         m_connectionIcon = icon;
@@ -624,7 +627,7 @@ void ConnectionIcon::setConnectionIcon(const QString & icon)
     }
 }
 
-void ConnectionIcon::setConnectionTooltipIcon(const QString & icon)
+void ConnectionIcon::setConnectionTooltipIcon(const QString &icon)
 {
     if (icon != m_connectionTooltipIcon) {
         m_connectionTooltipIcon = icon;

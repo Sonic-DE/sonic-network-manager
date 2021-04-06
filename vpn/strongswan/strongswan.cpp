@@ -21,14 +21,14 @@
 */
 
 #include "strongswan.h"
-#include "strongswanwidget.h"
 #include "strongswanauth.h"
+#include "strongswanwidget.h"
 
 #include <KPluginFactory>
 
 K_PLUGIN_CLASS_WITH_JSON(StrongswanUiPlugin, "plasmanetworkmanagement_strongswanui.json")
 
-StrongswanUiPlugin::StrongswanUiPlugin(QObject * parent, const QVariantList &)
+StrongswanUiPlugin::StrongswanUiPlugin(QObject *parent, const QVariantList &)
     : VpnUiPlugin(parent)
 {
 }
@@ -37,12 +37,12 @@ StrongswanUiPlugin::~StrongswanUiPlugin()
 {
 }
 
-SettingWidget * StrongswanUiPlugin::widget(const NetworkManager::VpnSetting::Ptr &setting, QWidget * parent)
+SettingWidget *StrongswanUiPlugin::widget(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent)
 {
     return new StrongswanSettingWidget(setting, parent);
 }
 
-SettingWidget * StrongswanUiPlugin::askUser(const NetworkManager::VpnSetting::Ptr &setting, QWidget * parent)
+SettingWidget *StrongswanUiPlugin::askUser(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent)
 {
     return new StrongswanAuthWidget(setting, parent);
 }

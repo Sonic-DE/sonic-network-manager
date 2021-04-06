@@ -35,10 +35,10 @@ class L2tpWidget : public SettingWidget
 {
     Q_OBJECT
 
-    enum AuthType {Password = 0, TLS};
+    enum AuthType { Password = 0, TLS };
 
 public:
-    explicit L2tpWidget(const NetworkManager::VpnSetting::Ptr &setting, QWidget* parent = nullptr, Qt::WindowFlags f = {});
+    explicit L2tpWidget(const NetworkManager::VpnSetting::Ptr &setting, QWidget *parent = nullptr, Qt::WindowFlags f = {});
     ~L2tpWidget() override;
 
     void loadConfig(const NetworkManager::Setting::Ptr &setting) override;
@@ -54,7 +54,7 @@ private Q_SLOTS:
     void showPpp();
 
 private:
-    Ui::L2tpWidget * m_ui;
+    Ui::L2tpWidget *m_ui;
     NetworkManager::VpnSetting::Ptr m_setting;
     NetworkManager::VpnSetting::Ptr m_tmpIpsecSetting;
     NetworkManager::VpnSetting::Ptr m_tmpPppSetting;
