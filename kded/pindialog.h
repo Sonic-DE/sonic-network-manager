@@ -51,7 +51,7 @@ public:
         ModemPhFsimPin,
         ModemPhFsimPuk,
         ModemNetworkSubsetPin,
-        ModemNetworkSubsetPuk
+        ModemNetworkSubsetPuk,
     };
     enum ErrorCode {PinCodeTooShort, PinCodesDoNotMatch, PukCodeTooShort};
 
