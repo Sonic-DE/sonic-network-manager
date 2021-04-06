@@ -183,10 +183,11 @@ void IPv4Widget::loadConfig(const NetworkManager::Setting::Ptr &setting)
 
     // addresses
     for (const NetworkManager::IpAddress &addr : ipv4Setting->addresses()) {
-        QList<QStandardItem *> item;
-        item << new QStandardItem(addr.ip().toString())
-             << new QStandardItem(addr.netmask().toString())
-             << new QStandardItem(addr.gateway().toString());
+        QList<QStandardItem *> item{
+            new QStandardItem(addr.ip().toString()),
+            new QStandardItem(addr.netmask().toString()),
+            new QStandardItem(addr.gateway().toString()),
+        };
 
         d->model.appendRow(item);
     }
@@ -345,8 +346,7 @@ void IPv4Widget::slotModeComboChanged(int index)
 
 void IPv4Widget::slotAddIPAddress()
 {
-    QList<QStandardItem *> item;
-    item << new QStandardItem << new QStandardItem << new QStandardItem;
+    QList<QStandardItem *> item{new QStandardItem, new QStandardItem, new QStandardItem};
     d->model.appendRow(item);
 
     const int rowCount = d->model.rowCount();
