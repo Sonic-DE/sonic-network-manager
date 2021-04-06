@@ -90,7 +90,7 @@ public:
         ConnectionType,
         ConnectionTypeName ,
         ConnectionTypeSection,
-        ConnectionVpnType
+        ConnectionVpnType,
     };
 
     int rowCount(const QModelIndex &parent) const override;

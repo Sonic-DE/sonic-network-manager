@@ -69,7 +69,7 @@ public:
         VpnState,
         VpnType,
         RxBytesRole,
-        TxBytesRole
+        TxBytesRole,
     };
     Q_ENUMS(ItemRole)
 
