@@ -21,8 +21,7 @@
 
 // taken from libs/editor/mobileproviders.h, and adapted for mobile purposes
 
-#ifndef PLASMA_NM_MOBILE_PROVIDERS_H
-#define PLASMA_NM_MOBILE_PROVIDERS_H
+#pragma once
 
 #include <QStringList>
 #include <QHash>
@@ -60,5 +59,3 @@ private:
     ErrorCodes mError;
     QString getNameByLocale(const QMap<QString, QString> & names) const;
 };
-
-#endif // PLASMA_NM_MOBILE_PROVIDERS_H

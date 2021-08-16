@@ -57,7 +57,7 @@ SimpleKCM {
         anchors.right: parent.right
         anchors.margins: Kirigami.Units.largeSpacing
         
-        visible: !enabledConnections.wwanHwEnabled || !availableDevices.modemDeviceAvailable
+        visible: !enabledConnections.wwanHwEnabled || !availableDevices.modemDeviceAvailable || !kcm.modemFound
         icon.name: "auth-sim-missing"
         text: i18n("Modem not available")
     }
@@ -95,8 +95,8 @@ SimpleKCM {
                 Kirigami.FormData.label: i18n("Mobile data")
                 text: checked ? i18n("On") : i18n("Off")
                 enabled: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable
-                checked: kcm.mobileDataActive
-                onCheckedChanged: kcm.mobileDataActive = checked
+                checked: kcm.modem.mobileDataActive
+                onCheckedChanged: kcm.modem.mobileDataActive = checked
             }
             
             Kirigami.Separator {
@@ -104,19 +104,19 @@ SimpleKCM {
                 Kirigami.FormData.label: i18n("SIM")
                 weight: 0
             }
-            Controls.Switch {
-                Kirigami.FormData.label: i18n("Data roaming")
-                text: checked ? i18n("On") : i18n("Off")
-                enabled: mobileDataCheckbox.checked
-                checked: kcm.allowRoaming
-                onCheckedChanged: kcm.allowRoaming = checked
-            }
+            //Controls.Switch {
+                //Kirigami.FormData.label: i18n("Data roaming")
+                //text: checked ? i18n("On") : i18n("Off")
+                //enabled: mobileDataCheckbox.checked
+                //checked: kcm.allowRoaming
+                //onCheckedChanged: kcm.allowRoaming = checked
+            //}
             
             Controls.Button {
                 icon.name: "globe"
                 text: "Access point names"
                 onClicked: {
-                    kcm.push("ProfileList.qml");
+                    kcm.push("ProfileList.qml", {"modem": kcm.modem});
                 }
             }
             

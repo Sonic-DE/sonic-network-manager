@@ -27,16 +27,18 @@ Kirigami.ScrollablePage {
     id: apnlist
     title: i18n("APNs")
     
+    property Modem modem
+    
     ListView {
         id: profileListView
-        model: ProfileModel
+        model: modem.profiles
      
         Kirigami.PlaceholderMessage {
             anchors.centerIn: parent
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: Kirigami.Units.largeSpacing
-            visible: ProfileModel.count() === 0
+            visible: profileListView.count === 0
             text: i18n("No APNs configured")
             icon.name: "globe"
             
@@ -48,20 +50,18 @@ Kirigami.ScrollablePage {
         }
         
         delegate: Kirigami.SwipeListItem {
-            property ProfileSettings profile: ProfileModel.get(index)
-            
-            onClicked: kcm.activateProfile(profile.connectionUni)
+            onClicked: kcm.activateProfile(model.connectionUni)
             
             actions: [
                 Kirigami.Action {
                     iconName: "entry-edit"
                     text: i18n("Edit")
-                    onTriggered: kcm.push("EditProfile.qml", {"profile": profile})
+                    onTriggered: kcm.push("EditProfile.qml", {"profile": modelData})
                 },
                 Kirigami.Action {
                     iconName: "delete"
                     text: i18n("Delete")
-                    onTriggered: kcm.removeProfile(profile.connectionUni)
+                    onTriggered: kcm.removeProfile(model.connectionUni)
                 }
             ]
             
@@ -72,16 +72,16 @@ Kirigami.ScrollablePage {
                     spacing: Kirigami.Units.smallSpacing
                     Kirigami.Heading {
                         level: 3
-                        text: profile.name
+                        text: model.name
                     }
                     Controls.Label {
-                        text: profile.apn
+                        text: model.apn
                     }
                 }
                 Controls.RadioButton {
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                    checked: kcm.activeConnectionUni == profile.connectionUni
-                    onClicked: kcm.activateProfile(profile.connectionUni)
+                    checked: kcm.activeConnectionUni == model.connectionUni
+                    onClicked: kcm.activateProfile(model.connectionUni)
                 }
             }
         }

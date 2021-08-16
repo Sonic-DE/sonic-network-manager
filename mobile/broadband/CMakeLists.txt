@@ -4,7 +4,7 @@ include_directories(${CMAKE_SOURCE_DIR}/libs/editor)
 
 set (mobilebroadbandsettings_SRCS 
     mobilebroadbandsettings.cpp 
-    profilemodel.cpp
+    modem.cpp
     mobileproviders.cpp
 )
 
