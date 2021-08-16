@@ -35,7 +35,7 @@ CellularNetworkSettings::CellularNetworkSettings(QObject* parent, const QVariant
       m_modemList{},
       m_providers{ nullptr }
 {
-    KAboutData* about = new KAboutData("kcm_cellular_network", i18n("Management of cellular networks"),
+    KAboutData* about = new KAboutData("kcm_cellular_network", i18n("Cellular Networks"),
                                        "0.1", QString(), KAboutLicense::GPL);
     about->addAuthor(i18n("Devin Lin"), QString(), "espidev@gmail.com");
     about->addAuthor(i18n("Martin Kacej"), QString(), "m.kacej@atlas.sk");

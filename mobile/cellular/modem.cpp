@@ -194,6 +194,7 @@ QString Modem::activeConnectionUni()
 
 void Modem::refreshProfiles()
 {
+    m_profileList.clear();
     for (auto connection : m_nmDevice->availableConnections()) {
         for (auto setting : connection->settings()->settings()) {
             if (setting.dynamicCast<NetworkManager::GsmSetting>()) {
@@ -263,6 +264,8 @@ void Modem::addProfile(const QString &name, const QString &apn, const QString &u
     reply.waitForFinished();
     if (reply.isError()) {
         qWarning() << "Error adding connection" << reply.error().message();
+    } else {
+        qDebug() << "Successfully added a new connection" << name << "with APN" << apn << ".";
     }
 }
 
