@@ -402,24 +402,6 @@ ProfileSettings::ProfileSettings(QObject* parent, NetworkManager::Setting::Ptr s
     }
 }
 
-QVariantMap ProfileSettings::toSettings()
-{
-    if (m_gsm) {
-        NetworkManager::GsmSetting gsmSetting;
-        gsmSetting.setApn(m_apn);
-        gsmSetting.setUsername(m_user);
-        gsmSetting.setPassword(m_password);
-        gsmSetting.setNetworkType(networkTypeFlag(m_networkType));
-        gsmSetting.setHomeOnly(!m_allowRoaming);
-        return gsmSetting.toMap();
-    } else {
-        NetworkManager::CdmaSetting cdmaSetting;
-        cdmaSetting.setUsername(m_user);
-        cdmaSetting.setPassword(m_password);
-        return cdmaSetting.toMap();
-    }
-}
-
 QString ProfileSettings::name()
 {
     return m_name;

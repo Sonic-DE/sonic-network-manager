@@ -111,8 +111,6 @@ public:
     void setAllowRoaming(bool allowRoaming);
     QString connectionUni();
     
-    QVariantMap toSettings();
-    
 Q_SIGNALS:
     void nameChanged();
     void apnChanged();

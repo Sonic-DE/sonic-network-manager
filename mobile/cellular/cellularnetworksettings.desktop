@@ -7,7 +7,7 @@ Exec=plasma-settings -m kcm_cellular_network
 
 Type=Service
 X-KDE-ServiceTypes=KCModule
-X-KDE-Library=kcm_mobile_broadband
+X-KDE-Library=kcm_cellular_network
 X-KDE-ParentApp=kcontrol
 X-KDE-FormFactors=handset,tablet,mediacenter
 

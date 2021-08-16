@@ -87,7 +87,7 @@ Kirigami.ScrollablePage {
         }
         
         header: Kirigami.SwipeListItem {
-            visible: ProfileModel.count() !== 0
+            visible: profileListView.count !== 0
             onClicked: kcm.push("EditProfile.qml", {"modem": apnlist.modem, "profile": null})
             
             contentItem: Row {
