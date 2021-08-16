@@ -15,6 +15,7 @@ target_link_libraries(kcm_mobile_broadband
     Qt5::Gui
     Qt5::Quick
     Qt5::Qml
+    Qt5::Xml
     KF5::Plasma
     KF5::I18n
     KF5::NetworkManagerQt
