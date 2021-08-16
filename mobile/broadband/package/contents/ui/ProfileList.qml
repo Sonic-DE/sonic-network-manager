@@ -45,23 +45,23 @@ Kirigami.ScrollablePage {
             helpfulAction: Kirigami.Action {
                 iconName: "list-add"
                 text: i18n("Add APN")
-                onTriggered: kcm.push("EditProfile.qml", {"profile": null})
+                onTriggered: kcm.push("EditProfile.qml", {"modem": apnlist.modem, "profile": null})
             }
         }
         
         delegate: Kirigami.SwipeListItem {
-            onClicked: kcm.activateProfile(model.connectionUni)
+            onClicked: kcm.activateProfile(modelData.connectionUni)
             
             actions: [
                 Kirigami.Action {
                     iconName: "entry-edit"
                     text: i18n("Edit")
-                    onTriggered: kcm.push("EditProfile.qml", {"profile": modelData})
+                    onTriggered: kcm.push("EditProfile.qml", {"modem": apnlist.modem, "profile": modelData})
                 },
                 Kirigami.Action {
                     iconName: "delete"
                     text: i18n("Delete")
-                    onTriggered: kcm.removeProfile(model.connectionUni)
+                    onTriggered: kcm.removeProfile(modelData.connectionUni)
                 }
             ]
             
@@ -72,23 +72,23 @@ Kirigami.ScrollablePage {
                     spacing: Kirigami.Units.smallSpacing
                     Kirigami.Heading {
                         level: 3
-                        text: model.name
+                        text: modelData.name
                     }
                     Controls.Label {
-                        text: model.apn
+                        text: modelData.apn
                     }
                 }
                 Controls.RadioButton {
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                    checked: kcm.activeConnectionUni == model.connectionUni
-                    onClicked: kcm.activateProfile(model.connectionUni)
+                    checked: kcm.activeConnectionUni == modelData.connectionUni
+                    onClicked: kcm.activateProfile(modelData.connectionUni)
                 }
             }
         }
         
         header: Kirigami.SwipeListItem {
             visible: ProfileModel.count() !== 0
-            onClicked: kcm.push("EditProfile.qml", {"modem", modem, "profile": null})
+            onClicked: kcm.push("EditProfile.qml", {"modem": apnlist.modem, "profile": null})
             
             contentItem: Row {
                 anchors.fill: parent

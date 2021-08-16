@@ -299,6 +299,17 @@ void Modem::updateProfile(const QString &connectionUni, const QString &name, con
                 cdmaSetting->setPassword(password);
                 cdmaSetting->setPasswordFlags(password == "" ? NetworkManager::Setting::NotRequired : NetworkManager::Setting::AgentOwned);
             }
+            
+            QDBusPendingReply reply = con->update(conSettings->toMap());
+            reply.waitForFinished();
+            if (reply.isError()) {
+                qWarning() << "Error updating connection settings for" << connectionUni << ".";
+            } else {
+                qDebug() << "Successfully updated connection settings for" << connectionUni << ".";
+            }
+            
+        } else {
+            qWarning() << "Could not find connection settings for" << connectionUni << "to update!";
         }
     } else {
         qWarning() << "Could not find connection" << connectionUni << "to update!";
