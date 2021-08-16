@@ -94,7 +94,7 @@ class ProfileSettings : public QObject
     Q_PROPERTY(QString connectionUni READ connectionUni NOTIFY connectionUniChanged)
     
 public:
-    ProfileSettings(QObject* parent = nullptr) : QObject{ nullptr } {}
+    ProfileSettings(QObject* parent = nullptr) : QObject{ parent } {}
     ProfileSettings(QObject* parent, QString name, QString apn, QString user, QString password, NetworkManager::GsmSetting::NetworkType networkType, bool allowRoaming, QString connectionUni);
     ProfileSettings(QObject* parent, NetworkManager::Setting::Ptr settings, NetworkManager::Connection::Ptr connection);
     

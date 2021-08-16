@@ -18,7 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "mobilebroadbandsettings.h"
+#include "cellularnetworksettings.h"
 
 #include <KPluginFactory>
 #include <KLocalizedString>
@@ -27,22 +27,22 @@
 
 #include <QQmlEngine>
 
-K_PLUGIN_CLASS_WITH_JSON(MobileBroadbandSettings, "mobilebroadbandsettings.json")
+K_PLUGIN_CLASS_WITH_JSON(CellularNetworkSettings, "cellularnetworksettings.json")
 
-MobileBroadbandSettings::MobileBroadbandSettings(QObject* parent, const QVariantList& args) 
+CellularNetworkSettings::CellularNetworkSettings(QObject* parent, const QVariantList& args) 
     : KQuickAddons::ConfigModule(parent, args),
       m_modem{ nullptr },
       m_modemList{},
       m_providers{ nullptr }
 {
-    KAboutData* about = new KAboutData("kcm_mobile_broadband", i18n("Configure mobile broadband"),
+    KAboutData* about = new KAboutData("kcm_cellular_network", i18n("Management of cellular networks"),
                                        "0.1", QString(), KAboutLicense::GPL);
     about->addAuthor(i18n("Devin Lin"), QString(), "espidev@gmail.com");
     about->addAuthor(i18n("Martin Kacej"), QString(), "m.kacej@atlas.sk");
     setAboutData(about);
     
-    qmlRegisterType<ProfileSettings>("mobilebroadbandkcm", 1, 0, "ProfileSettings");
-    qmlRegisterType<Modem>("mobilebroadbandkcm", 1, 0, "Modem");
+    qmlRegisterType<ProfileSettings>("cellularnetworkkcm", 1, 0, "ProfileSettings");
+    qmlRegisterType<Modem>("cellularnetworkkcm", 1, 0, "Modem");
     
     // parse mobile providers list
     m_providers = new MobileProviders();
@@ -76,26 +76,26 @@ MobileBroadbandSettings::MobileBroadbandSettings(QObject* parent, const QVariant
     }
 }
 
-MobileBroadbandSettings::~MobileBroadbandSettings()
+CellularNetworkSettings::~CellularNetworkSettings()
 {
     for (auto p : m_modemList) {
         delete p;
     }
 }
 
-bool MobileBroadbandSettings::modemFound()
+bool CellularNetworkSettings::modemFound()
 {
     return !m_modemList.empty();
 }
 
-bool MobileBroadbandSettings::hasSim()
+bool CellularNetworkSettings::hasSim()
 {
     return m_modem && m_modem->hasSim();
 }
 
-Modem *MobileBroadbandSettings::modem()
+Modem *CellularNetworkSettings::modem()
 {
     return m_modem;
 }
 
-#include "mobilebroadbandsettings.moc"
+#include "cellularnetworksettings.moc"

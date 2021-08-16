@@ -39,7 +39,7 @@
 #include <ModemManagerQt/GenericTypes>
 #include <ModemManagerQt/ModemDevice>
 
-class MobileBroadbandSettings : public KQuickAddons::ConfigModule
+class CellularNetworkSettings : public KQuickAddons::ConfigModule
 {
     Q_OBJECT
     Q_PROPERTY(bool modemFound READ modemFound NOTIFY modemFoundChanged)
@@ -47,8 +47,8 @@ class MobileBroadbandSettings : public KQuickAddons::ConfigModule
     Q_PROPERTY(Modem* modem READ modem NOTIFY modemChanged)
     
 public:
-    MobileBroadbandSettings(QObject *parent, const QVariantList &args);
-    virtual ~MobileBroadbandSettings();
+    CellularNetworkSettings(QObject *parent, const QVariantList &args);
+    virtual ~CellularNetworkSettings();
     
     bool modemFound();
     bool hasSim();

@@ -1,5 +1,5 @@
 /*
- *   Copyright 2020 Devin Lin <espidev@gmail.com>
+ *   Copyright 2020-2021 Devin Lin <espidev@gmail.com>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as
@@ -21,7 +21,7 @@ import QtQuick 2.12
 import QtQuick.Layouts 1.2
 import QtQuick.Controls 2.12 as Controls
 import org.kde.kirigami 2.12 as Kirigami
-import mobilebroadbandkcm 1.0
+import cellularnetworkkcm 1.0
 
 Kirigami.ScrollablePage {
     id: apnlist
@@ -50,7 +50,7 @@ Kirigami.ScrollablePage {
         }
         
         delegate: Kirigami.SwipeListItem {
-            onClicked: kcm.activateProfile(modelData.connectionUni)
+            onClicked: modem.activateProfile(modelData.connectionUni)
             
             actions: [
                 Kirigami.Action {
@@ -61,7 +61,7 @@ Kirigami.ScrollablePage {
                 Kirigami.Action {
                     iconName: "delete"
                     text: i18n("Delete")
-                    onTriggered: kcm.removeProfile(modelData.connectionUni)
+                    onTriggered: modem.removeProfile(modelData.connectionUni)
                 }
             ]
             
@@ -81,7 +81,7 @@ Kirigami.ScrollablePage {
                 Controls.RadioButton {
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                     checked: kcm.activeConnectionUni == modelData.connectionUni
-                    onClicked: kcm.activateProfile(modelData.connectionUni)
+                    onClicked: modem.activateProfile(modelData.connectionUni)
                 }
             }
         }
