@@ -52,13 +52,23 @@ MobileBroadbandSettings::MobileBroadbandSettings(QObject* parent, const QVariant
     ModemManager::scanDevices();
     
     qDebug() << "Scanning for modems...";
-    foreach (ModemManager::ModemDevice::Ptr device, ModemManager::modemDevices()) {
+    for (ModemManager::ModemDevice::Ptr device : ModemManager::modemDevices()) {
         ModemManager::Modem::Ptr modem = device->modemInterface();
-        NetworkManager::ModemDevice::Ptr nmModem = NetworkManager::findNetworkInterface(device->uni()).objectCast<NetworkManager::ModemDevice>();
+        NetworkManager::ModemDevice::Ptr nmModem;
+        
+        for (NetworkManager::Device::Ptr nmDevice : NetworkManager::networkInterfaces()) {
+            if (nmDevice->udi() == device->uni()) {
+                nmModem = nmDevice.objectCast<NetworkManager::ModemDevice>();
+            }
+        }
         
         qDebug() << "Found modem:" << device->uni() << modem->uni();
-        m_modemList.push_back(new Modem(this, device, nmModem, modem, m_providers));
-        m_modem = m_modemList[m_modemList.size() - 1]; // TODO
+        if (!nmModem) {
+            qWarning() << "NetworkManager ModemDevice could not be found for this modem! Ignoring...";
+        } else {
+            m_modemList.push_back(new Modem(this, device, nmModem, modem, m_providers));
+            m_modem = m_modemList[m_modemList.size() - 1]; // TODO
+        }
     }
     
     if (m_modemList.empty()) {

@@ -27,6 +27,7 @@ Kirigami.ScrollablePage {
     id: editAPNPage
     title: i18n("Edit APN")
     
+    property Modem modem
     property ProfileSettings profile
     
     footer: ColumnLayout {
@@ -52,9 +53,9 @@ Kirigami.ScrollablePage {
                 
                 onClicked: {
                     if (profile == null) { // create new profile
-                        kcm.addProfile(profileName.text, profileApn.text, profileUsername.text, profilePassword.text, profileNetworkType.value);
+                        modem.addProfile(profileName.text, profileApn.text, profileUsername.text, profilePassword.text, profileNetworkType.value);
                     } else { // edit existing profile
-                        kcm.updateProfile(profile.connectionUni, profileName.text, profileApn.text, profileUsername.text, profilePassword.text, profileNetworkType.value);
+                        modem.updateProfile(profile.connectionUni, profileName.text, profileApn.text, profileUsername.text, profilePassword.text, profileNetworkType.value);
                     }
                     kcm.pop();
                 }
