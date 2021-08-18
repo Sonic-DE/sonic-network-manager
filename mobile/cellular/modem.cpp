@@ -228,12 +228,12 @@ void Modem::activateProfile(const QString &connectionUni)
     }
 }
 
-void Modem::addProfile(const QString &name, const QString &apn, const QString &username, const QString &password, const QString &networkType)
+void Modem::addProfile(QString name, QString apn, QString username, QString password, QString networkType)
 {
     NetworkManager::ConnectionSettings::Ptr settings;
 
     if (m_connectionSettingsType == NetworkManager::ConnectionSettings::Gsm) {
-        settings = NetworkManager::ConnectionSettings::Ptr(new NetworkManager::ConnectionSettings(m_connectionSettingsType));
+        settings = NetworkManager::ConnectionSettings::Ptr{ new NetworkManager::ConnectionSettings(m_connectionSettingsType) };
         settings->setId(name);
         settings->setUuid(NetworkManager::ConnectionSettings::createNewUuid());
         settings->setAutoconnect(true);
@@ -248,7 +248,7 @@ void Modem::addProfile(const QString &name, const QString &apn, const QString &u
         gsmSetting->setHomeOnly(true); // TODO roaming
         
     } else if (m_connectionSettingsType == NetworkManager::ConnectionSettings::Cdma){
-        settings = NetworkManager::ConnectionSettings::Ptr(new NetworkManager::ConnectionSettings(m_connectionSettingsType));
+        settings = NetworkManager::ConnectionSettings::Ptr{ new NetworkManager::ConnectionSettings(m_connectionSettingsType) };
         settings->setId(name);
         settings->setUuid(NetworkManager::ConnectionSettings::createNewUuid());
         settings->setAutoconnect(true);
@@ -281,7 +281,7 @@ void Modem::removeProfile(const QString &connectionUni)
     }
 }
 
-void Modem::updateProfile(const QString &connectionUni, const QString &name, const QString &apn, const QString &username, const QString &password, const QString &networkType)
+void Modem::updateProfile(QString connectionUni, QString name, QString apn, QString username, QString password, QString networkType)
 {
     NetworkManager::Connection::Ptr con = NetworkManager::findConnectionByUuid(connectionUni);
     if (con) {
