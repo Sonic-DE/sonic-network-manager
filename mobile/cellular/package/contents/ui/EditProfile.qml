@@ -40,6 +40,7 @@ Kirigami.ScrollablePage {
         
         RowLayout {
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+            Layout.margins: Kirigami.Units.largeSpacing
             Controls.Button {
                 Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                 icon.name: "dialog-cancel"

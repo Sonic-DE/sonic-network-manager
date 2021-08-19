@@ -63,18 +63,6 @@ SimpleKCM {
         text: i18n("Modem not available")
     }
     
-    Kirigami.PlaceholderMessage {
-        id: simDetected
-        anchors.centerIn: parent
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.margins: Kirigami.Units.largeSpacing
-        
-        visible: !noModem.visible && !kcm.hasSim
-        icon.name: "auth-sim-missing"
-        text: i18n("No SIM detected")
-    }
-    
     Flickable {
         anchors.left: parent.left
         anchors.right: parent.right
@@ -84,9 +72,12 @@ SimpleKCM {
             anchors.right: parent.right
             anchors.leftMargin: Kirigami.Units.largeSpacing
             anchors.rightMargin: Kirigami.Units.largeSpacing
-            visible: !simDetected.visible && !noModem.visible
+            anchors.topMargin: Kirigami.Units.largeSpacing
+            spacing: Kirigami.Units.largeSpacing
+            visible: !noModem.visible
             
             Kirigami.Heading {
+                Layout.topMargin: Kirigami.Units.largeSpacing
                 level: 3
                 text: i18n("Modems")
             }

@@ -42,10 +42,11 @@ CellularNetworkSettings::CellularNetworkSettings(QObject* parent, const QVariant
     
     qmlRegisterType<ProfileSettings>("cellularnetworkkcm", 1, 0, "ProfileSettings");
     qmlRegisterType<Modem>("cellularnetworkkcm", 1, 0, "Modem");
+    qmlRegisterType<Sim>("cellularnetworkkcm", 1, 0, "Sim");
     
     // parse mobile providers list
     m_providers = new MobileProviders();
-    m_providers->fillProvidersList();
+    m_providers->fillProvidersList(); 
     
     // find modems
     ModemManager::scanDevices();
@@ -61,7 +62,7 @@ CellularNetworkSettings::CellularNetworkSettings(QObject* parent, const QVariant
             }
         }
         
-        qDebug() << "Found modem:" << device->uni() << modem->uni();
+        qDebug() << "Found modem:" << device->uni();
         if (!nmModem) {
             qWarning() << "NetworkManager ModemDevice could not be found for this modem! Ignoring...";
         } else {
@@ -86,9 +87,9 @@ CellularNetworkSettings::~CellularNetworkSettings()
     for (auto p : m_modemList) {
         delete p;
     }
-    for (auto p : m_simList) {
-        delete p;
-    }
+//     for (auto p : m_simList) { segfault?
+//         delete p;
+//     }
 }
 
 QList<Modem *> CellularNetworkSettings::modems()
@@ -106,11 +107,6 @@ bool CellularNetworkSettings::modemFound()
     return !m_modemList.empty();
 }
 
-bool CellularNetworkSettings::hasSim()
-{
-    return !m_simList.empty();
-}
-
 void CellularNetworkSettings::fillSims()
 {
     for (auto p : m_simList) {
@@ -118,8 +114,13 @@ void CellularNetworkSettings::fillSims()
     }
     m_simList.clear();
     
+    qDebug() << "Scanning SIMs list...";
     for (auto modem : m_modemList) {
-        m_simList += modem->sims();
+        auto sims = modem->sims();
+        for (auto simp : sims) {
+            qDebug() << "Found SIM" << simp->uni() << simp->imsi();
+            m_simList.push_back(simp);
+        }
     }
     
     Q_EMIT simsChanged();

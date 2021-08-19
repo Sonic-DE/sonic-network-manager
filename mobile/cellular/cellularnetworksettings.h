@@ -44,7 +44,6 @@ class CellularNetworkSettings : public KQuickAddons::ConfigModule
 {
     Q_OBJECT
     Q_PROPERTY(bool modemFound READ modemFound NOTIFY modemFoundChanged)
-    Q_PROPERTY(bool hasSim READ hasSim NOTIFY hasSimChanged)
     Q_PROPERTY(QList<Modem *> modems READ modems NOTIFY modemsChanged)
     Q_PROPERTY(QList<Sim *> sims READ sims NOTIFY simsChanged)
     
@@ -56,11 +55,9 @@ public:
     QList<Sim *> sims();
     
     bool modemFound();
-    bool hasSim();
     
 Q_SIGNALS:
     void modemFoundChanged();
-    void hasSimChanged();
     void modemChanged();
     void modemsChanged();
     void simsChanged();

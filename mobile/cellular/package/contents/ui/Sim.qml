@@ -35,37 +35,41 @@ Kirigami.ScrollablePage {
         
         Kirigami.FormLayout {
             Controls.Label {
-                Kirigami.FormData.label: i18n("Is Locked:")
+                Kirigami.FormData.label: i18n("<b>Uni:</b>")
+                text: sim.uni
+            }
+            Controls.Label {
+                Kirigami.FormData.label: i18n("<b>Is Locked:</b>")
                 text: sim.locked ? i18n("Yes") : i18n("No")
             }
             Controls.Label {
-                Kirigami.FormData.label: i18n("Locked Reason:")
+                Kirigami.FormData.label: i18n("<b>Locked Reason:</b>")
                 text: sim.lockedReason
             }
             Controls.Label {
-                Kirigami.FormData.label: i18n("IMSI:")
+                Kirigami.FormData.label: i18n("<b>IMSI:</b>")
                 text: sim.imsi
             }
             Controls.Label {
-                Kirigami.FormData.label: i18n("EID:")
+                Kirigami.FormData.label: i18n("<b>EID:</b>")
                 text: sim.eid
             }
             Controls.Label {
-                Kirigami.FormData.label: i18n("Operator ID:")
+                Kirigami.FormData.label: i18n("<b>Operator ID:</b>")
                 text: sim.operatorIdentifier
             }
             Controls.Label {
-                Kirigami.FormData.label: i18n("Operator Name:")
+                Kirigami.FormData.label: i18n("<b>Operator Name:</b>")
                 text: sim.operatorName
             }
             Controls.Label {
-                Kirigami.FormData.label: i18n("SIM ID:")
+                Kirigami.FormData.label: i18n("<b>SIM ID:</b>")
                 text: sim.simIdentifier
             }
             ColumnLayout {
-                Kirigami.FormData.label: i18n("Emergency Numbers:")
+                Kirigami.FormData.label: i18n("<b>Emergency Numbers:</b>")
                 Repeater {
-                    model: modem.emergencyNumbers
+                    model: sim.emergencyNumbers
                     Controls.Label {
                         text: modelData
                     }

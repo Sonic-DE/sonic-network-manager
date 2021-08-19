@@ -91,8 +91,6 @@ Kirigami.ScrollablePage {
             onClicked: kcm.push("EditProfile.qml", {"modem": apnlist.modem, "profile": null})
             
             contentItem: Row {
-                anchors.fill: parent
-                anchors.leftMargin: Kirigami.Units.smallSpacing
                 spacing: Kirigami.Units.smallSpacing
                 Kirigami.Icon {
                     anchors.verticalCenter: parent.verticalCenter

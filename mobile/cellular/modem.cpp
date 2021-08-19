@@ -583,7 +583,7 @@ void Modem::addProfile(QString name, QString apn, QString username, QString pass
     QDBusPendingReply<QDBusObjectPath> reply = NetworkManager::addAndActivateConnection(settings->toMap(), m_nmDevice->uni(), "");
     reply.waitForFinished();
     if (reply.isError()) {
-        qWarning() << "Error adding connection" << reply.error().message();
+        qWarning() << "Error adding connection:" << reply.error().message();
     } else {
         qDebug() << "Successfully added a new connection" << name << "with APN" << apn << ".";
     }
@@ -626,9 +626,9 @@ void Modem::updateProfile(QString connectionUni, QString name, QString apn, QStr
             QDBusPendingReply reply = con->update(conSettings->toMap());
             reply.waitForFinished();
             if (reply.isError()) {
-                qWarning() << "Error updating connection settings for" << connectionUni << ".";
+                qWarning() << "Error updating connection settings for" << connectionUni << ":" << reply.error().message() << ".";
             } else {
-                qDebug() << "Successfully updated connection settings for" << connectionUni << ".";
+                qDebug() << "Successfully updated connection settings" << connectionUni << ".";
             }
             
         } else {
