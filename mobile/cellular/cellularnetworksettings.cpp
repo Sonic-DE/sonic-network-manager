@@ -31,12 +31,11 @@ K_PLUGIN_CLASS_WITH_JSON(CellularNetworkSettings, "cellularnetworksettings.json"
 
 CellularNetworkSettings::CellularNetworkSettings(QObject* parent, const QVariantList& args) 
     : KQuickAddons::ConfigModule(parent, args),
-      m_modem{ nullptr },
       m_modemList{},
+      m_simList{},
       m_providers{ nullptr }
 {
-    KAboutData* about = new KAboutData("kcm_cellular_network", i18n("Cellular Networks"),
-                                       "0.1", QString(), KAboutLicense::GPL);
+    KAboutData* about = new KAboutData("kcm_cellular_network", i18n("Cellular Networks"), "0.1", QString(), KAboutLicense::GPL);
     about->addAuthor(i18n("Devin Lin"), QString(), "espidev@gmail.com");
     about->addAuthor(i18n("Martin Kacej"), QString(), "m.kacej@atlas.sk");
     setAboutData(about);
@@ -67,13 +66,19 @@ CellularNetworkSettings::CellularNetworkSettings(QObject* parent, const QVariant
             qWarning() << "NetworkManager ModemDevice could not be found for this modem! Ignoring...";
         } else {
             m_modemList.push_back(new Modem(this, device, nmModem, modem, m_providers));
-            m_modem = m_modemList[m_modemList.size() - 1]; // TODO
+            
+            // update sims list if modem's list changes
+            connect(m_modemList[m_modemList.size() - 1], &Modem::simsChanged, this, [this]() -> void { fillSims(); });
         }
     }
     
     if (m_modemList.empty()) {
         qDebug() << "No modems found.";
     }
+    
+    Q_EMIT modemsChanged();
+    
+    fillSims();
 }
 
 CellularNetworkSettings::~CellularNetworkSettings()
@@ -81,6 +86,19 @@ CellularNetworkSettings::~CellularNetworkSettings()
     for (auto p : m_modemList) {
         delete p;
     }
+    for (auto p : m_simList) {
+        delete p;
+    }
+}
+
+QList<Modem *> CellularNetworkSettings::modems()
+{
+    return m_modemList;
+}
+
+QList<Sim *> CellularNetworkSettings::sims()
+{
+    return m_simList;
 }
 
 bool CellularNetworkSettings::modemFound()
@@ -90,12 +108,21 @@ bool CellularNetworkSettings::modemFound()
 
 bool CellularNetworkSettings::hasSim()
 {
-    return m_modem && m_modem->hasSim();
+    return !m_simList.empty();
 }
 
-Modem *CellularNetworkSettings::modem()
+void CellularNetworkSettings::fillSims()
 {
-    return m_modem;
+    for (auto p : m_simList) {
+        delete p;
+    }
+    m_simList.clear();
+    
+    for (auto modem : m_modemList) {
+        m_simList += modem->sims();
+    }
+    
+    Q_EMIT simsChanged();
 }
 
 #include "cellularnetworksettings.moc"

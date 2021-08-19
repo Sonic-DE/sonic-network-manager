@@ -27,6 +27,7 @@
 
 #include "mobileproviders.h"
 #include "modem.h"
+#include "sim.h"
 
 #include <NetworkManagerQt/ConnectionSettings>
 #include <NetworkManagerQt/GsmSetting>
@@ -44,23 +45,31 @@ class CellularNetworkSettings : public KQuickAddons::ConfigModule
     Q_OBJECT
     Q_PROPERTY(bool modemFound READ modemFound NOTIFY modemFoundChanged)
     Q_PROPERTY(bool hasSim READ hasSim NOTIFY hasSimChanged)
-    Q_PROPERTY(Modem* modem READ modem NOTIFY modemChanged)
+    Q_PROPERTY(QList<Modem *> modems READ modems NOTIFY modemsChanged)
+    Q_PROPERTY(QList<Sim *> sims READ sims NOTIFY simsChanged)
     
 public:
     CellularNetworkSettings(QObject *parent, const QVariantList &args);
     virtual ~CellularNetworkSettings();
     
+    QList<Modem *> modems();
+    QList<Sim *> sims();
+    
     bool modemFound();
     bool hasSim();
-    Modem *modem();
     
 Q_SIGNALS:
     void modemFoundChanged();
     void hasSimChanged();
     void modemChanged();
+    void modemsChanged();
+    void simsChanged();
     
 private:
-    Modem *m_modem; // TODO temporary until modem list is supported
+    void fillSims();
+    
     QList<Modem *> m_modemList;
+    QList<Sim *> m_simList;
+    
     MobileProviders *m_providers;
 };

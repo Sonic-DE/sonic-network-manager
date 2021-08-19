@@ -20,6 +20,7 @@
 #pragma once
 
 #include "mobileproviders.h"
+#include "sim.h"
 
 #include <QList>
 #include <QString>
@@ -36,9 +37,35 @@
 #include <ModemManagerQt/ModemDevice>
 
 class ProfileSettings;
+class Sim;
 
 class Modem : public QObject {
     Q_OBJECT
+    
+    Q_PROPERTY(QStringList accessTechnologies READ accessTechnologies NOTIFY accessTechnologiesChanged) // currently used tech
+    Q_PROPERTY(QString device READ device NOTIFY deviceChanged)
+    Q_PROPERTY(QString deviceIdentifier READ deviceIdentifier NOTIFY deviceIdentifierChanged)
+    Q_PROPERTY(QStringList drivers READ drivers NOTIFY driversChanged)
+    Q_PROPERTY(QString equipmentIdentifier READ equipmentIdentifier NOTIFY equipmentIdentifierChanged)
+    // TODO add bands
+    Q_PROPERTY(bool isEnabled READ isEnabled NOTIFY isEnabledChanged)
+    Q_PROPERTY(QString manufacturer READ manufacturer NOTIFY manufacturerChanged)
+    Q_PROPERTY(uint maxActiveBearers READ maxActiveBearers NOTIFY maxActiveBearersChanged)
+    Q_PROPERTY(uint maxBearers READ maxBearers NOTIFY maxBearersChanged)
+    Q_PROPERTY(QString model READ model NOTIFY modelChanged)
+    Q_PROPERTY(QStringList ownNumbers READ ownNumbers NOTIFY ownNumbersChanged)
+    Q_PROPERTY(QString plugin READ plugin NOTIFY pluginChanged)
+    Q_PROPERTY(QStringList ports READ ports NOTIFY portsChanged)
+    Q_PROPERTY(QString powerState READ powerState NOTIFY powerStateChanged)
+    Q_PROPERTY(QString primaryPort READ primaryPort NOTIFY primaryPortChanged)
+    Q_PROPERTY(QString revision READ revision NOTIFY revisionChanged)
+    Q_PROPERTY(uint signalQuality READ signalQuality NOTIFY signalQualityChanged)
+    Q_PROPERTY(QString simPath READ simPath NOTIFY simPathChanged)
+    Q_PROPERTY(QString state READ state NOTIFY stateChanged)
+    Q_PROPERTY(QString stateFailedReason READ stateFailedReason NOTIFY stateFailedReasonChanged)
+    Q_PROPERTY(QStringList supportedCapabilities READ supportedCapabilities NOTIFY supportedCapabilitiesChanged)
+    Q_PROPERTY(QString uni READ uni NOTIFY uniChanged)
+    
     Q_PROPERTY(bool hasSim READ hasSim NOTIFY hasSimChanged)
     Q_PROPERTY(QList<ProfileSettings *> profiles READ profileList NOTIFY profileListChanged)
     Q_PROPERTY(QString activeConnectionUni READ activeConnectionUni NOTIFY activeConnectionUniChanged)
@@ -49,6 +76,32 @@ public:
     Modem(QObject *parent, ModemManager::ModemDevice::Ptr mmDevice, NetworkManager::ModemDevice::Ptr nmDevice, ModemManager::Modem::Ptr m_mmInterface, MobileProviders *providers);
     Modem &operator=(Modem &&other);
     void swap(Modem &other);
+    
+    QStringList accessTechnologies();
+    QString device();
+    QString deviceIdentifier();
+    QStringList drivers();
+    QString equipmentIdentifier();
+    bool isEnabled();
+    QString manufacturer();
+    uint maxActiveBearers();
+    uint maxBearers();
+    QString model();
+    QStringList ownNumbers();
+    QString plugin();
+    QStringList ports();
+    QString powerState();
+    QString primaryPort();
+    QString revision();
+    uint signalQuality();
+    QString simPath();
+    QString state();
+    QString stateFailedReason();
+    QStringList supportedCapabilities();
+    QString uni();
+    
+    Q_INVOKABLE void reset();
+    Q_INVOKABLE void setEnabled(bool enabled);
     
     bool mobileDataActive();
     void setMobileDataActive(bool active);
@@ -64,7 +117,37 @@ public:
     
     void detectProfileSettings(); // detect modem connection settings (ex. apn) and add a new connection
     
+    QList<Sim *> sims();
+    
+    ModemManager::ModemDevice::Ptr mmModemDevice();
+    NetworkManager::ModemDevice::Ptr nmModemDevice();
+    ModemManager::Modem::Ptr mmModemInterface();
+    
 Q_SIGNALS:
+    void accessTechnologiesChanged();
+    void deviceChanged();
+    void deviceIdentifierChanged();
+    void driversChanged();
+    void equipmentIdentifierChanged();
+    void isEnabledChanged();
+    void manufacturerChanged();
+    void maxActiveBearersChanged();
+    void maxBearersChanged();
+    void modelChanged();
+    void ownNumbersChanged();
+    void pluginChanged();
+    void portsChanged();
+    void powerStateChanged();
+    void primaryPortChanged();
+    void revisionChanged();
+    void signalQualityChanged();
+    void simPathChanged();
+    void stateChanged();
+    void stateFailedReasonChanged();
+    void supportedCapabilitiesChanged();
+    void uniChanged();
+    
+    void simsChanged();
     void hasSimChanged();
     void profileListChanged();
     void activeConnectionUniChanged();
@@ -122,5 +205,5 @@ Q_SIGNALS:
 
 private:
     QString m_name, m_apn, m_user, m_password, m_networkType, m_connectionUni;
-    bool m_gsm = false, m_allowRoaming;
+    bool m_gsm, m_allowRoaming;
 };

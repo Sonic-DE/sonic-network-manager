@@ -1,6 +1,7 @@
 /*
  *   Copyright 2018 Martin Kacej <m.kacej@atlas.sk>
- *             2020 Devin Lin <espidev@gmail.com>
+ *             2020 Dimitris Kardarakos <dimkard@posteo.net>
+ *             2020-2021 Devin Lin <espidev@gmail.com>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as
@@ -63,6 +64,7 @@ SimpleKCM {
     }
     
     Kirigami.PlaceholderMessage {
+        id: simDetected
         anchors.centerIn: parent
         anchors.left: parent.left
         anchors.right: parent.right
@@ -77,33 +79,82 @@ SimpleKCM {
         anchors.left: parent.left
         anchors.right: parent.right
         
-        Kirigami.FormLayout {
+        ColumnLayout {
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.leftMargin: Kirigami.Units.largeSpacing * 2
-            anchors.rightMargin: Kirigami.Units.largeSpacing * 2
-            wideMode: false
-            visible: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable && kcm.hasSim
+            anchors.leftMargin: Kirigami.Units.largeSpacing
+            anchors.rightMargin: Kirigami.Units.largeSpacing
+            visible: !simDetected.visible && !noModem.visible
             
             Kirigami.Heading {
                 level: 3
-                Kirigami.FormData.isSection: true
-                text: i18n("Mobile Data")
-            }
-            Controls.Switch {
-                id: mobileDataCheckbox
-                Kirigami.FormData.label: i18n("Mobile data")
-                text: checked ? i18n("On") : i18n("Off")
-                enabled: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable
-                checked: kcm.modem.mobileDataActive
-                onCheckedChanged: kcm.modem.mobileDataActive = checked
+                text: i18n("Modems")
             }
             
-            Kirigami.Separator {
-                Kirigami.FormData.isSection: true
-                Kirigami.FormData.label: i18n("SIM")
-                weight: 0
+            Repeater {
+                model: kcm.modems
+                
+                delegate: Kirigami.BasicListItem {
+                    label: "Modem " + modelData.uni
+                    icon: "network-modem"
+                    onClicked: kcm.push("Modem.qml", { "modem": modelData })
+                }
             }
+            
+            Kirigami.Heading {
+                level: 3
+                text: i18n("SIM")
+            }
+            
+            Repeater {
+                model: kcm.sims
+                
+                delegate: Kirigami.BasicListItem {
+                    label: "SIM " + modelData.uni
+                    icon: "auth-sim-symbolic"
+                    onClicked: kcm.push("Sim.qml", { "sim": modelData })
+                }
+            }
+            
+            Kirigami.Heading {
+                level: 3
+                text: i18n("Mobile Data")
+            }
+        }
+        
+        //Kirigami.FormLayout {
+            //anchors.left: parent.left
+            //anchors.right: parent.right
+            //anchors.leftMargin: Kirigami.Units.largeSpacing * 2
+            //anchors.rightMargin: Kirigami.Units.largeSpacing * 2
+            //wideMode: false
+            //visible: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable && kcm.hasSim
+            
+            //Kirigami.Separator {
+                //Kirigami.FormData.isSection: true
+                //Kirigami.FormData.label: i18n("Modem")
+            //}
+            
+            //Kirigami.Separator {
+                //Kirigami.FormData.isSection: true
+                //Kirigami.FormData.label: i18n("SIM")
+            //}
+            
+            
+            //Kirigami.Heading {
+                //level: 3
+                //Kirigami.FormData.isSection: true
+                //text: i18n("Mobile Data")
+            //}
+            //Controls.Switch {
+                //id: mobileDataCheckbox
+                //Kirigami.FormData.label: i18n("Mobile data")
+                //text: checked ? i18n("On") : i18n("Off")
+                //enabled: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable
+                //checked: kcm.modem.mobileDataActive
+                //onCheckedChanged: kcm.modem.mobileDataActive = checked
+            //}
+            
             //Controls.Switch {
                 //Kirigami.FormData.label: i18n("Data roaming")
                 //text: checked ? i18n("On") : i18n("Off")
@@ -112,14 +163,6 @@ SimpleKCM {
                 //onCheckedChanged: kcm.allowRoaming = checked
             //}
             
-            Controls.Button {
-                icon.name: "globe"
-                text: "Access point names"
-                onClicked: {
-                    kcm.push("ProfileList.qml", {"modem": kcm.modem});
-                }
-            }
-            
-        }
+        //}
     }
 }
