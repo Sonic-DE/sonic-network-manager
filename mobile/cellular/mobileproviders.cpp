@@ -1,8 +1,25 @@
 /*
-    SPDX-FileCopyrightText: 2010-2012 Lamarque Souza <lamarque@kde.org>
+    Copyright 2010-2012 Lamarque Souza <lamarque@kde.org>
+              2020 Devin Lin <espidev@gmail.com>
 
-    SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License as
+    published by the Free Software Foundation; either version 2 of
+    the License or (at your option) version 3 or any later version
+    accepted by the membership of KDE e.V. (or its successor approved
+    by the membership of KDE e.V.), which shall act as a proxy
+    defined in Section 14 of version 3 of the license.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+// taken from libs/editor/mobileproviders.cpp, and adapted for mobile purposes
 
 #include "debug.h"
 #include "mobileproviders.h"
@@ -19,22 +36,6 @@ bool localeAwareCompare(const QString & one, const QString & two) {
 
 MobileProviders::MobileProviders()
 {
-    for (int c = 1; c <= QLocale::LastCountry; c++) {
-        const auto country = static_cast<QLocale::Country>(c);
-        QLocale locale(QLocale::AnyLanguage, country);
-        if (locale.country() == country) {
-            const QString localeName = locale.name();
-            const auto idx = localeName.indexOf(QLatin1Char('_'));
-            if (idx != -1) {
-                const QString countryCode = localeName.mid(idx + 1);
-                QString countryName = locale.nativeCountryName();
-                if (countryName.isEmpty()) {
-                    countryName = QLocale::countryToString(country);
-                }
-                mCountries.insert(countryCode, countryName);
-            }
-        }
-    }
     mError = Success;
 
     QFile file2(ProvidersFile);
@@ -44,15 +45,15 @@ MobileProviders::MobileProviders()
             docElement = mDocProviders.documentElement();
 
             if (docElement.isNull()) {
-                qCWarning(PLASMA_NM) << ProvidersFile << ": document is null";
+                qWarning() << ProvidersFile << ": document is null";
                 mError = ProvidersIsNull;
             } else {
                 if (docElement.isNull() || docElement.tagName() != "serviceproviders") {
-                    qCWarning(PLASMA_NM) << ProvidersFile << ": wrong format";
+                    qWarning() << ProvidersFile << ": wrong format";
                     mError = ProvidersWrongFormat;
                 } else {
                     if (docElement.attribute("format") != "2.0") {
-                        qCWarning(PLASMA_NM) << ProvidersFile << ": mobile broadband provider database format '" << docElement.attribute("format") << "' not supported.";
+                        qWarning() << ProvidersFile << ": mobile broadband provider database format '" << docElement.attribute("format") << "' not supported.";
                         mError = ProvidersFormatNotSupported;
                     } else {
                         // qCDebug(PLASMA_NM) << "Everything is alright so far";
@@ -63,7 +64,7 @@ MobileProviders::MobileProviders()
 
         file2.close();
     } else {
-        qCWarning(PLASMA_NM) << "Error opening providers file" << ProvidersFile;
+        qWarning() << "Error opening providers file" << ProvidersFile;
         mError = ProvidersMissing;
     }
 }
@@ -72,91 +73,62 @@ MobileProviders::~MobileProviders()
 {
 }
 
-QStringList MobileProviders::getCountryList() const
-{
-    QStringList temp = mCountries.values();
-    std::sort(temp.begin(), temp.end(), localeAwareCompare);
-    return temp;
-}
-
-QString MobileProviders::countryFromLocale() const
-{
-    const QString localeName = QLocale().name();
-    const auto idx = localeName.indexOf(QLatin1Char('_'));
-    if (idx != -1) {
-        return localeName.mid(idx + 1);
-    }
-    return QString();
-}
-
-QStringList MobileProviders::getProvidersList(QString country, NetworkManager::ConnectionSettings::ConnectionType type)
+void MobileProviders::fillProvidersList()
 {
     mProvidersGsm.clear();
     mProvidersCdma.clear();
     QDomNode n = docElement.firstChild();
 
-    // country is a country name and we parse country codes.
-    if (!mCountries.key(country).isNull()) {
-        country = mCountries.key(country);
-    }
     QMap<QString, QString> sortedGsm;
     QMap<QString, QString> sortedCdma;
     while (!n.isNull()) {
         QDomElement e = n.toElement(); // <country ...>
 
-        if (!e.isNull() && e.attribute("code").toUpper() == country) {
-            QDomNode n2 = e.firstChild();
-            while (!n2.isNull()) {
-                QDomElement e2 = n2.toElement(); // <provider ...>
+        QDomNode n2 = e.firstChild();
+        while (!n2.isNull()) {
+            QDomElement e2 = n2.toElement(); // <provider ...>
 
-                if (!e2.isNull() && e2.tagName().toLower() == "provider") {
-                    QDomNode n3 = e2.firstChild();
-                    bool hasGsm = false;
-                    bool hasCdma = false;
-                    QMap<QString, QString> localizedProviderNames;
+            if (!e2.isNull() && e2.tagName().toLower() == "provider") {
+                QDomNode n3 = e2.firstChild();
+                bool hasGsm = false;
+                bool hasCdma = false;
+                QMap<QString, QString> localizedProviderNames;
 
-                    while (!n3.isNull()) {
-                        QDomElement e3 = n3.toElement(); // <name | gsm | cdma>
+                while (!n3.isNull()) {
+                    QDomElement e3 = n3.toElement(); // <name | gsm | cdma>
 
-                        if (!e3.isNull()) {
-                            if (e3.tagName().toLower() == "gsm") {
-                                hasGsm = true;
-                            } else if (e3.tagName().toLower() == "cdma") {
-                                hasCdma = true;
-                            } else if (e3.tagName().toLower() == "name") {
-                                QString lang = e3.attribute("xml:lang");
-                                if (lang.isEmpty()) {
-                                    lang = "en";     // English is default
-                                } else {
-                                    lang = lang.toLower();
-                                    lang.remove(QRegExp("\\-.*$"));  // Remove everything after '-' in xml:lang attribute.
-                                }
-                                localizedProviderNames.insert(lang, e3.text());
+                    if (!e3.isNull()) {
+                        if (e3.tagName().toLower() == "gsm") {
+                            hasGsm = true;
+                        } else if (e3.tagName().toLower() == "cdma") {
+                            hasCdma = true;
+                        } else if (e3.tagName().toLower() == "name") {
+                            QString lang = e3.attribute("xml:lang");
+                            if (lang.isEmpty()) {
+                                lang = "en";     // English is default
+                            } else {
+                                lang = lang.toLower();
+                                lang.remove(QRegExp("\\-.*$"));  // Remove everything after '-' in xml:lang attribute.
                             }
+                            localizedProviderNames.insert(lang, e3.text());
                         }
-                        n3 = n3.nextSibling();
                     }
-                    const QString name = getNameByLocale(localizedProviderNames);
-                    if (hasGsm) {
-                        mProvidersGsm.insert(name, e2.firstChild());
-                        sortedGsm.insert(name.toLower(), name);
-                    }
-                    if (hasCdma) {
-                        mProvidersCdma.insert(name, e2.firstChild());
-                        sortedCdma.insert(name.toLower(), name);
-                    }
+                    n3 = n3.nextSibling();
                 }
-                n2 = n2.nextSibling();
+                const QString name = getNameByLocale(localizedProviderNames);
+                if (hasGsm) {
+                    mProvidersGsm.insert(name, e2.firstChild());
+                    sortedGsm.insert(name.toLower(), name);
+                }
+                if (hasCdma) {
+                    mProvidersCdma.insert(name, e2.firstChild());
+                    sortedCdma.insert(name.toLower(), name);
+                }
             }
-            break;
+            n2 = n2.nextSibling();
         }
         n = n.nextSibling();
     }
-
-    if (type == NetworkManager::ConnectionSettings::Gsm) {
-        return sortedGsm.values();
-    }
-    return sortedCdma.values();
 }
 
 QStringList MobileProviders::getApns(const QString & provider)
@@ -196,7 +168,7 @@ QStringList MobileProviders::getApns(const QString & provider)
                         mApns.insert(e2.attribute("value"), e2.firstChild());
                     }
                 } else if (!e2.isNull() && e2.tagName().toLower() == "network-id") {
-                    mNetworkIds.append(e2.attribute("mcc") + '-' + e2.attribute("mnc"));
+                    mNetworkIds.insert(e2.attribute("mcc") + e2.attribute("mnc"), provider);
                 }
 
                 n2 = n2.nextSibling();
@@ -211,15 +183,12 @@ QStringList MobileProviders::getApns(const QString & provider)
 }
 
 
-QStringList MobileProviders::getNetworkIds(const QString & provider)
+QString MobileProviders::getProvider(const QString &mccmnc)
 {
-    if (mNetworkIds.isEmpty()) {
-        getApns(provider);
-    }
-    return mNetworkIds;
+    return mNetworkIds[mccmnc];
 }
 
-QVariantMap MobileProviders::getApnInfo(const QString & apn)
+QVariantMap MobileProviders::getApnInfo(const QString &apn)
 {
     QVariantMap temp;
     QDomNode n = mApns[apn];
