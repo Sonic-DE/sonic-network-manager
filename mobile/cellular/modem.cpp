@@ -24,66 +24,6 @@
 #include <KLocalizedString>
 #include <KUser>
 
-#include <modem3gpp.h>
-
-QString networkTypeStr(NetworkManager::GsmSetting::NetworkType networkType)
-{
-    if (networkType == NetworkManager::GsmSetting::NetworkType::Any) {
-        return "Any";
-    } else if (networkType == NetworkManager::GsmSetting::NetworkType::GprsEdgeOnly) {
-        return "Only 2G";
-    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Only3G) {
-        return "Only 3G";
-    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Only4GLte) {
-        return "Only 4G";
-    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Prefer2G) {
-        return "2G";
-    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Prefer3G) {
-        return "3G/2G";
-    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Prefer4GLte) {
-        return "4G/3G/2G";
-    }
-    return "Any";
-}
-
-NetworkManager::GsmSetting::NetworkType networkTypeFlag(const QString &networkType)
-{
-    if (networkType == "Any") {
-        return NetworkManager::GsmSetting::NetworkType::Any;
-    } else if (networkType == "Only 2G") {
-        return NetworkManager::GsmSetting::NetworkType::GprsEdgeOnly;
-    } else if (networkType == "Only 3G") {
-        return NetworkManager::GsmSetting::NetworkType::Only3G;
-    } else if (networkType == "Only 4G") {
-        return NetworkManager::GsmSetting::NetworkType::Only4GLte;
-    } else if (networkType == "2G") {
-        return NetworkManager::GsmSetting::NetworkType::Prefer2G;
-    } else if (networkType == "3G/2G") {
-        return NetworkManager::GsmSetting::NetworkType::Prefer3G;
-    } else if (networkType == "4G/3G/2G") {
-        return NetworkManager::GsmSetting::NetworkType::Prefer4GLte;
-    }
-    return NetworkManager::GsmSetting::NetworkType::Any;
-}
-
-QString nmDeviceStateStr(NetworkManager::Device::State state)
-{
-    if (state == NetworkManager::Device::State::UnknownState) return "Unknown";
-    else if (state == NetworkManager::Device::State::Unmanaged) return "Unmanaged";
-    else if (state == NetworkManager::Device::State::Unavailable) return "Unavailable";
-    else if (state == NetworkManager::Device::State::Disconnected) return "Disconnected";
-    else if (state == NetworkManager::Device::State::Preparing) return "Preparing";
-    else if (state == NetworkManager::Device::State::ConfiguringHardware) return "ConfiguringHardware";
-    else if (state == NetworkManager::Device::State::NeedAuth) return "NeedAuth";
-    else if (state == NetworkManager::Device::State::ConfiguringIp) return "ConfiguringIp";
-    else if (state == NetworkManager::Device::State::CheckingIp) return "CheckingIp";
-    else if (state == NetworkManager::Device::State::WaitingForSecondaries) return "WaitingForSecondaries";
-    else if (state == NetworkManager::Device::State::Activated) return "Activated";
-    else if (state == NetworkManager::Device::State::Deactivating) return "Deactivating";
-    else if (state == NetworkManager::Device::State::Failed) return "Failed";
-    else return "";
-}
-
 Modem::Modem(QObject *parent, ModemManager::ModemDevice::Ptr mmDevice, NetworkManager::ModemDevice::Ptr nmDevice , ModemManager::Modem::Ptr mmInterface, MobileProviders *providers) 
     : QObject{ parent },
       m_mmDevice{ mmDevice },
@@ -91,55 +31,24 @@ Modem::Modem(QObject *parent, ModemManager::ModemDevice::Ptr mmDevice, NetworkMa
       m_mmInterface{ mmInterface },
       m_providers{ providers }
 {
-    connect(m_mmInterface.data(), &ModemManager::Modem::accessTechnologiesChanged, this, [this]() -> void { Q_EMIT accessTechnologiesChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::deviceChanged, this, [this]() -> void { Q_EMIT deviceChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::deviceIdentifierChanged, this, [this]() -> void { Q_EMIT deviceIdentifierChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::driversChanged, this, [this]() -> void { Q_EMIT driversChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::equipmentIdentifierChanged, this, [this]() -> void { Q_EMIT equipmentIdentifierChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::manufacturerChanged, this, [this]() -> void { Q_EMIT manufacturerChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::maxActiveBearersChanged, this, [this]() -> void { Q_EMIT maxActiveBearersChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::maxBearersChanged, this, [this]() -> void { Q_EMIT maxBearersChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::modelChanged, this, [this]() -> void { Q_EMIT modelChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::ownNumbersChanged, this, [this]() -> void { Q_EMIT ownNumbersChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::pluginChanged, this, [this]() -> void { Q_EMIT pluginChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::portsChanged, this, [this]() -> void { Q_EMIT portsChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::powerStateChanged, this, [this]() -> void { Q_EMIT powerStateChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::primaryPortChanged, this, [this]() -> void { Q_EMIT primaryPortChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::revisionChanged, this, [this]() -> void { Q_EMIT revisionChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::signalQualityChanged, this, [this]() -> void { Q_EMIT signalQualityChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::simPathChanged, this, [this]() -> void { Q_EMIT simPathChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::stateChanged, this, [this]() -> void { Q_EMIT stateChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::stateFailedReasonChanged, this, [this]() -> void { Q_EMIT stateFailedReasonChanged(); });
-    connect(m_mmInterface.data(), &ModemManager::Modem::supportedCapabilitiesChanged, this, [this]() -> void { Q_EMIT supportedCapabilitiesChanged(); });
-    
     connect(m_mmDevice.data(), &ModemManager::ModemDevice::simAdded, this, [this]() -> void { Q_EMIT simsChanged(); Q_EMIT hasSimChanged(); });
     connect(m_mmDevice.data(), &ModemManager::ModemDevice::simRemoved, this, [this]() -> void { Q_EMIT simsChanged(); Q_EMIT hasSimChanged(); });
     
-    // determine type of connection profile
-    if (m_nmDevice->currentCapabilities() & NetworkManager::ModemDevice::CdmaEvdo) {
-        m_connectionSettingsType = NetworkManager::ConnectionSettings::Cdma;
-    } else if ((m_nmDevice->currentCapabilities() & NetworkManager::ModemDevice::GsmUmts) || (m_nmDevice->currentCapabilities() & NetworkManager::ModemDevice::Lte)) {
-        m_connectionSettingsType = NetworkManager::ConnectionSettings::Gsm;
-    }
-    
-    // determine if no connections are added, and the default settings should be found
-    if (m_nmDevice->availableConnections().empty()) {
-        detectProfileSettings();
-    }
+    // this is guaranteed to be a GSM modem
+    m_mm3gppDevice = m_mmDevice->interface(ModemManager::ModemDevice::GsmInterface).objectCast<ModemManager::Modem3gpp>();
     
     // add profiles
     refreshProfiles();
-    connect(m_nmDevice.data(), &NetworkManager::ModemDevice::availableConnectionChanged, this, [this]() -> void { 
-        refreshProfiles();
-    });
-    connect(m_nmDevice.data(), &NetworkManager::ModemDevice::activeConnectionChanged, this, [this]() -> void {
-        Q_EMIT activeConnectionUniChanged();
-    });
+    connect(m_nmDevice.data(), &NetworkManager::ModemDevice::availableConnectionChanged, this, [this]() -> void { refreshProfiles(); });
+    connect(m_nmDevice.data(), &NetworkManager::ModemDevice::activeConnectionChanged, this, [this]() -> void { Q_EMIT activeConnectionUniChanged(); });
     
     connect(m_nmDevice.data(), &NetworkManager::ModemDevice::stateChanged, this, [this](NetworkManager::Device::State newstate, NetworkManager::Device::State oldstate, NetworkManager::Device::StateChangeReason reason) -> void {
         qDebug() << "Modem" << m_nmDevice->uni() << "changed state:" << nmDeviceStateStr(oldstate) << "->" << nmDeviceStateStr(newstate);
         Q_EMIT mobileDataActiveChanged();
     });
+    
+    // we need to initialize it after m_mm3gppDevice has been set
+    m_details = new ModemDetails(this, this);
 }
 
 Modem &Modem::operator=(Modem &&other)
@@ -150,283 +59,30 @@ Modem &Modem::operator=(Modem &&other)
 
 void Modem::swap(Modem &other)
 {
+    std::swap(m_details, other.m_details);
+    std::swap(m_nmDevice, other.m_nmDevice);
     std::swap(m_mmDevice, other.m_mmDevice);
     std::swap(m_mmInterface, other.m_mmInterface);
-    std::swap(m_connectionSettingsType, other.m_connectionSettingsType);
+    std::swap(m_mm3gppDevice, other.m_mm3gppDevice);
     std::swap(m_profileList, other.m_profileList);
     std::swap(m_providers, other.m_providers);
 }
 
-QStringList Modem::accessTechnologies()
+ModemDetails *Modem::modemDetails()
 {
-    QStringList list;
-    auto flags = m_mmInterface->accessTechnologies();
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_UNKNOWN) {
-        list.push_back("Unknown");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_POTS) {
-        list.push_back("POTS");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_GSM) {
-        list.push_back("GSM");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_GSM_COMPACT) {
-        list.push_back("GSM Compact");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_GPRS) {
-        list.push_back("GPRS");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_EDGE) {
-        list.push_back("EDGE");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_UMTS) {
-        list.push_back("UMTS");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_HSDPA) {
-        list.push_back("HSDPA");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_HSUPA) {
-        list.push_back("HSUPA");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_HSPA) {
-        list.push_back("HSPA");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_HSPA_PLUS) {
-        list.push_back("HSPA+");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_1XRTT) {
-        list.push_back("CDMA2000 1xRTT");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_EVDO0) {
-        list.push_back("CDMA2000 EVDO-0");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_EVDOA) {
-        list.push_back("CDMA2000 EVDO-A");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_EVDOB) {
-        list.push_back("CDMA2000 EVDO-B");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_LTE) {
-        list.push_back("LTE");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_5GNR) {
-        list.push_back("5GNR");
-    }
-    if (flags & MM_MODEM_ACCESS_TECHNOLOGY_ANY) {
-        list.push_back("Any");
-    }
-    return list;
+    return m_details;
 }
 
-QString Modem::device()
+QString Modem::uni() 
 {
-    return m_mmInterface->device();
+    return m_mmInterface->uni();
 }
 
-QString Modem::deviceIdentifier()
+QString Modem::displayId()
 {
-    return m_mmInterface->deviceIdentifier();
-}
-
-QStringList Modem::drivers()
-{
-    return m_mmInterface->drivers();
-}
-
-QString Modem::equipmentIdentifier()
-{
-    return m_mmInterface->equipmentIdentifier();
-}
-
-bool Modem::isEnabled()
-{
-    return m_mmInterface->isEnabled();
-}
-
-QString Modem::manufacturer()
-{
-    return m_mmInterface->manufacturer();
-}
-
-uint Modem::maxActiveBearers()
-{
-    return m_mmInterface->maxActiveBearers();
-}
-
-uint Modem::maxBearers()
-{
-    return m_mmInterface->maxBearers();
-}
-
-QString Modem::model()
-{
-    return m_mmInterface->model();
-}
-
-QStringList Modem::ownNumbers()
-{
-    return m_mmInterface->ownNumbers();
-}
-
-QString Modem::plugin()
-{
-    return m_mmInterface->plugin();
-}
-
-QStringList Modem::ports()
-{
-    QStringList ports;
-    for (auto &port : m_mmInterface->ports()) {
-        QString qs = port.name;
-        switch (port.type) {
-            case MM_MODEM_PORT_TYPE_UNKNOWN:
-                qs += " [Unknown]";
-                break;
-            case MM_MODEM_PORT_TYPE_NET:
-                qs += " [Net]";
-                break;
-            case MM_MODEM_PORT_TYPE_AT:
-                qs += " [AT]";
-                break;
-            case MM_MODEM_PORT_TYPE_QCDM:
-                qs += " [QCDM]";
-                break;
-            case MM_MODEM_PORT_TYPE_GPS:
-                qs += " [GPS]";
-                break;
-            case MM_MODEM_PORT_TYPE_QMI:
-                qs += " [QMI]";
-                break;
-            case MM_MODEM_PORT_TYPE_MBIM:
-                qs += " [MBIM]";
-                break;
-            case MM_MODEM_PORT_TYPE_AUDIO:
-                qs += " [Audio]";
-                break;
-            case MM_MODEM_PORT_TYPE_IGNORED:
-                qs += " [Ignored]";
-                break;
-        }
-        ports.push_back(qs);
-    }
-    return ports;
-}
-
-QString Modem::powerState()
-{
-    switch (m_mmInterface->powerState()) {
-        case MM_MODEM_POWER_STATE_UNKNOWN:
-            return i18n("Unknown");
-        case MM_MODEM_POWER_STATE_OFF:
-            return i18n("Off");
-        case MM_MODEM_POWER_STATE_LOW:
-            return i18n("Low-power mode");
-        case MM_MODEM_POWER_STATE_ON:
-            return i18n("Full power mode");
-    }
-    return "";
-}
-
-QString Modem::primaryPort()
-{
-    return m_mmInterface->primaryPort();
-}
-
-QString Modem::revision()
-{
-    return m_mmInterface->revision();
-}
-
-uint Modem::signalQuality()
-{
-    return m_mmInterface->signalQuality().signal;
-}
-
-QString Modem::simPath()
-{
-    return m_mmInterface->simPath();
-}
-
-QString Modem::state()
-{
-    switch (m_mmInterface->state()) {
-        case MM_MODEM_STATE_FAILED:
-            return i18n("Failed");
-        case MM_MODEM_STATE_UNKNOWN:
-            return i18n("Unknown");
-        case MM_MODEM_STATE_INITIALIZING:
-            return i18n("Initializing");
-        case MM_MODEM_STATE_LOCKED:
-            return i18n("Locked");
-        case MM_MODEM_STATE_DISABLED:
-            return i18n("Disabled");
-        case MM_MODEM_STATE_DISABLING:
-            return i18n("Disabling");
-        case MM_MODEM_STATE_ENABLING:
-            return i18n("Enabling");
-        case MM_MODEM_STATE_ENABLED:
-            return i18n("Enabled");
-        case MM_MODEM_STATE_SEARCHING:
-            return i18n("Searching for network provider"); 
-        case MM_MODEM_STATE_REGISTERED:
-            return i18n("Registered with network provider");
-        case MM_MODEM_STATE_DISCONNECTING:
-            return i18n("Disconnecting");
-        case MM_MODEM_STATE_CONNECTING:
-            return i18n("Connecting");
-        case MM_MODEM_STATE_CONNECTED:
-            return i18n("Connected");
-    }
-    return "";
-}
-
-QString Modem::stateFailedReason()
-{
-    switch (m_mmInterface->stateFailedReason()) {
-        case MM_MODEM_STATE_FAILED_REASON_NONE:
-            return i18n("No error.");
-        case MM_MODEM_STATE_FAILED_REASON_UNKNOWN:
-            return i18n("Unknown error.");
-        case MM_MODEM_STATE_FAILED_REASON_SIM_MISSING:
-            return i18n("SIM is required but missing.");
-        case MM_MODEM_STATE_FAILED_REASON_SIM_ERROR:
-            return i18n("SIM is available but unusable.");
-    }
-    return "";
-}
-
-QStringList Modem::supportedCapabilities()
-{
-    QStringList list;
-    for (auto &cap : m_mmInterface->supportedCapabilities()) {
-        switch (cap) {
-            case MM_MODEM_CAPABILITY_NONE:
-                list.push_back("None");
-                break;
-            case MM_MODEM_CAPABILITY_POTS:
-                list.push_back("POTS");
-                break;
-            case MM_MODEM_CAPABILITY_CDMA_EVDO:
-                list.push_back("CDMA/EVDO");
-                break;
-            case MM_MODEM_CAPABILITY_GSM_UMTS:
-                list.push_back("GSM/UMTS");
-                break;
-            case MM_MODEM_CAPABILITY_LTE:
-                list.push_back("LTE");
-                break;
-            case MM_MODEM_CAPABILITY_IRIDIUM:
-                list.push_back("Iridium");
-                break;
-            case MM_MODEM_CAPABILITY_5GNR:
-                list.push_back("5GNR");
-                break;
-            case MM_MODEM_CAPABILITY_ANY:
-                list.push_back("Any");
-                break;
-        }
-    }
-    return list;
+    // in the form /org/freedesktop/ModemManager1/Modem/0
+    QStringList uniSplit = uni().split("/");
+    return uniSplit.count() == 0 ? "(empty)" : QString(uniSplit[uniSplit.size() - 1]);
 }
 
 void Modem::reset() 
@@ -441,7 +97,7 @@ void Modem::reset()
 
 void Modem::setEnabled(bool enabled)
 {
-    if (enabled != isEnabled()) {
+    if (enabled != m_mmInterface->isEnabled()) {
         qDebug() << (enabled ? "Enabling" : "Disabling") << "the modem...";
         QDBusPendingReply<void> reply = m_mmInterface->setEnabled(enabled);
         reply.waitForFinished();
@@ -451,9 +107,10 @@ void Modem::setEnabled(bool enabled)
     }
 }
 
-QString Modem::uni() 
+bool Modem::isRoaming()
 {
-    return m_mmInterface->uni();
+    // TODO should be reimplemented with NM homeOnly() in GsmSetting
+    return false;
 }
 
 bool Modem::mobileDataActive()
@@ -550,36 +207,20 @@ void Modem::activateProfile(const QString &connectionUni)
 
 void Modem::addProfile(QString name, QString apn, QString username, QString password, QString networkType)
 {
-    NetworkManager::ConnectionSettings::Ptr settings;
-
-    if (m_connectionSettingsType == NetworkManager::ConnectionSettings::Gsm) {
-        settings = NetworkManager::ConnectionSettings::Ptr{ new NetworkManager::ConnectionSettings(m_connectionSettingsType) };
-        settings->setId(name);
-        settings->setUuid(NetworkManager::ConnectionSettings::createNewUuid());
-        settings->setAutoconnect(true);
-        settings->addToPermissions(KUser().loginName(), QString());
-        
-        NetworkManager::GsmSetting::Ptr gsmSetting = settings->setting(NetworkManager::Setting::Gsm).dynamicCast<NetworkManager::GsmSetting>();
-        gsmSetting->setApn(apn);
-        gsmSetting->setUsername(username);
-        gsmSetting->setPassword(password);
-        gsmSetting->setPasswordFlags(password == "" ? NetworkManager::Setting::NotRequired : NetworkManager::Setting::AgentOwned);
-        gsmSetting->setNetworkType(networkTypeFlag(networkType));
-        gsmSetting->setHomeOnly(true); // TODO roaming
-        
-    } else if (m_connectionSettingsType == NetworkManager::ConnectionSettings::Cdma){
-        settings = NetworkManager::ConnectionSettings::Ptr{ new NetworkManager::ConnectionSettings(m_connectionSettingsType) };
-        settings->setId(name);
-        settings->setUuid(NetworkManager::ConnectionSettings::createNewUuid());
-        settings->setAutoconnect(true);
-        settings->addToPermissions(KUser().loginName(), QString());
-        
-        NetworkManager::CdmaSetting::Ptr cdmaSetting = settings->setting(NetworkManager::Setting::Cdma).dynamicCast<NetworkManager::CdmaSetting>();
-        cdmaSetting->setUsername(username);
-        cdmaSetting->setPassword(password);
-        cdmaSetting->setPasswordFlags(password == "" ? NetworkManager::Setting::NotRequired : NetworkManager::Setting::AgentOwned);
-    }
+    NetworkManager::ConnectionSettings::Ptr settings{ new NetworkManager::ConnectionSettings(NetworkManager::ConnectionSettings::Gsm) };
+    settings->setId(name);
+    settings->setUuid(NetworkManager::ConnectionSettings::createNewUuid());
+    settings->setAutoconnect(true);
+    settings->addToPermissions(KUser().loginName(), QString());
     
+    NetworkManager::GsmSetting::Ptr gsmSetting = settings->setting(NetworkManager::Setting::Gsm).dynamicCast<NetworkManager::GsmSetting>();
+    gsmSetting->setApn(apn);
+    gsmSetting->setUsername(username);
+    gsmSetting->setPassword(password);
+    gsmSetting->setPasswordFlags(password == "" ? NetworkManager::Setting::NotRequired : NetworkManager::Setting::AgentOwned);
+    gsmSetting->setNetworkType(ProfileSettings::networkTypeFlag(networkType));
+    gsmSetting->setHomeOnly(true); // TODO roaming
+
     QDBusPendingReply<QDBusObjectPath> reply = NetworkManager::addAndActivateConnection(settings->toMap(), m_nmDevice->uni(), "");
     reply.waitForFinished();
     if (reply.isError()) {
@@ -609,19 +250,12 @@ void Modem::updateProfile(QString connectionUni, QString name, QString apn, QStr
         if (conSettings) {
             conSettings->setId(name);
             
-            if (m_connectionSettingsType == NetworkManager::ConnectionSettings::Gsm) {
-                NetworkManager::GsmSetting::Ptr gsmSetting = conSettings->setting(NetworkManager::Setting::Gsm).dynamicCast<NetworkManager::GsmSetting>();
-                gsmSetting->setApn(apn);
-                gsmSetting->setUsername(username);
-                gsmSetting->setPassword(password);
-                gsmSetting->setPasswordFlags(password == "" ? NetworkManager::Setting::NotRequired : NetworkManager::Setting::AgentOwned);
-                gsmSetting->setNetworkType(networkTypeFlag(networkType));
-            } else if (m_connectionSettingsType == NetworkManager::ConnectionSettings::Cdma) {
-                NetworkManager::CdmaSetting::Ptr cdmaSetting = conSettings->setting(NetworkManager::Setting::Cdma).dynamicCast<NetworkManager::CdmaSetting>();
-                cdmaSetting->setUsername(username);
-                cdmaSetting->setPassword(password);
-                cdmaSetting->setPasswordFlags(password == "" ? NetworkManager::Setting::NotRequired : NetworkManager::Setting::AgentOwned);
-            }
+            NetworkManager::GsmSetting::Ptr gsmSetting = conSettings->setting(NetworkManager::Setting::Gsm).dynamicCast<NetworkManager::GsmSetting>();
+            gsmSetting->setApn(apn);
+            gsmSetting->setUsername(username);
+            gsmSetting->setPassword(password);
+            gsmSetting->setPasswordFlags(password == "" ? NetworkManager::Setting::NotRequired : NetworkManager::Setting::AgentOwned);
+            gsmSetting->setNetworkType(ProfileSettings::networkTypeFlag(networkType));
             
             QDBusPendingReply reply = con->update(conSettings->toMap());
             reply.waitForFinished();
@@ -639,50 +273,32 @@ void Modem::updateProfile(QString connectionUni, QString name, QString apn, QStr
     }
 }
 
-void Modem::detectProfileSettings()
+void Modem::addDetectedProfileSettings()
 {
     if (m_mmDevice && hasSim()) {
         QString op = m_mmDevice->sim()->operatorName();
-        
-        ModemManager::Modem3gpp::Ptr modem3gpp;
-        
         qWarning() << "Detecting profile settings. Operator:" << op;
         
-        if (m_connectionSettingsType == NetworkManager::ConnectionSettings::Gsm) {
-            modem3gpp = m_mmDevice->interface(ModemManager::ModemDevice::GsmInterface).objectCast<ModemManager::Modem3gpp>();
-            
-            if (modem3gpp) {
-                qWarning() << "Detecting profile settings. MCCMNC:" << modem3gpp->operatorCode() << "Provider:" << m_providers->getProvider(modem3gpp->operatorCode());
+        if (m_mm3gppDevice) {
+            qWarning() << "Detecting profile settings. MCCMNC:" << m_mm3gppDevice->operatorCode() << "Provider:" << m_providers->getProvider(m_mm3gppDevice->operatorCode());
 
-                // lookup apns with mccmnc codes
-                QStringList apns = m_providers->getApns(m_providers->getProvider(modem3gpp->operatorCode()));
-                
-                for (auto apn : apns) {
-                    QVariantMap apnInfo = m_providers->getApnInfo(apn);
-                    qWarning() << "Found gsm profile settings. Type:" << apnInfo["usageType"];
-                    
-                    // only add mobile data apns (not mms)
-                    if (apnInfo["usageType"].toString() == "internet") {
-                        QString name = op;
-                        if (!apnInfo["name"].isNull()) {
-                            name += " - " + apnInfo["name"].toString();
-                        }
-                        
-                        addProfile(name, apn, apnInfo["username"].toString(), apnInfo["password"].toString(), "4G/3G/2G");
-                    }
-                    // in the future for MMS settings, add else if here for == "mms"
-                }
-            }
-        } else if (m_connectionSettingsType == NetworkManager::ConnectionSettings::Cdma) {
             // lookup apns with mccmnc codes
-            modem3gpp = m_mmDevice->interface(ModemManager::ModemDevice::CdmaInterface).objectCast<ModemManager::Modem3gpp>();
-            
-            if (modem3gpp) {
-                qWarning() << "Detecting profile settings. MCCMNC:" << modem3gpp->operatorCode() << "Provider:" << m_providers->getProvider(modem3gpp->operatorCode());
+            QStringList apns = m_providers->getApns(m_providers->getProvider(m_mm3gppDevice->operatorCode()));
+            for (auto apn : apns) {
+                QVariantMap apnInfo = m_providers->getApnInfo(apn);
+                qWarning() << "Found gsm profile settings. Type:" << apnInfo["usageType"];
                 
-                QVariantMap cdmaInfo = m_providers->getCdmaInfo(m_providers->getProvider(modem3gpp->operatorCode()));
-                // TODO determine what sid is for cdma
-                addProfile(op, "", cdmaInfo["username"].toString(), cdmaInfo["password"].toString(), "4G/3G/2G");
+                // only add mobile data apns (not mms)
+                if (apnInfo["usageType"].toString() == "internet") {
+                    QString name = op;
+                    if (!apnInfo["name"].isNull()) {
+                        name += " - " + apnInfo["name"].toString();
+                    }
+                    
+                    addProfile(name, apn, apnInfo["username"].toString(), apnInfo["password"].toString(), "4G/3G/2G");
+                }
+                
+                // TODO in the future for MMS settings, add else if here for == "mms"
             }
         }
     }
@@ -709,6 +325,24 @@ NetworkManager::ModemDevice::Ptr Modem::nmModemDevice()
 ModemManager::Modem::Ptr Modem::mmModemInterface()
 {
     return m_mmInterface;
+}
+
+QString Modem::nmDeviceStateStr(NetworkManager::Device::State state)
+{
+    if (state == NetworkManager::Device::State::UnknownState) return "Unknown";
+    else if (state == NetworkManager::Device::State::Unmanaged) return "Unmanaged";
+    else if (state == NetworkManager::Device::State::Unavailable) return "Unavailable";
+    else if (state == NetworkManager::Device::State::Disconnected) return "Disconnected";
+    else if (state == NetworkManager::Device::State::Preparing) return "Preparing";
+    else if (state == NetworkManager::Device::State::ConfiguringHardware) return "ConfiguringHardware";
+    else if (state == NetworkManager::Device::State::NeedAuth) return "NeedAuth";
+    else if (state == NetworkManager::Device::State::ConfiguringIp) return "ConfiguringIp";
+    else if (state == NetworkManager::Device::State::CheckingIp) return "CheckingIp";
+    else if (state == NetworkManager::Device::State::WaitingForSecondaries) return "WaitingForSecondaries";
+    else if (state == NetworkManager::Device::State::Activated) return "Activated";
+    else if (state == NetworkManager::Device::State::Deactivating) return "Deactivating";
+    else if (state == NetworkManager::Device::State::Failed) return "Failed";
+    else return "";
 }
 
 ProfileSettings::ProfileSettings(QObject* parent, QString name, QString apn, QString user, QString password, NetworkManager::GsmSetting::NetworkType networkType, bool allowRoaming, QString connectionUni)
@@ -740,15 +374,6 @@ ProfileSettings::ProfileSettings(QObject* parent, NetworkManager::Setting::Ptr s
         m_password = gsmSetting->password();
         m_networkType = networkTypeStr(gsmSetting->networkType());
         m_allowRoaming = !gsmSetting->homeOnly();
-    } else {
-        NetworkManager::CdmaSetting::Ptr cdmaSetting = setting.staticCast<NetworkManager::CdmaSetting>();
-        m_gsm = false;
-        m_name = connection->name();
-        m_apn = "";
-        m_user = cdmaSetting->username();
-        m_password = cdmaSetting->password();
-        m_networkType = NetworkManager::GsmSetting::NetworkType::Prefer4GLte; // TODO
-        m_allowRoaming = false;
     }
 }
 
@@ -823,4 +448,44 @@ void ProfileSettings::setNetworkType(QString networkType) {
 QString ProfileSettings::connectionUni()
 {
     return m_connectionUni;
+}
+
+QString ProfileSettings::networkTypeStr(NetworkManager::GsmSetting::NetworkType networkType)
+{
+    if (networkType == NetworkManager::GsmSetting::NetworkType::Any) {
+        return "Any";
+    } else if (networkType == NetworkManager::GsmSetting::NetworkType::GprsEdgeOnly) {
+        return "Only 2G";
+    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Only3G) {
+        return "Only 3G";
+    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Only4GLte) {
+        return "Only 4G";
+    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Prefer2G) {
+        return "2G";
+    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Prefer3G) {
+        return "3G/2G";
+    } else if (networkType == NetworkManager::GsmSetting::NetworkType::Prefer4GLte) {
+        return "4G/3G/2G";
+    }
+    return "Any";
+}
+
+NetworkManager::GsmSetting::NetworkType ProfileSettings::networkTypeFlag(const QString &networkType)
+{
+    if (networkType == "Any") {
+        return NetworkManager::GsmSetting::NetworkType::Any;
+    } else if (networkType == "Only 2G") {
+        return NetworkManager::GsmSetting::NetworkType::GprsEdgeOnly;
+    } else if (networkType == "Only 3G") {
+        return NetworkManager::GsmSetting::NetworkType::Only3G;
+    } else if (networkType == "Only 4G") {
+        return NetworkManager::GsmSetting::NetworkType::Only4GLte;
+    } else if (networkType == "2G") {
+        return NetworkManager::GsmSetting::NetworkType::Prefer2G;
+    } else if (networkType == "3G/2G") {
+        return NetworkManager::GsmSetting::NetworkType::Prefer3G;
+    } else if (networkType == "4G/3G/2G") {
+        return NetworkManager::GsmSetting::NetworkType::Prefer4GLte;
+    }
+    return NetworkManager::GsmSetting::NetworkType::Any;
 }

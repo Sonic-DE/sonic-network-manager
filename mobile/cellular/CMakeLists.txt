@@ -5,6 +5,7 @@ include_directories(${CMAKE_SOURCE_DIR}/libs/editor)
 set (cellularnetworksettings_SRCS 
     cellularnetworksettings.cpp 
     modem.cpp
+    modemdetails.cpp
     sim.cpp
     mobileproviders.cpp
 )

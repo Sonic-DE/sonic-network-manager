@@ -86,23 +86,48 @@ Kirigami.ScrollablePage {
             }
         }
         
-        header: Kirigami.SwipeListItem {
-            visible: profileListView.count !== 0
-            onClicked: kcm.push("EditProfile.qml", {"modem": apnlist.modem, "profile": null})
+        header: ColumnLayout {
+            spacing: 0
             
-            contentItem: Row {
-                spacing: Kirigami.Units.smallSpacing
-                Kirigami.Icon {
-                    anchors.verticalCenter: parent.verticalCenter
-                    source: "list-add"
-                    height: Kirigami.Units.gridUnit * 1.5
-                    width: height
+            Kirigami.SwipeListItem {
+                visible: profileListView.count !== 0
+                onClicked: kcm.push("EditProfile.qml", {"modem": apnlist.modem, "profile": null})
+                
+                contentItem: Row {
+                    spacing: Kirigami.Units.smallSpacing
+                    Kirigami.Icon {
+                        anchors.verticalCenter: parent.verticalCenter
+                        source: "list-add"
+                        height: Kirigami.Units.gridUnit * 1.5
+                        width: height
+                    }
+                    Kirigami.Heading {
+                        level: 3
+                        anchors.verticalCenter: parent.verticalCenter
+                        Layout.alignment: Qt.AlignLeft
+                        text: i18n("Add APN")
+                    }
                 }
-                Kirigami.Heading {
-                    level: 3
-                    anchors.verticalCenter: parent.verticalCenter
-                    Layout.alignment: Qt.AlignLeft
-                    text: i18n("Add APN")
+            }
+            
+            Kirigami.SwipeListItem {
+                visible: profileListView.count !== 0
+                onClicked: modem.addDetectedProfileSettings()
+                
+                contentItem: Row {
+                    spacing: Kirigami.Units.smallSpacing
+                    Kirigami.Icon {
+                        anchors.verticalCenter: parent.verticalCenter
+                        source: "list-add"
+                        height: Kirigami.Units.gridUnit * 1.5
+                        width: height
+                    }
+                    Kirigami.Heading {
+                        level: 3
+                        anchors.verticalCenter: parent.verticalCenter
+                        Layout.alignment: Qt.AlignLeft
+                        text: i18n("Add Auto-Detected APN Settings")
+                    }
                 }
             }
         }

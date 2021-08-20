@@ -25,7 +25,7 @@ import cellularnetworkkcm 1.0
 
 Kirigami.ScrollablePage {
     id: simPage
-    title: i18n("SIM") + " " + sim.uni
+    title: i18n("SIM") + " " + sim.displayId
     
     property Sim sim
     

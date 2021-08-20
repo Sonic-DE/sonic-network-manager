@@ -70,8 +70,8 @@ SimpleKCM {
         ColumnLayout {
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.leftMargin: Kirigami.Units.largeSpacing
-            anchors.rightMargin: Kirigami.Units.largeSpacing
+            anchors.leftMargin: Kirigami.Units.gridUnit
+            anchors.rightMargin: Kirigami.Units.gridUnit
             anchors.topMargin: Kirigami.Units.largeSpacing
             spacing: Kirigami.Units.largeSpacing
             visible: !noModem.visible
@@ -86,7 +86,7 @@ SimpleKCM {
                 model: kcm.modems
                 
                 delegate: Kirigami.BasicListItem {
-                    label: "Modem " + modelData.uni
+                    label: "Modem " + modelData.displayId
                     icon: "network-modem"
                     onClicked: kcm.push("Modem.qml", { "modem": modelData })
                 }
@@ -101,7 +101,7 @@ SimpleKCM {
                 model: kcm.sims
                 
                 delegate: Kirigami.BasicListItem {
-                    label: "SIM " + modelData.uni
+                    label: "SIM " + modelData.displayId
                     icon: "auth-sim-symbolic"
                     onClicked: kcm.push("Sim.qml", { "sim": modelData })
                 }

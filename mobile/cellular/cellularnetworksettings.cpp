@@ -42,6 +42,8 @@ CellularNetworkSettings::CellularNetworkSettings(QObject* parent, const QVariant
     
     qmlRegisterType<ProfileSettings>("cellularnetworkkcm", 1, 0, "ProfileSettings");
     qmlRegisterType<Modem>("cellularnetworkkcm", 1, 0, "Modem");
+    qmlRegisterType<ModemDetails>("cellularnetworkkcm", 1, 0, "ModemDetails");
+    qmlRegisterType<AvailableNetwork>("cellularnetworkkcm", 1, 0, "AvailableNetwork");
     qmlRegisterType<Sim>("cellularnetworkkcm", 1, 0, "Sim");
     
     // parse mobile providers list
@@ -65,11 +67,15 @@ CellularNetworkSettings::CellularNetworkSettings(QObject* parent, const QVariant
         qDebug() << "Found modem:" << device->uni();
         if (!nmModem) {
             qWarning() << "NetworkManager ModemDevice could not be found for this modem! Ignoring...";
-        } else {
+        } else if ((nmModem->currentCapabilities() & NetworkManager::ModemDevice::GsmUmts) || 
+                   (nmModem->currentCapabilities() & NetworkManager::ModemDevice::Lte)) {
+            
             m_modemList.push_back(new Modem(this, device, nmModem, modem, m_providers));
             
             // update sims list if modem's list changes
             connect(m_modemList[m_modemList.size() - 1], &Modem::simsChanged, this, [this]() -> void { fillSims(); });
+        } else {
+            qDebug() << "Modem is not 3GPP (CDMA not supported), skipping...";
         }
     }
     
@@ -80,16 +86,6 @@ CellularNetworkSettings::CellularNetworkSettings(QObject* parent, const QVariant
     Q_EMIT modemsChanged();
     
     fillSims();
-}
-
-CellularNetworkSettings::~CellularNetworkSettings()
-{
-    for (auto p : m_modemList) {
-        delete p;
-    }
-//     for (auto p : m_simList) { segfault?
-//         delete p;
-//     }
 }
 
 QList<Modem *> CellularNetworkSettings::modems()

@@ -114,3 +114,10 @@ QString Sim::uni()
 {
     return m_sim->uni();
 }
+
+QString Sim::displayId()
+{
+    // in the form /org/freedesktop/ModemManager1/Sim/0
+    QStringList uniSplit = uni().split("/");
+    return uniSplit.count() == 0 ? "(empty)" : QString(uniSplit[uniSplit.size() - 1].toInt() + 1);
+}

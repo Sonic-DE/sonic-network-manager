@@ -27,6 +27,7 @@
 
 #include "mobileproviders.h"
 #include "modem.h"
+#include "modemdetails.h"
 #include "sim.h"
 
 #include <NetworkManagerQt/ConnectionSettings>
@@ -49,7 +50,6 @@ class CellularNetworkSettings : public KQuickAddons::ConfigModule
     
 public:
     CellularNetworkSettings(QObject *parent, const QVariantList &args);
-    virtual ~CellularNetworkSettings();
     
     QList<Modem *> modems();
     QList<Sim *> sims();

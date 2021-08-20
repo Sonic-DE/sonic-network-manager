@@ -46,6 +46,7 @@ class Sim : public QObject {
     Q_PROPERTY(QString simIdentifier READ simIdentifier NOTIFY simIdentifierChanged)
     Q_PROPERTY(QStringList emergencyNumbers READ emergencyNumbers NOTIFY emergencyNumbersChanged)
     Q_PROPERTY(QString uni READ uni NOTIFY uniChanged)
+    Q_PROPERTY(QString displayId READ displayId NOTIFY displayIdChanged)
 
 public:
     Sim(QObject *parent = nullptr, ModemManager::Sim::Ptr sim = ModemManager::Sim::Ptr{ nullptr }, ModemManager::Modem::Ptr modem = ModemManager::Modem::Ptr{ nullptr });
@@ -59,6 +60,7 @@ public:
     QString simIdentifier();
     QStringList emergencyNumbers(); // TODO add in mm-qt
     QString uni();
+    QString displayId();
     
 Q_SIGNALS:
     void lockedChanged();
@@ -70,6 +72,7 @@ Q_SIGNALS:
     void simIdentifierChanged();
     void emergencyNumbersChanged();
     void uniChanged();
+    void displayIdChanged();
 
 private:
     ModemManager::Sim::Ptr m_sim;

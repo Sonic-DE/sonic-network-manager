@@ -25,7 +25,7 @@ import cellularnetworkkcm 1.0
 
 Kirigami.ScrollablePage {
     id: modemPage
-    title: i18n("Modem") + " " + modem.uni
+    title: i18n("Modem") + " " + modem.displayId
     
     property Modem modem
     
@@ -42,9 +42,17 @@ Kirigami.ScrollablePage {
         }
         
         Controls.Button {
+            icon.name: "globe"
+            text: "Available Networks"
+            onClicked: {
+                kcm.push("AvailableNetworks.qml", {"modem": modem});
+            }
+        }
+        
+        Controls.Button {
             icon.name: "network-modem"
             text: modem.isEnabled ? i18n("Disable Modem") : i18n("Enable Modem")
-            onClicked: modem.setEnabled(!modem.isEnabled)
+            onClicked: modem.setEnabled(!modem.details.isEnabled)
         }
         
         Controls.Button {
@@ -56,12 +64,12 @@ Kirigami.ScrollablePage {
         Kirigami.FormLayout {
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Uni:</b>")
-                text: modem.uni
+                text: modem.details.uni
             }
             ColumnLayout {
                 Kirigami.FormData.label: i18n("<b>Access Technologies:</b>")
                 Repeater {
-                    model: modem.accessTechnologies
+                    model: modem.details.accessTechnologies
                     Controls.Label {
                         text: modelData
                     }
@@ -69,16 +77,16 @@ Kirigami.ScrollablePage {
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Device:</b>")
-                text: modem.device
+                text: modem.details.device
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Device ID:</b>")
-                text: modem.deviceIdentifier
+                text: modem.details.deviceIdentifier
             }
             ColumnLayout {
                 Kirigami.FormData.label: i18n("<b>Drivers:</b>")
                 Repeater {
-                    model: modem.drivers
+                    model: modem.details.drivers
                     Controls.Label {
                         text: modelData
                     }
@@ -86,32 +94,32 @@ Kirigami.ScrollablePage {
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Equipment ID:</b>")
-                text: modem.equipmentIdentifier
+                text: modem.details.equipmentIdentifier
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Enabled:</b>")
-                text: modem.isEnabled
+                text: modem.details.isEnabled
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Manufacturer:</b>")
-                text: modem.manufacturer
+                text: modem.details.manufacturer
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Maximum Active Bearers:</b>")
-                text: modem.maxActiveBearers
+                text: modem.details.maxActiveBearers
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Maximum Total Bearers:</b>")
-                text: modem.maxBearers
+                text: modem.details.maxBearers
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Model:</b>")
-                text: modem.model
+                text: modem.details.model
             }
             ColumnLayout {
                 Kirigami.FormData.label: i18n("<b>Owned Numbers:</b>")
                 Repeater {
-                    model: modem.ownNumbers
+                    model: modem.details.ownNumbers
                     Controls.Label {
                         text: modelData
                     }
@@ -119,12 +127,12 @@ Kirigami.ScrollablePage {
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Plugin:</b>")
-                text: modem.plugin
+                text: modem.details.plugin
             }
             ColumnLayout {
                 Kirigami.FormData.label: i18n("<b>Ports:</b>")
                 Repeater {
-                    model: modem.ports
+                    model: modem.details.ports
                     Controls.Label {
                         text: modelData
                     }
@@ -132,40 +140,56 @@ Kirigami.ScrollablePage {
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Power State:</b>")
-                text: modem.powerState
+                text: modem.details.powerState
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Primary Port:</b>")
-                text: modem.primaryPort
+                text: modem.details.primaryPort
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Revision:</b>")
-                text: modem.revision
+                text: modem.details.revision
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Signal Quality:</b>")
-                text: modem.signalQuality
+                text: modem.details.signalQuality
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>SIM Path:</b>")
-                text: modem.simPath
+                text: modem.details.simPath
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>State:</b>")
-                text: modem.state
+                text: modem.details.state
             }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Failure Reason:</b>")
-                text: modem.stateFailedReason
+                text: modem.details.stateFailedReason
             }
             ColumnLayout {
                 Kirigami.FormData.label: i18n("<b>Supported Capabilities:</b>")
                 Repeater {
-                    model: modem.supportedCapabilities
+                    model: modem.details.supportedCapabilities
                     Controls.Label {
                         text: modelData
                     }
                 }
+            }
+            Controls.Label {
+                Kirigami.FormData.label: i18n("<b>Operator Code:</b>")
+                text: modem.details.operatorCode
+            }
+            Controls.Label {
+                Kirigami.FormData.label: i18n("<b>Operator Name:</b>")
+                text: modem.details.operatorName
+            }
+            Controls.Label {
+                Kirigami.FormData.label: i18n("<b>Registration State:</b>")
+                text: modem.details.registrationState
+            }
+            Controls.Label { // TODO
+                Kirigami.FormData.label: i18n("<b>Roaming:</b>")
+                text: modem.isRoaming ? "Yes" : "No"
             }
         }
     }
