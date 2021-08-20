@@ -280,16 +280,19 @@ void Modem::addDetectedProfileSettings()
         qWarning() << "Detecting profile settings. Operator:" << op;
         
         if (m_mm3gppDevice) {
-            qWarning() << "Detecting profile settings. MCCMNC:" << m_mm3gppDevice->operatorCode() << "Provider:" << m_providers->getProvider(m_mm3gppDevice->operatorCode());
+            qWarning() << "Using MCCMNC:" << m_mm3gppDevice->operatorCode() << "Provider:" << m_providers->getProvider(m_mm3gppDevice->operatorCode());
 
             // lookup apns with mccmnc codes
             QStringList apns = m_providers->getApns(m_providers->getProvider(m_mm3gppDevice->operatorCode()));
+            bool found = false;
             for (auto apn : apns) {
                 QVariantMap apnInfo = m_providers->getApnInfo(apn);
                 qWarning() << "Found gsm profile settings. Type:" << apnInfo["usageType"];
                 
                 // only add mobile data apns (not mms)
                 if (apnInfo["usageType"].toString() == "internet") {
+                    found = true;
+                    
                     QString name = op;
                     if (!apnInfo["name"].isNull()) {
                         name += " - " + apnInfo["name"].toString();
@@ -300,6 +303,10 @@ void Modem::addDetectedProfileSettings()
                 
                 // TODO in the future for MMS settings, add else if here for == "mms"
             }
+            
+            if (!found) {
+                qDebug() << "No profiles were found. :(";
+            }
         }
     }
 }
@@ -307,7 +314,7 @@ void Modem::addDetectedProfileSettings()
 QList<Sim *> Modem::sims()
 {
     if (m_mmDevice->sim()) {
-        return { new Sim{ this, m_mmDevice->sim(), m_mmInterface } };
+        return { new Sim{ this, this, m_mmDevice->sim(), m_mmInterface } };
     }
     return {};
 }

@@ -45,8 +45,18 @@ Kirigami.ScrollablePage {
             helpfulAction: Kirigami.Action {
                 iconName: "list-add"
                 text: i18n("Add APN")
-                onTriggered: kcm.push("EditProfile.qml", {"modem": apnlist.modem, "profile": null})
+                onTriggered: {
+                    profileDialog.profile = null;
+                    profileDialog.open();
+                }
             }
+        }
+        
+        EditProfileDialog {
+            id: profileDialog
+            modem: apnlist.modem
+            profile: null
+            pageWidth: apnlist.width
         }
         
         delegate: Kirigami.SwipeListItem {
@@ -56,7 +66,10 @@ Kirigami.ScrollablePage {
                 Kirigami.Action {
                     iconName: "entry-edit"
                     text: i18n("Edit")
-                    onTriggered: kcm.push("EditProfile.qml", {"modem": apnlist.modem, "profile": modelData})
+                    onTriggered: {
+                        profileDialog.profile = modelData;
+                        profileDialog.open();
+                    }
                 },
                 Kirigami.Action {
                     iconName: "delete"
@@ -80,54 +93,36 @@ Kirigami.ScrollablePage {
                 }
                 Controls.RadioButton {
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                    checked: kcm.activeConnectionUni == modelData.connectionUni
-                    onClicked: modem.activateProfile(modelData.connectionUni)
+                    checked: modem.activeConnectionUni == modelData.connectionUni
+                    onClicked: {
+                        if (!checked) {
+                            modem.activateProfile(modelData.connectionUni);
+                        }
+                    }
                 }
             }
         }
         
-        header: ColumnLayout {
-            spacing: 0
-            
-            Kirigami.SwipeListItem {
-                visible: profileListView.count !== 0
-                onClicked: kcm.push("EditProfile.qml", {"modem": apnlist.modem, "profile": null})
-                
-                contentItem: Row {
-                    spacing: Kirigami.Units.smallSpacing
-                    Kirigami.Icon {
-                        anchors.verticalCenter: parent.verticalCenter
-                        source: "list-add"
-                        height: Kirigami.Units.gridUnit * 1.5
-                        width: height
-                    }
-                    Kirigami.Heading {
-                        level: 3
-                        anchors.verticalCenter: parent.verticalCenter
-                        Layout.alignment: Qt.AlignLeft
-                        text: i18n("Add APN")
-                    }
-                }
+        header: Kirigami.SwipeListItem {
+            visible: profileListView.count !== 0
+            onClicked: {
+                profileDialog.profile = null;
+                profileDialog.open();
             }
             
-            Kirigami.SwipeListItem {
-                visible: profileListView.count !== 0
-                onClicked: modem.addDetectedProfileSettings()
-                
-                contentItem: Row {
-                    spacing: Kirigami.Units.smallSpacing
-                    Kirigami.Icon {
-                        anchors.verticalCenter: parent.verticalCenter
-                        source: "list-add"
-                        height: Kirigami.Units.gridUnit * 1.5
-                        width: height
-                    }
-                    Kirigami.Heading {
-                        level: 3
-                        anchors.verticalCenter: parent.verticalCenter
-                        Layout.alignment: Qt.AlignLeft
-                        text: i18n("Add Auto-Detected APN Settings")
-                    }
+            contentItem: Row {
+                spacing: Kirigami.Units.smallSpacing
+                Kirigami.Icon {
+                    anchors.verticalCenter: parent.verticalCenter
+                    source: "list-add"
+                    height: Kirigami.Units.gridUnit * 1.5
+                    width: height
+                }
+                Kirigami.Heading {
+                    level: 3
+                    anchors.verticalCenter: parent.verticalCenter
+                    Layout.alignment: Qt.AlignLeft
+                    text: i18n("Add APN")
                 }
             }
         }

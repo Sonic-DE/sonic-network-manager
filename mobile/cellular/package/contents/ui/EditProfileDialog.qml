@@ -23,52 +23,30 @@ import QtQuick.Controls 2.12 as Controls
 import org.kde.kirigami 2.12 as Kirigami
 import cellularnetworkkcm 1.0
 
-Kirigami.ScrollablePage {
-    id: editAPNPage
+PopupDialog {
+    id: dialog
     title: i18n("Edit APN")
     
     property Modem modem
     property ProfileSettings profile
     
-    footer: ColumnLayout {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        
-        Kirigami.Separator {
-            weight: Kirigami.Separator.Weight.Normal
-        }
-        
-        RowLayout {
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-            Layout.margins: Kirigami.Units.largeSpacing
-            Controls.Button {
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                icon.name: "dialog-cancel"
-                text: i18n("Cancel")
-                onClicked: kcm.pop()
-            }
-            Controls.Button {
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                icon.name: "dialog-ok"
-                text: i18n("Done")
-                
-                onClicked: {
-                    if (profile == null) { // create new profile
-                        modem.addProfile(profileName.text, profileApn.text, profileUsername.text, profilePassword.text, profileNetworkType.value);
-                    } else { // edit existing profile
-                        modem.updateProfile(profile.connectionUni, profileName.text, profileApn.text, profileUsername.text, profilePassword.text, profileNetworkType.value);
-                    }
-                    kcm.pop();
-                }
-            }
+    property int pageWidth
+    
+    standardButtons: Controls.Dialog.Ok | Controls.Dialog.Cancel
+    
+    onAccepted: {
+        if (profile == null) { // create new profile
+            modem.addProfile(profileName.text, profileApn.text, profileUsername.text, profilePassword.text, profileNetworkType.value);
+        } else { // edit existing profile
+            modem.updateProfile(profile.connectionUni, profileName.text, profileApn.text, profileUsername.text, profilePassword.text, profileNetworkType.value);
         }
     }
+    width: pageWidth - Kirigami.Units.largeSpacing * 2
+    padding: Kirigami.Units.gridUnit
     
     ColumnLayout {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        
         Kirigami.FormLayout {
+            Layout.fillWidth: true
             wideMode: false
             
             Controls.TextField {
@@ -100,6 +78,11 @@ Kirigami.ScrollablePage {
                         currentIndex = indexOfValue(profile.networkType)
                     }
                 }
+            }
+            Controls.Button {
+                icon.name: "list-add"
+                text: i18n("Autodetect Settings")
+                onClicked: modem.addDetectedProfileSettings()
             }
         }
     }

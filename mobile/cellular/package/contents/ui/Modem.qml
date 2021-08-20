@@ -30,41 +30,33 @@ Kirigami.ScrollablePage {
     property Modem modem
     
     ColumnLayout {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        
-        Controls.Button {
-            icon.name: "globe"
-            text: "Access Point Names"
-            onClicked: {
-                kcm.push("ProfileList.qml", {"modem": modem});
-            }
-        }
-        
-        Controls.Button {
-            icon.name: "globe"
-            text: "Available Networks"
-            onClicked: {
-                kcm.push("AvailableNetworks.qml", {"modem": modem});
-            }
-        }
-        
-        Controls.Button {
-            icon.name: "network-modem"
-            text: modem.isEnabled ? i18n("Disable Modem") : i18n("Enable Modem")
-            onClicked: modem.setEnabled(!modem.details.isEnabled)
-        }
-        
-        Controls.Button {
-            icon.name: "system-reboot"
-            text: i18n("Force Modem Restart")
-            onClicked: modem.reset()
-        }
-        
         Kirigami.FormLayout {
+            ColumnLayout {
+                Kirigami.FormData.label: i18n("<b>Modem Control:</b>")
+                Controls.Button {
+                    icon.name: "network-modem"
+                    text: modem.details.isEnabled ? i18n("Disable Modem") : i18n("Enable Modem")
+                    onClicked: modem.setEnabled(!modem.details.isEnabled)
+                }
+                
+                Controls.Button {
+                    icon.name: "system-reboot"
+                    text: i18n("Force Modem Restart")
+                    onClicked: modem.reset()
+                }
+            }
+            
+            Kirigami.Separator {
+                Kirigami.FormData.label: "Modem Details"
+                Kirigami.FormData.isSection: true
+            }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Uni:</b>")
-                text: modem.details.uni
+                text: modem.uni
+            }
+            Controls.Label {
+                Kirigami.FormData.label: i18n("<b>Active Connection:</b>")
+                text: modem.activeConnectionUni
             }
             ColumnLayout {
                 Kirigami.FormData.label: i18n("<b>Access Technologies:</b>")

@@ -63,38 +63,37 @@ SimpleKCM {
         text: i18n("Modem not available")
     }
     
-    Flickable {
+    ColumnLayout {
         anchors.left: parent.left
         anchors.right: parent.right
+        anchors.margins: Kirigami.Units.largeSpacing
+        spacing: Kirigami.Units.largeSpacing
+        visible: !noModem.visible
         
-        ColumnLayout {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.leftMargin: Kirigami.Units.gridUnit
-            anchors.rightMargin: Kirigami.Units.gridUnit
-            anchors.topMargin: Kirigami.Units.largeSpacing
-            spacing: Kirigami.Units.largeSpacing
-            visible: !noModem.visible
+        Kirigami.FormLayout {
+            Layout.topMargin: Kirigami.Units.largeSpacing
+            Layout.fillWidth: true
+            wideMode: false
             
-            Kirigami.Heading {
-                Layout.topMargin: Kirigami.Units.largeSpacing
-                level: 3
-                text: i18n("Modems")
+            Controls.Switch {
+                id: mobileDataCheckbox
+                Kirigami.FormData.label: i18n("<b>Mobile data:</b>")
+                text: checked ? i18n("On") : i18n("Off")
+                enabled: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable
+                checked: kcm.modem.mobileDataActive
+                onCheckedChanged: kcm.modem.mobileDataActive = checked
             }
             
-            Repeater {
-                model: kcm.modems
-                
-                delegate: Kirigami.BasicListItem {
-                    label: "Modem " + modelData.displayId
-                    icon: "network-modem"
-                    onClicked: kcm.push("Modem.qml", { "modem": modelData })
-                }
+            Controls.Button {
+                Kirigami.FormData.label: i18n("<b>Data Usage:</b>")
+                text: i18n("View Data Usage")
+                icon.name: "office-chart-bar"
+                enabled: false // TODO
             }
             
-            Kirigami.Heading {
-                level: 3
-                text: i18n("SIM")
+            Kirigami.Separator {
+                Kirigami.FormData.label: kcm.sims.count == 1 ? "SIM" : "SIMs"
+                Kirigami.FormData.isSection: true
             }
             
             Repeater {
@@ -106,54 +105,6 @@ SimpleKCM {
                     onClicked: kcm.push("Sim.qml", { "sim": modelData })
                 }
             }
-            
-            Kirigami.Heading {
-                level: 3
-                text: i18n("Mobile Data")
-            }
         }
-        
-        //Kirigami.FormLayout {
-            //anchors.left: parent.left
-            //anchors.right: parent.right
-            //anchors.leftMargin: Kirigami.Units.largeSpacing * 2
-            //anchors.rightMargin: Kirigami.Units.largeSpacing * 2
-            //wideMode: false
-            //visible: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable && kcm.hasSim
-            
-            //Kirigami.Separator {
-                //Kirigami.FormData.isSection: true
-                //Kirigami.FormData.label: i18n("Modem")
-            //}
-            
-            //Kirigami.Separator {
-                //Kirigami.FormData.isSection: true
-                //Kirigami.FormData.label: i18n("SIM")
-            //}
-            
-            
-            //Kirigami.Heading {
-                //level: 3
-                //Kirigami.FormData.isSection: true
-                //text: i18n("Mobile Data")
-            //}
-            //Controls.Switch {
-                //id: mobileDataCheckbox
-                //Kirigami.FormData.label: i18n("Mobile data")
-                //text: checked ? i18n("On") : i18n("Off")
-                //enabled: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable
-                //checked: kcm.modem.mobileDataActive
-                //onCheckedChanged: kcm.modem.mobileDataActive = checked
-            //}
-            
-            //Controls.Switch {
-                //Kirigami.FormData.label: i18n("Data roaming")
-                //text: checked ? i18n("On") : i18n("Off")
-                //enabled: mobileDataCheckbox.checked
-                //checked: kcm.allowRoaming
-                //onCheckedChanged: kcm.allowRoaming = checked
-            //}
-            
-        //}
     }
 }

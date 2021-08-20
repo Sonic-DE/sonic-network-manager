@@ -30,15 +30,20 @@ Kirigami.ScrollablePage {
     property Modem modem
     
     ColumnLayout {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        
         Controls.Button {
             icon.name: "view-refresh"
             text: "Scan"
+            enabled: !modem.details.isScanningNetworks
             onClicked: modem.details.scanNetworks()
         }
         
+        Controls.BusyIndicator {
+            anchors.centerIn: root
+            visible: modem.details.isScanningNetworks
+            Layout.minimumWidth: Kirigami.Units.iconSizes.enormous
+            Layout.minimumHeight: width
+        }
+
         ListView {
             Layout.fillWidth: true
             model: modem.details.networks

@@ -20,6 +20,7 @@
 #pragma once
 
 #include "mobileproviders.h"
+#include "modem.h"
 
 #include <QList>
 #include <QString>
@@ -35,8 +36,11 @@
 #include <ModemManagerQt/GenericTypes>
 #include <ModemManagerQt/ModemDevice>
 
+class Modem;
+
 class Sim : public QObject {
     Q_OBJECT
+    Q_PROPERTY(bool enabled READ enabled NOTIFY enabledChanged)
     Q_PROPERTY(bool locked READ locked NOTIFY lockedChanged)
     Q_PROPERTY(QString lockedReason READ lockedReason NOTIFY lockedReasonChanged)
     Q_PROPERTY(QString imsi READ imsi NOTIFY imsiChanged)
@@ -47,10 +51,12 @@ class Sim : public QObject {
     Q_PROPERTY(QStringList emergencyNumbers READ emergencyNumbers NOTIFY emergencyNumbersChanged)
     Q_PROPERTY(QString uni READ uni NOTIFY uniChanged)
     Q_PROPERTY(QString displayId READ displayId NOTIFY displayIdChanged)
+    Q_PROPERTY(Modem *modem READ modem NOTIFY modemChanged)
 
 public:
-    Sim(QObject *parent = nullptr, ModemManager::Sim::Ptr sim = ModemManager::Sim::Ptr{ nullptr }, ModemManager::Modem::Ptr modem = ModemManager::Modem::Ptr{ nullptr });
+    Sim(QObject *parent = nullptr, Modem *modem = nullptr, ModemManager::Sim::Ptr mmSim = ModemManager::Sim::Ptr{ nullptr }, ModemManager::Modem::Ptr mmModem = ModemManager::Modem::Ptr{ nullptr });
     
+    bool enabled();
     bool locked();
     QString lockedReason();
     QString imsi();
@@ -61,8 +67,10 @@ public:
     QStringList emergencyNumbers(); // TODO add in mm-qt
     QString uni();
     QString displayId();
+    Modem *modem();
     
 Q_SIGNALS:
+    void enabledChanged();
     void lockedChanged();
     void lockedReasonChanged();
     void imsiChanged();
@@ -73,8 +81,10 @@ Q_SIGNALS:
     void emergencyNumbersChanged();
     void uniChanged();
     void displayIdChanged();
+    void modemChanged();
 
 private:
-    ModemManager::Sim::Ptr m_sim;
-    ModemManager::Modem::Ptr m_modem;
+    Modem *m_modem;
+    ModemManager::Sim::Ptr m_mmSim;
+    ModemManager::Modem::Ptr m_mmModem;
 };

@@ -2,9 +2,13 @@
 
 #include <KLocalizedString>
 
+#include <QDBusPendingCallWatcher>
+
 ModemDetails::ModemDetails(QObject *parent, Modem *modem)
     : QObject{ parent },
       m_modem{ modem },
+      m_scanNetworkWatcher{ nullptr },
+      m_isScanningNetworks{ false },
       m_cachedScannedNetworks{}
 {
     auto mmInterfacePointer = m_modem->m_mmInterface.data();
@@ -48,6 +52,8 @@ void ModemDetails::swap(ModemDetails &other)
 {
     std::swap(m_modem, other.m_modem);
     std::swap(m_cachedScannedNetworks, other.m_cachedScannedNetworks);
+    std::swap(m_isScanningNetworks, other.m_isScanningNetworks);
+    std::swap(m_scanNetworkWatcher, other.m_scanNetworkWatcher);
 }
 
 QStringList ModemDetails::accessTechnologies()
@@ -377,33 +383,50 @@ QList<AvailableNetwork *> ModemDetails::networks()
 
 Q_INVOKABLE void ModemDetails::scanNetworks()
 {
-    for (auto p : m_cachedScannedNetworks) {
-        delete p;
-    }
+    for (auto p : m_cachedScannedNetworks) p->deleteLater();
     m_cachedScannedNetworks.clear();
     
     if (m_modem->m_mm3gppDevice) {
         qDebug() << "Scanning for available networks...";
         
         QDBusPendingReply<ModemManager::QVariantMapList> reply = m_modem->m_mm3gppDevice->scan();
-        reply.waitForFinished();
-        if (reply.isError()) {
-            qDebug() << "Scanning failed:" << reply.error().message();
-        } else {
-            ModemManager::QVariantMapList list = reply.value();
-            
-            for (auto &var : list) {
-                auto status = var["status"].value<MMModem3gppNetworkAvailability>();
-                
-                if (status == MM_MODEM_3GPP_NETWORK_AVAILABILITY_CURRENT || status == MM_MODEM_3GPP_NETWORK_AVAILABILITY_AVAILABLE) {
-                    auto network = new AvailableNetwork{this, status == MM_MODEM_3GPP_NETWORK_AVAILABILITY_CURRENT, var["operator-long"].toString(), var["operator-short"].toString(), var["operator-code"].toString(), var["access-technology"].value<MMModemAccessTechnology>()};
-                    m_cachedScannedNetworks.push_back(network);
-                }
-            }
-        }
+        
+        m_isScanningNetworks = true;
+        Q_EMIT isScanningNetworksChanged();
+        m_scanNetworkWatcher = new QDBusPendingCallWatcher(reply, this);
+        connect(m_scanNetworkWatcher, SIGNAL(finished(QDBusPendingCallWatcher*)), this, SLOT(m_scanNetworkWatcher(QDBusPendingCallWatcher*)));
     }
     
     Q_EMIT networksChanged();
+}
+
+void ModemDetails::scanNetworksFinished(QDBusPendingCallWatcher *call)
+{
+    QDBusPendingReply<ModemManager::QVariantMapList> reply = *call;
+    if (reply.isError()) {
+        qDebug() << "Scanning failed:" << reply.error().message();
+    } else {
+        ModemManager::QVariantMapList list = reply.value();
+        
+        for (auto &var : list) {
+            auto status = var["status"].value<MMModem3gppNetworkAvailability>();
+            
+            if (status == MM_MODEM_3GPP_NETWORK_AVAILABILITY_CURRENT || status == MM_MODEM_3GPP_NETWORK_AVAILABILITY_AVAILABLE) {
+                auto network = new AvailableNetwork{this, status == MM_MODEM_3GPP_NETWORK_AVAILABILITY_CURRENT, var["operator-long"].toString(), var["operator-short"].toString(), var["operator-code"].toString(), var["access-technology"].value<MMModemAccessTechnology>()};
+                m_cachedScannedNetworks.push_back(network);
+            }
+        }
+    }
+    m_isScanningNetworks = false;
+    Q_EMIT networksChanged();
+    Q_EMIT isScanningNetworksChanged();
+    
+    call->deleteLater();
+}
+
+bool ModemDetails::isScanningNetworks()
+{
+    return m_isScanningNetworks;
 }
 
 AvailableNetwork::AvailableNetwork(QObject *parent, bool isCurrentlyUsed, QString operatorLong, QString operatorShort, QString operatorCode, MMModemAccessTechnology accessTechnology)

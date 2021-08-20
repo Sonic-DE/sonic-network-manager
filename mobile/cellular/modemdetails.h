@@ -73,6 +73,7 @@ class ModemDetails : public QObject {
     Q_PROPERTY(QString operatorName READ operatorName NOTIFY operatorNameChanged)
     Q_PROPERTY(QString registrationState READ registrationState NOTIFY registrationStateChanged)
     Q_PROPERTY(QList<AvailableNetwork *> networks READ networks NOTIFY networksChanged)
+    Q_PROPERTY(bool isScanningNetworks READ isScanningNetworks NOTIFY isScanningNetworksChanged)
     
 public:
     ModemDetails(QObject *parent = nullptr, Modem *modem = nullptr);
@@ -107,6 +108,8 @@ public:
     
     Q_INVOKABLE void scanNetworks();
     QList<AvailableNetwork *> networks();
+    bool isScanningNetworks();
+    void scanNetworksFinished(QDBusPendingCallWatcher *call);
     
 Q_SIGNALS:
     void accessTechnologiesChanged();
@@ -135,10 +138,13 @@ Q_SIGNALS:
     void operatorNameChanged();
     void registrationStateChanged();
     void networksChanged();
+    void isScanningNetworksChanged();
     
 private:
     Modem *m_modem;
     
+    QDBusPendingCallWatcher *m_scanNetworkWatcher;
+    bool m_isScanningNetworks;
     QList<AvailableNetwork *> m_cachedScannedNetworks;
 };
 

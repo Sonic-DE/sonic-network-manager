@@ -21,27 +21,33 @@
 
 #include <KLocalizedString>
 
-Sim::Sim(QObject *parent, ModemManager::Sim::Ptr sim, ModemManager::Modem::Ptr modem)
+Sim::Sim(QObject *parent, Modem *modem, ModemManager::Sim::Ptr mmSim, ModemManager::Modem::Ptr mmModem)
     : QObject{ parent },
-      m_sim{ sim },
-      m_modem{ modem }
+      m_modem{ modem },
+      m_mmSim{ mmSim },
+      m_mmModem{ mmModem }
 {
-    connect(m_sim.data(), &ModemManager::Sim::imsiChanged, this, [this]() -> void { Q_EMIT imsiChanged(); });
-    connect(m_sim.data(), &ModemManager::Sim::operatorIdentifierChanged, this, [this]() -> void { Q_EMIT operatorIdentifierChanged(); });
-    connect(m_sim.data(), &ModemManager::Sim::operatorNameChanged, this, [this]() -> void { Q_EMIT operatorNameChanged(); });
-    connect(m_sim.data(), &ModemManager::Sim::simIdentifierChanged, this, [this]() -> void { Q_EMIT simIdentifierChanged(); });
+    connect(m_mmSim.data(), &ModemManager::Sim::imsiChanged, this, [this]() -> void { Q_EMIT imsiChanged(); });
+    connect(m_mmSim.data(), &ModemManager::Sim::operatorIdentifierChanged, this, [this]() -> void { Q_EMIT operatorIdentifierChanged(); });
+    connect(m_mmSim.data(), &ModemManager::Sim::operatorNameChanged, this, [this]() -> void { Q_EMIT operatorNameChanged(); });
+    connect(m_mmSim.data(), &ModemManager::Sim::simIdentifierChanged, this, [this]() -> void { Q_EMIT simIdentifierChanged(); });
     
     // TODO connect sim unlock
 }
 
+bool Sim::enabled()
+{
+    return uni() != "/";
+}
+
 bool Sim::locked()
 {
-    return m_modem->unlockRequired() != MM_MODEM_LOCK_NONE;
+    return m_mmModem->unlockRequired() != MM_MODEM_LOCK_NONE;
 }
 
 QString Sim::lockedReason()
 {
-    switch (m_modem->unlockRequired()) {
+    switch (m_mmModem->unlockRequired()) {
         case MM_MODEM_LOCK_UNKNOWN:
             return i18n("Lock reason unknown.");
         case MM_MODEM_LOCK_NONE:
@@ -82,7 +88,7 @@ QString Sim::lockedReason()
 
 QString Sim::imsi()
 {
-    return m_sim->imsi();
+    return m_mmSim->imsi();
 }
 
 QString Sim::eid()
@@ -92,17 +98,17 @@ QString Sim::eid()
 
 QString Sim::operatorIdentifier()
 {
-    return m_sim->operatorIdentifier();
+    return m_mmSim->operatorIdentifier();
 }
 
 QString Sim::operatorName()
 {
-    return m_sim->operatorName();
+    return m_mmSim->operatorName();
 }
 
 QString Sim::simIdentifier()
 {
-    return m_sim->simIdentifier();
+    return m_mmSim->simIdentifier();
 }
 
 QStringList Sim::emergencyNumbers()
@@ -112,12 +118,17 @@ QStringList Sim::emergencyNumbers()
 
 QString Sim::uni()
 {
-    return m_sim->uni();
+    return m_mmSim->uni();
 }
 
 QString Sim::displayId()
 {
     // in the form /org/freedesktop/ModemManager1/Sim/0
     QStringList uniSplit = uni().split("/");
-    return uniSplit.count() == 0 ? "(empty)" : QString(uniSplit[uniSplit.size() - 1].toInt() + 1);
+    return (uniSplit.count() == 0 || uni() == "/") ? "(empty)" : QString(uniSplit[uniSplit.size() - 1]);
+}
+
+Modem *Sim::modem()
+{
+    return m_modem;
 }

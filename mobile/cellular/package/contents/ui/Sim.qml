@@ -30,10 +30,56 @@ Kirigami.ScrollablePage {
     property Sim sim
     
     ColumnLayout {
-        anchors.left: parent.left
-        anchors.right: parent.right
+        Kirigami.InlineMessage {
+            implicitWidth: simPage.width - Kirigami.Units.largeSpacing * 4
+            visible: !sim.enabled
+            type: Kirigami.MessageType.Error
+            text: qsTr("This SIM slot is empty, a SIM card needs to be inserted in order for it to be used.")
+        }
         
         Kirigami.FormLayout {
+            Layout.fillWidth: true
+            wideMode: false
+            
+            Controls.Switch {
+                Kirigami.FormData.label: i18n("<b>Data roaming:</b>")
+                text: checked ? i18n("On") : i18n("Off")
+                enabled: sim.enabled
+                //checked: kcm.allowRoaming
+                //onCheckedChanged: kcm.allowRoaming = checked
+            }
+            
+            Controls.Button {
+                Kirigami.FormData.label: i18n("<b>APNs:</b>")
+                icon.name: "globe"
+                text: "Modify Access Point Names"
+                enabled: sim.enabled
+                onClicked: {
+                    kcm.push("ProfileList.qml", {"modem": sim.modem});
+                }
+            }
+            
+            Controls.Button {
+                Kirigami.FormData.label: i18n("<b>Networks:</b>")
+                icon.name: "network-mobile-available"
+                text: "Select Network Operator"
+                enabled: sim.enabled
+                onClicked: {
+                    kcm.push("AvailableNetworks.qml", {"modem": sim.modem});
+                }
+            }
+            
+            Controls.Button {
+                Kirigami.FormData.label: i18n("<b>Modem:</b>")
+                icon.name: "network-modem"
+                text: "View Modem Details"
+                onClicked: kcm.push("Modem.qml", { "modem": sim.modem })
+            }
+            
+            Kirigami.Separator {
+                Kirigami.FormData.label: "SIM Details"
+                Kirigami.FormData.isSection: true
+            }
             Controls.Label {
                 Kirigami.FormData.label: i18n("<b>Uni:</b>")
                 text: sim.uni
