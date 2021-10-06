@@ -292,13 +292,8 @@ PlasmaExtras.ExpandableListItem {
     // Re-activate the default button if the password field is hidden without
     // sending a password
     onItemCollapsed: {
-        expanded = false;
         stateChangeButton.enabled = true;
         full.connectionModel.delayModelUpdates = false;
-    }
-
-    onItemExpanded: {
-        expanded = true;
     }
 
     Component.onDestruction: {
