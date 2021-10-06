@@ -41,6 +41,32 @@ PlasmaComponents3.Page {
         }
     }
 
+    Keys.onPressed: {
+        event.accepted = true;
+        if (event.modifiers & Qt.ControlModifier && event.key == Qt.Key_F) {
+            toolbar.searchTextField.forceActiveFocus();
+        } else if (event.key == Qt.Key_Down) {
+            connectionView.incrementCurrentIndex();
+            connectionView.positionViewAtIndex(connectionView.currentIndex, ListView.Contain);
+            if (connectionView.currentIndex != -1) {
+                connectionView.currentItem.forceActiveFocus();
+            }
+        } else if (event.key == Qt.Key_Up) {
+            connectionView.decrementCurrentIndex();
+            connectionView.positionViewAtIndex(connectionView.currentIndex, ListView.Contain);
+            if (connectionView.currentIndex != -1) {
+                connectionView.currentItem.forceActiveFocus();
+                if (connectionView.currentItem.expanded) {
+                    console.log("dfdf");
+                    connectionView.currentItem.passwordDialogComponent.passwordField.forceActiveFocus();
+                }
+            }
+        }
+        else {
+            event.accepted = false;
+        }
+    }
+
     FocusScope {
 
         anchors.fill: parent
