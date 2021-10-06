@@ -42,7 +42,6 @@ PlasmaComponents3.Page {
     }
 
     Keys.onPressed: {
-        event.accepted = true;
         function goToCurrent() {
             connectionView.positionViewAtIndex(connectionView.currentIndex, ListView.Contain);
             if (connectionView.currentIndex != -1) {
@@ -52,15 +51,21 @@ PlasmaComponents3.Page {
         if (event.modifiers & Qt.ControlModifier && event.key == Qt.Key_F) {
             toolbar.searchTextField.forceActiveFocus();
             toolbar.searchTextField.selectAll();
+            event.accepted = true;
         } else if (event.key == Qt.Key_Down) {
             connectionView.incrementCurrentIndex();
             goToCurrent()
+            event.accepted = true;
         } else if (event.key == Qt.Key_Up) {
-            connectionView.decrementCurrentIndex();
-            goToCurrent();
-        }
-        else {
-            event.accepted = false;
+            if (connectionView.currentIndex == 0) {
+                connectionView.currentIndex = -1;
+                toolbar.searchTextField.forceActiveFocus();
+                toolbar.searchTextField.selectAll();
+            } else {
+                connectionView.decrementCurrentIndex();
+                goToCurrent();
+            }
+            event.accepted = true;
         }
     }
 
