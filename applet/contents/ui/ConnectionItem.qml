@@ -48,6 +48,32 @@ PlasmaExtras.ExpandableListItem {
         onTriggered: changeState()
     }
     showDefaultActionButtonWhenBusy: true
+
+    property bool expanded: false
+
+    Keys.onPressed: {
+        event.accepted = true;
+        if (event.key == Qt.Key_Return) {
+            console.log(index);
+            changeState();
+            console.log(index);
+            ListView.view.currentIndex = index;
+        } else if (event.key == Qt.Key_Escape) {
+            if (expanded) {
+                connectionItem.collapse()
+            } else {
+                event.accepted = false;
+            }
+        } else if (event.key == Qt.Key_Menu) {
+            contextMenu.visualParent = connectionItem;
+            contextMenu.prepare();
+            contextMenu.open(0, 0);
+        }
+        else {
+            event.accepted = false;
+        }
+    }
+
     customExpandedViewContent: detailsComponent
     contextMenu: PlasmaComponents.Menu {
         id: contextMenu
@@ -291,8 +317,13 @@ PlasmaExtras.ExpandableListItem {
     // Re-activate the default button if the password field is hidden without
     // sending a password
     onItemCollapsed: {
+        expanded = false;
         stateChangeButton.enabled = true;
         full.connectionModel.delayModelUpdates = false;
+    }
+
+    onItemExpanded: {
+        expanded = true;
     }
 
     Component.onDestruction: {
