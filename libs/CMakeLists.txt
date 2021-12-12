@@ -11,6 +11,7 @@ set(plasmanm_internal_SRCS
     models/networkmodelitem.cpp
 
     configuration.cpp
+    configurationproxy.cpp
     debug.cpp
     handler.cpp
     uiutils.cpp
