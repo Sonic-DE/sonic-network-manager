@@ -11,11 +11,16 @@ import org.kde.plasma.components 3.0 as PlasmaComponents3
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.extras 2.0 as PlasmaExtras
 import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
+import org.kde.plasma.plasmoid 2.0
 
 PlasmaComponents3.Page {
     id: full
-
     property alias toolbarValues: toolbar
+
+    leftPadding: -plasmoid.rootItem.backgroundMetrics.leftPadding
+    rightPadding: -plasmoid.rootItem.backgroundMetrics.rightPadding
+    topPadding: 0
+    bottomPadding: -plasmoid.rootItem.backgroundMetrics.bottomPadding
 
     PlasmaNM.AvailableDevices {
         id: availableDevices
@@ -70,35 +75,13 @@ PlasmaComponents3.Page {
     }
 
     FocusScope {
-
         anchors.fill: parent
-        anchors.topMargin: PlasmaCore.Units.smallSpacing * 2
 
-        PlasmaExtras.ScrollArea {
+        PlasmaComponents3.ScrollView {
             id: scrollView
             anchors.fill: parent
-            frameVisible: false
-
-            PlasmaExtras.PlaceholderMessage {
-                anchors.centerIn: parent
-                width: parent.width - (PlasmaCore.Units.largeSpacing * 4)
-                visible: connectionView.count === 0
-                text: {
-                    if (toolbarValues.displayplaneModeMessage) {
-                        return i18n("Airplane mode is enabled")
-                    }
-                    if (toolbarValues.displayWifiMessage) {
-                        if (toolbarValues.displayWwanMessage) {
-                            return i18n("Wireless and mobile networks are deactivated")
-                        }
-                        return i18n("Wireless is deactivated")
-                    }
-                    if (toolbarValues.displayWwanMessage) {
-                        return i18n("Mobile network is deactivated")
-                    }
-                    return i18n("No available connections")
-                }
-            }
+            leftPadding: PlasmaCore.Units.smallSpacing * 2
+            rightPadding: PlasmaCore.Units.smallSpacing * 2
 
             ListView {
                 id: connectionView
@@ -106,18 +89,43 @@ PlasmaComponents3.Page {
                 property int currentVisibleButtonIndex: -1
                 property bool showSeparator: false
 
+                PlasmaExtras.PlaceholderMessage {
+                    anchors.centerIn: parent
+                    width: parent.width - (PlasmaCore.Units.largeSpacing * 4)
+                    visible: connectionView.count === 0
+                    text: {
+                        if (toolbarValues.displayplaneModeMessage) {
+                            return i18n("Airplane mode is enabled")
+                        }
+                        if (toolbarValues.displayWifiMessage) {
+                            if (toolbarValues.displayWwanMessage) {
+                                return i18n("Wireless and mobile networks are deactivated")
+                            }
+                            return i18n("Wireless is deactivated")
+                        }
+                        if (toolbarValues.displayWwanMessage) {
+                            return i18n("Mobile network is deactivated")
+                        }
+                        return i18n("No available connections")
+                    }
+                }
+
+                topMargin: PlasmaCore.Units.smallSpacing * 2
+                bottomMargin: PlasmaCore.Units.smallSpacing * 2
                 spacing: PlasmaCore.Units.smallSpacing
-                clip: true
                 model: appletProxyModel
                 currentIndex: -1
                 boundsBehavior: Flickable.StopAtBounds
                 section.property: showSeparator ? "Section" : ""
-                section.delegate: ListItem { separator: true }
+                section.delegate: ListItem {
+                    separator: true
+                    width: connectionView.width - PlasmaCore.Units.smallSpacing * 4
+                }
                 highlight: PlasmaComponents.Highlight { }
                 highlightMoveDuration: 0
                 highlightResizeDuration: 0
                 delegate: ConnectionItem {
-                    width: connectionView.width
+                    width: connectionView.width - PlasmaCore.Units.smallSpacing * 4
                 }
             }
         }
