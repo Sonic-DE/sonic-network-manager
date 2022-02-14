@@ -93,8 +93,6 @@ void Handler::activateConnection(const QString &connection, const QString &devic
         if (vpnSetting) {
             qCDebug(PLASMA_NM_LIBS_LOG) << "Checking VPN" << con->name() << "type:" << vpnSetting->serviceType();
 
-            bool pluginMissing = false;
-
             // Check missing plasma-nm VPN plugin
 
             const auto filter = [vpnSetting](const KPluginMetaData &md) -> bool {
@@ -103,7 +101,13 @@ void Handler::activateConnection(const QString &connection, const QString &devic
 
             const QVector<KPluginMetaData> plugins = KPluginMetaData::findPlugins(QStringLiteral("plasma/network/vpn"), filter);
 
-            pluginMissing = plugins.isEmpty();
+            const QString pluginBaseName = vpnSetting->serviceType().remove(QLatin1String("org.freedesktop.NetworkManager."));
+            bool pluginMissing = plugins.isEmpty();
+            QString errorMessage;
+
+            if (plugins.empty()) {
+                errorMessage = i18n("Plasma is missing support for '%1' VPN connections. Please check your installation.", pluginBaseName);
+            }
 
             // Check missing NetworkManager VPN plugin
             if (!pluginMissing) {
@@ -112,6 +116,7 @@ void Handler::activateConnection(const QString &connection, const QString &devic
 
                 NMVpnPluginInfo *plugin_info = nm_vpn_plugin_info_list_find_by_service(plugins, vpnSetting->serviceType().toStdString().c_str());
                 pluginMissing = !plugin_info;
+                errorMessage = i18n("NetworkManager is missing support for '%1' VPN connections. Please check your installation.", pluginBaseName);
             }
 
             if (pluginMissing) {
@@ -119,7 +124,7 @@ void Handler::activateConnection(const QString &connection, const QString &devic
                 auto notification = new KNotification(QStringLiteral("MissingVpnPlugin"), KNotification::CloseOnTimeout, this);
                 notification->setComponentName(QStringLiteral("networkmanagement"));
                 notification->setTitle(con->name());
-                notification->setText(i18n("Missing VPN plugin"));
+                notification->setText(errorMessage);
                 notification->setIconName(QStringLiteral("dialog-warning"));
                 notification->sendEvent();
                 return;
