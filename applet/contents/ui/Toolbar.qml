@@ -4,8 +4,10 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
-import QtQuick 2.2
-import QtQuick.Layouts 1.2
+import QtQuick 2.15
+import QtQuick.Layouts 1.15
+import QtQml 2.15
+
 import org.kde.plasma.components 3.0 as PlasmaComponents3
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.extras 2.0 as PlasmaExtras
@@ -153,7 +155,11 @@ RowLayout {
         Layout.fillWidth: true
 
         enabled: connectionView.count > 0 || text.length > 0
-        focus: !Kirigami.InputMethod.willShowOnActive
+
+        // This uses expanded to ensure the binding gets reevaluated
+        // when the plasmoid is shown again and that way ensure we are
+        // always in the correct state on show.
+        focus: Plasmoid.expanded && !Kirigami.InputMethod.willShowOnActive
 
         onTextChanged: {
             appletProxyModel.setFilterFixedString(text)
@@ -173,12 +179,6 @@ RowLayout {
 
         onClicked: {
             KCMShell.openSystemSettings(mainWindow.kcm)
-        }
-    }
-
-    Component.onCompleted: {
-        if (!Kirigami.InputMethod.willShowOnActive) {
-            searchTextField.forceActiveFocus()
         }
     }
 }
