@@ -174,10 +174,4 @@ RowLayout {
             KCMShell.openSystemSettings(mainWindow.kcm)
         }
     }
-
-    Component.onCompleted: {
-        if (!Kirigami.InputMethod.willShowOnActive) {
-            searchTextField.forceActiveFocus()
-        }
-    }
 }

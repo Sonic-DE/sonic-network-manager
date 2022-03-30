@@ -16,6 +16,8 @@ PlasmaExtras.Representation {
     collapseMarginsHint: true
     property alias toolbarValues: toolbar
 
+    focus: true
+
     PlasmaNM.AvailableDevices {
         id: availableDevices
     }
@@ -34,6 +36,7 @@ PlasmaExtras.Representation {
     }
 
     header: PlasmaExtras.PlasmoidHeading {
+        focus: true
         Toolbar {
             id: toolbar
             width: parent.width
