@@ -129,6 +129,7 @@ PlasmaExtras.Representation {
         target: plasmoid
         function onExpandedChanged(expanded) {
             connectionView.currentVisibleButtonIndex = -1;
+            toolbar.forceActiveFocus()
 
             if (expanded) {
                 handler.requestScan();
