@@ -251,7 +251,11 @@ void NetworkModel::initializeSignals(const NetworkManager::Device::Ptr &device)
         NetworkManager::WirelessDevice::Ptr wifiDev = device.objectCast<NetworkManager::WirelessDevice>();
         connect(wifiDev.data(), &NetworkManager::WirelessDevice::networkAppeared, this, &NetworkModel::wirelessNetworkAppeared, Qt::UniqueConnection);
         connect(wifiDev.data(), &NetworkManager::WirelessDevice::networkDisappeared, this, &NetworkModel::wirelessNetworkDisappeared, Qt::UniqueConnection);
-
+        connect(wifiDev.data(),
+                &NetworkManager::WirelessDevice::activeAccessPointChanged,
+                this,
+                &NetworkModel::wirelessNetworkActiveApChanged,
+                Qt::UniqueConnection);
     }
 #if WITH_MODEMMANAGER_SUPPORT
     else if (device->type() == NetworkManager::Device::Modem) {
@@ -1067,11 +1071,39 @@ void NetworkModel::wirelessNetworkDisappeared(const QString &ssid)
     }
 }
 
+void NetworkModel::wirelessNetworkActiveApChanged(const QString &accessPoint)
+{
+    const auto devicePtr = qobject_cast<NetworkManager::WirelessDevice *>(sender());
+    if (!devicePtr) {
+        return;
+    }
+
+    const auto ap = devicePtr->activeAccessPoint();
+    if (!ap) {
+        return;
+    }
+    for (NetworkModelItem *item : m_list.returnItems(NetworkItemsList::Ssid, ap->ssid(), devicePtr->uni())) {
+        item->setSignal(ap->signalStrength());
+        item->setSpecificPath(accessPoint);
+        updateItem(item);
+
+        qCDebug(PLASMA_NM_LIBS_LOG) << "Wireless network " << item->name() << ": activeAccessPointChanged to " << accessPoint;
+    }
+}
+
 void NetworkModel::wirelessNetworkReferenceApChanged(const QString &accessPoint)
 {
     auto networkPtr = qobject_cast<NetworkManager::WirelessNetwork *>(sender());
-
     if (!networkPtr) {
+        return;
+    }
+    auto devicePtr = NetworkManager::findNetworkInterface(networkPtr->device()).objectCast<NetworkManager::WirelessDevice>();
+    if (!devicePtr) {
+        return;
+    }
+    // Do not update the reference access point for the active connection
+    auto apPtr = devicePtr->activeAccessPoint();
+    if (apPtr && apPtr->ssid() == networkPtr->ssid()) {
         return;
     }
 
@@ -1144,7 +1176,17 @@ void NetworkModel::updateFromWirelessNetwork(NetworkModelItem *item,
     if (connection) {
         NetworkManager::WirelessSetting::Ptr wirelessSetting =
             connection->settings()->setting(NetworkManager::Setting::Wireless).staticCast<NetworkManager::WirelessSetting>();
-        if (wirelessSetting) {
+
+        if (device->activeAccessPoint() && device->activeAccessPoint()->ssid() == network->ssid()) {
+            NetworkManager::AccessPoint::Ptr ap = device->activeAccessPoint();
+            item->setSignal(ap->signalStrength());
+            item->setSpecificPath(ap->uni());
+            connect(ap.data(),
+                    &NetworkManager::AccessPoint::signalStrengthChanged,
+                    this,
+                    &NetworkModel::accessPointSignalStrengthChanged,
+                    Qt::UniqueConnection);
+        } else if (wirelessSetting) {
             if (!wirelessSetting->bssid().isEmpty()) {
                 for (const NetworkManager::AccessPoint::Ptr &ap : network->accessPoints()) {
                     if (ap->hardwareAddress() == NetworkManager::macAddressAsString(wirelessSetting->bssid())) {
