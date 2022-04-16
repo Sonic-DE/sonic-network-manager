@@ -100,6 +100,7 @@ private Q_SLOTS:
     void wirelessNetworkAppeared(const QString &ssid);
     void wirelessNetworkDisappeared(const QString &ssid);
     void wirelessNetworkSignalChanged(int signal);
+    void wirelessNetworkActiveApChanged(const QString &accessPoint);
     void wirelessNetworkReferenceApChanged(const QString &accessPoint);
 
     void initialize();
