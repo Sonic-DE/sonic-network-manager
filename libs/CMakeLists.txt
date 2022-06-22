@@ -35,12 +35,14 @@ PUBLIC
     KF5::NetworkManagerQt
     plasmanm_editor
     PkgConfig::NETWORKMANAGER
+    QCoro::Core
 PRIVATE
     KF5::I18n
     KF5::Notifications
     KF5::Service
     KF5::Wallet
     KF5::WindowSystem
+    QCoro::DBus
 )
 
 if (WITH_MODEMMANAGER_SUPPORT)
