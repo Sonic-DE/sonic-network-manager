@@ -35,6 +35,7 @@ PUBLIC
     KF5::NetworkManagerQt
     plasmanm_editor
     PkgConfig::NETWORKMANAGER
+    QCoro::Core
 PRIVATE
     KF5::I18n
     KF5::Notifications
@@ -42,6 +43,7 @@ PRIVATE
     KF5::Wallet
     KF5::WindowSystem
     KF5::KIOGui
+    QCoro::DBus
 )
 
 target_link_libraries(plasmanm_internal PUBLIC KF5::ModemManagerQt)
