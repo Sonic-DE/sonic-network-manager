@@ -286,8 +286,8 @@ void Handler::addAndActivateConnection(const QString &device, const QString &spe
         editor->show();
         KWindowSystem::setState(editor->winId(), NET::KeepAbove);
         KWindowSystem::forceActiveWindow(editor->winId());
-        connect(editor.data(), &ConnectionEditorDialog::accepted, [editor, this]() {
-            addConnection(editor->setting());
+        connect(editor.data(), &ConnectionEditorDialog::accepted, [editor, device, specificObject, this]() { //
+            addAndActivateConnectionDBus(editor->setting(), device, specificObject);
         });
         connect(editor.data(), &ConnectionEditorDialog::finished, [editor]() {
             if (editor) {
@@ -314,11 +314,7 @@ void Handler::addAndActivateConnection(const QString &device, const QString &spe
                 wifiSecurity->setPskFlags(NetworkManager::Setting::AgentOwned);
             }
         }
-        QDBusPendingReply<QDBusObjectPath> reply = NetworkManager::addAndActivateConnection(settings->toMap(), device, specificObject);
-        auto watcher = new QDBusPendingCallWatcher(reply, this);
-        watcher->setProperty("action", Handler::AddAndActivateConnection);
-        watcher->setProperty("connection", settings->name());
-        connect(watcher, &QDBusPendingCallWatcher::finished, this, &Handler::replyFinished);
+        addAndActivateConnectionDBus(settings->toMap(), device, specificObject);
     }
 
     settings.clear();
@@ -329,6 +325,15 @@ void Handler::addConnection(const NMVariantMapMap &map)
     QDBusPendingReply<QDBusObjectPath> reply = NetworkManager::addConnection(map);
     auto watcher = new QDBusPendingCallWatcher(reply, this);
     watcher->setProperty("action", AddConnection);
+    watcher->setProperty("connection", map.value(QStringLiteral("connection")).value(QStringLiteral("id")));
+    connect(watcher, &QDBusPendingCallWatcher::finished, this, &Handler::replyFinished);
+}
+
+void Handler::addAndActivateConnectionDBus(const NMVariantMapMap &map, const QString &device, const QString &specificObject)
+{
+    QDBusPendingReply<QDBusObjectPath> reply = NetworkManager::addAndActivateConnection(map, device, specificObject);
+    auto watcher = new QDBusPendingCallWatcher(reply, this);
+    watcher->setProperty("action", AddAndActivateConnection);
     watcher->setProperty("connection", map.value(QStringLiteral("connection")).value(QStringLiteral("id")));
     connect(watcher, &QDBusPendingCallWatcher::finished, this, &Handler::replyFinished);
 }
