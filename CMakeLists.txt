@@ -9,7 +9,7 @@ set(QT_MIN_VERSION "5.15.2")
 set(KF5_MIN_VERSION "5.98.0")
 set(KDE_COMPILERSETTINGS_LEVEL "5.82")
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ################# set KDE specific information #################
@@ -82,6 +82,10 @@ pkg_check_modules(OPENCONNECT IMPORTED_TARGET openconnect>=3.99)
 pkg_check_modules(NETWORKMANAGER IMPORTED_TARGET libnm>1.4.0 REQUIRED)
 pkg_check_modules(MOBILEBROADBANDPROVIDERINFO mobile-broadband-provider-info)
 pkg_get_variable(BROADBANDPROVIDER_DATABASE mobile-broadband-provider-info database)
+
+find_package(QCoro${QT_MAJOR_VERSION} REQUIRED COMPONENTS Core DBus)
+
+qcoro_enable_coroutines()
 
 add_definitions(
     -DQT_DISABLE_DEPRECATED_BEFORE=0x050f00
