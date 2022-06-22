@@ -27,6 +27,7 @@ Dependencies:
     'frameworks/solid': '@latest'
     'frameworks/plasma-framework': '@latest'
     'frameworks/kcmutils': '@latest'
+    'third-party/qcoro': '@latest'
 Options:
   require-passing-tests-on: [ 'Linux', 'FreeBSD']
   cmake-options: ' -DBUILD_MOBILE=ON'
