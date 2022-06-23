@@ -133,6 +133,8 @@ void ModemMonitor::requestPin(MMModemLock lock)
         d->dialog = QPointer<PinDialog>(new PinDialog(modem, PinDialog::ModemNetworkSubsetPuk));
     }
 
+    d->dialog->setAttribute(Qt::WA_DeleteOnClose);
+
     if (d->dialog.data()->exec() != QDialog::Accepted) {
         goto OUT;
     }
@@ -172,9 +174,6 @@ void ModemMonitor::requestPin(MMModemLock lock)
     }
 
 OUT:
-    if (d->dialog) {
-        d->dialog.data()->deleteLater();
-    }
     d->dialog.clear();
 }
 
