@@ -130,7 +130,6 @@ Q_SIGNALS:
 
 private:
     bool m_hotspotSupported;
-    bool m_runningLiveImage;
     bool m_tmpWirelessEnabled;
     bool m_tmpWwanEnabled;
 #if WITH_MODEMMANAGER_SUPPORT
