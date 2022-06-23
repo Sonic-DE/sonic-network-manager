@@ -15,6 +15,8 @@
 #include <ModemManagerQt/Modem>
 #endif
 
+#include <QCoroCore>
+
 class ConnectionIcon : public QObject
 {
     Q_PROPERTY(bool connecting READ connecting NOTIFY connectingChanged)
@@ -65,6 +67,7 @@ Q_SIGNALS:
     void needsPortalChanged(bool needsPortal);
 
 private:
+    QCoro::Task<void> checkConnectivity();
     void addActiveConnection(const QString &activeConnection);
     void setConnecting(bool connecting);
     void setConnectionIcon(const QString &icon);
