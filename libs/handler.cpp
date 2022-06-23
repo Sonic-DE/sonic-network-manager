@@ -435,22 +435,6 @@ void Handler::enableAirplaneMode(bool enable)
     }
 }
 
-template<typename T>
-void makeDBusCall(const QDBusMessage &message, QObject *context, std::function<void(QDBusPendingReply<T>)> func)
-{
-    QDBusPendingReply<T> reply = QDBusConnection::systemBus().asyncCall(message);
-    auto watcher = new QDBusPendingCallWatcher(reply, context);
-    QObject::connect(watcher, &QDBusPendingCallWatcher::finished, context, [func](QDBusPendingCallWatcher *watcher) {
-        const QDBusPendingReply<T> reply = *watcher;
-        if (!reply.isValid()) {
-            qCWarning(PLASMA_NM_LIBS_LOG) << reply.error().message();
-            return;
-        }
-        func(reply);
-        watcher->deleteLater();
-    });
-}
-
 void setBluetoothEnabled(const QString &path, bool enabled)
 {
     QDBusMessage message =
@@ -463,38 +447,48 @@ void setBluetoothEnabled(const QString &path, bool enabled)
     QDBusConnection::systemBus().asyncCall(message);
 }
 
-void Handler::enableBluetooth(bool enable)
+QCoro::Task<void> Handler::enableBluetooth(bool enable)
 {
     qDBusRegisterMetaType<QMap<QDBusObjectPath, NMVariantMapMap>>();
 
     const QDBusMessage getObjects = QDBusMessage::createMethodCall("org.bluez", "/", "org.freedesktop.DBus.ObjectManager", "GetManagedObjects");
 
-    makeDBusCall<QMap<QDBusObjectPath, NMVariantMapMap>>(getObjects, this, [enable, this](const auto reply) {
-        for (const QDBusObjectPath &path : reply.value().keys()) {
-            const QString objPath = path.path();
-            qCDebug(PLASMA_NM_LIBS_LOG) << "inspecting path" << objPath;
-            const QStringList interfaces = reply.value().value(path).keys();
-            qCDebug(PLASMA_NM_LIBS_LOG) << "interfaces:" << interfaces;
+    QDBusReply<QMap<QDBusObjectPath, NMVariantMapMap>> reply = co_await QDBusConnection::systemBus().asyncCall(getObjects);
 
-            if (!interfaces.contains(QStringLiteral("org.bluez.Adapter1"))) {
-                continue;
-            }
+    if (!reply.isValid()) {
+        qCWarning(PLASMA_NM_LIBS_LOG) << reply.error().message();
+        co_return;
+    }
 
-            // We need to check previous state first
-            if (!enable) {
-                QDBusMessage getPowered = QDBusMessage::createMethodCall("org.bluez", objPath, "org.freedesktop.DBus.Properties", "Get");
-                const QList<QVariant> arguments{QLatin1String("org.bluez.Adapter1"), QLatin1String("Powered")};
-                getPowered.setArguments(arguments);
+    for (const QDBusObjectPath &path : reply.value().keys()) {
+        const QString objPath = path.path();
+        qCDebug(PLASMA_NM_LIBS_LOG) << "inspecting path" << objPath;
+        const QStringList interfaces = reply.value().value(path).keys();
+        qCDebug(PLASMA_NM_LIBS_LOG) << "interfaces:" << interfaces;
 
-                makeDBusCall<QVariant>(getPowered, this, [objPath, this](const auto reply) {
-                    m_bluetoothAdapters.insert(objPath, reply.value().toBool());
-                    setBluetoothEnabled(objPath, false);
-                });
-            } else if (m_bluetoothAdapters.value(objPath)) {
-                setBluetoothEnabled(objPath, true);
-            }
+        if (!interfaces.contains(QStringLiteral("org.bluez.Adapter1"))) {
+            continue;
         }
-    });
+
+        // We need to check previous state first
+        if (!enable) {
+            QDBusMessage getPowered = QDBusMessage::createMethodCall("org.bluez", objPath, "org.freedesktop.DBus.Properties", "Get");
+            const QList<QVariant> arguments{QLatin1String("org.bluez.Adapter1"), QLatin1String("Powered")};
+            getPowered.setArguments(arguments);
+
+            QDBusReply<QVariant> reply = co_await QDBusConnection::systemBus().asyncCall(getPowered);
+
+            if (!reply.isValid()) {
+                qCWarning(PLASMA_NM_LIBS_LOG) << reply.error().message();
+                co_return;
+            }
+
+            m_bluetoothAdapters.insert(objPath, reply.value().toBool());
+            setBluetoothEnabled(objPath, false);
+        } else if (m_bluetoothAdapters.value(objPath)) {
+            setBluetoothEnabled(objPath, true);
+        }
+    }
 }
 
 void Handler::enableNetworking(bool enable)

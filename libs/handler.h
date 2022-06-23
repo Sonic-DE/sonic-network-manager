@@ -138,7 +138,7 @@ private:
     QMap<QString, bool> m_bluetoothAdapters;
     QMap<QString, QTimer *> m_wirelessScanRetryTimer;
 
-    void enableBluetooth(bool enable);
+    QCoro::Task<void> enableBluetooth(bool enable);
     void scanRequestFailed(const QString &interface);
     bool checkRequestScanRateLimit(const NetworkManager::WirelessDevice::Ptr &wifiDevice);
     bool checkHotspotSupported();
