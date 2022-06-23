@@ -178,3 +178,15 @@ bool Configuration::showPasswordDialog() const
 
     return true;
 }
+
+bool Configuration::systemConnectionsByDefault() const
+{
+    KSharedConfigPtr config = KSharedConfig::openConfig(QStringLiteral("plasma-nm"));
+    KConfigGroup grp(config, QStringLiteral("General"));
+
+    if (grp.isValid()) {
+        return grp.readEntry(QStringLiteral("SystemConnectionsByDefault"), false);
+    }
+
+    return false;
+}
