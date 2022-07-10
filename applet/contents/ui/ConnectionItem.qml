@@ -36,6 +36,40 @@ PlasmaExtras.ExpandableListItem {
     property real txBytes: 0
     property Component showQRComponent: null
 
+    // Used in Accessible.description
+    readonly property string connectionTypeString: {
+        switch (Type) {
+        case PlasmaNM.Enums.Adsl:
+            return i18nc("@info:tooltip connection type", "ADSL");
+        case PlasmaNM.Enums.Bluetooth:
+            return i18nc("@info:tooltip connection type", "Bluetooth");
+        case PlasmaNM.Enums.Bridge:
+            return i18nc("@info:tooltip connection type", "Bridge");
+        case PlasmaNM.Enums.Cdma:
+            return i18nc("@info:tooltip connection type", "CDMA");
+        case PlasmaNM.Enums.Gsm:
+            return i18nc("@info:tooltip connection type", "GSM");
+        case PlasmaNM.Enums.Infiniband:
+            return i18nc("@info:tooltip connection type", "Infiniband");
+        case PlasmaNM.Enums.OLPCMesh:
+            return i18nc("@info:tooltip connection type", "OLPC Mesh");
+        case PlasmaNM.Enums.Pppoe:
+            return i18nc("@info:tooltip connection type", "PPOPE");
+        case PlasmaNM.Enums.Vlan:
+            return i18nc("@info:tooltip connection type", "VLAN");
+        case PlasmaNM.Enums.Vpn:
+            return i18nc("@info:tooltip connection type", "VPN");
+        case PlasmaNM.Enums.Wimax:
+            return i18nc("@info:tooltip connection type", "Wimax");
+        case PlasmaNM.Enums.Wired:
+            return i18nc("@info:tooltip connection type", "Wired");
+        case PlasmaNM.Enums.Wireless:
+            return i18nc("@info:tooltip connection type", "Wireless");
+        default:
+            return i18nc("@info:tooltip connection type", "Unknown");
+        }
+    }
+
     icon: model.ConnectionIcon
     title: model.ItemUniqueName
     subtitle: itemText()
@@ -95,6 +129,8 @@ PlasmaExtras.ExpandableListItem {
     ]
 
     customExpandedViewContent: detailsComponent
+
+    Accessible.description: i18nc("@info:tooltip %1 connection type %2 translated subtitle", "Connection type is %1 %2", connectionTypeString, subtitle)
 
     Component {
         id: detailsComponent
