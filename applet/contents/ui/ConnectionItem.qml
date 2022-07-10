@@ -188,15 +188,26 @@ PlasmaExtras.ExpandableListItem {
                 }
             }
 
-            TrafficMonitor {
+            FocusScope {
                 anchors {
                     left: parent.left
                     right: parent.right
                 }
-                downloadSpeed: rxBytes
-                uploadSpeed: txBytes
-                visible: detailsTabBar.currentIndex == 0
+                height: trafficMonitorGraph.implicitHeight
+
+                activeFocusOnTab: true
+
+                Accessible.description: i18nc("@info:tooltip", "Current download speed is %1 kilobytes per second; current upload speed is %2 kilobytes per seconds", Math.round(rxBytes / 1024), Math.round(txBytes / 1024))
+
+                TrafficMonitor {
+                    id: trafficMonitorGraph
+                    width: parent.width
+                    downloadSpeed: rxBytes
+                    uploadSpeed: txBytes
+                    visible: detailsTabBar.currentIndex == 0
+                }
             }
+
         }
     }
 
