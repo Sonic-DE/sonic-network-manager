@@ -15,6 +15,7 @@ PlasmaExtras.Representation {
     id: full
     collapseMarginsHint: true
     property alias toolbarValues: toolbar
+    property int connectivity
 
     Component {
         id: networkModelComponent
@@ -31,9 +32,34 @@ PlasmaExtras.Representation {
 
     header: PlasmaExtras.PlasmoidHeading {
         focus: true
-        Toolbar {
-            id: toolbar
+
+        ColumnLayout {
             width: parent.width
+
+            Toolbar {
+                id: toolbar
+                Layout.fillWidth: true
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+                visible: full.connectivity === PlasmaNM.NetworkManager.Portal
+
+                PlasmaCore.IconItem {
+                    Layout.preferredWidth: PlasmaCore.Units.iconSizes.medium
+                    Layout.preferredHeight: PlasmaCore.Units.iconSizes.medium
+                    source: "dialog-password"
+                }
+
+                PlasmaComponents3.Label {
+                    text: i18n("You need to log in to this network")
+                }
+
+                PlasmaComponents3.Button {
+                    text: i18nc("@action:button", "Log in")
+                    onClicked: Qt.openUrlExternally(networkStatus.networkCheckUrl)
+                }
+            }
         }
     }
 

@@ -29,6 +29,7 @@ Item {
         Layout.minimumHeight: PlasmaCore.Units.gridUnit * 20
         anchors.fill: parent
         focus: true
+        connectivity: networkStatus.connectivity
     }
 
     function action_wifiSwitch() {
@@ -50,7 +51,7 @@ Item {
     }
 
     function action_showPortal() {
-        Qt.openUrlExternally("http://networkcheck.kde.org")
+        Qt.openUrlExternally(networkStatus.networkCheckUrl)
     }
 
     Component.onCompleted: {

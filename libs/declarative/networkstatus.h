@@ -19,6 +19,11 @@ class NetworkStatus : public QObject
     Q_PROPERTY(QString activeConnections READ activeConnections NOTIFY activeConnectionsChanged)
 
     /**
+     * Returns the KDE portal network check website URL
+     */
+    Q_PROPERTY(QUrl networkCheckUrl READ networkCheckUrl CONSTANT)
+
+    /**
      * Returns the network connectivity state
      */
     Q_PROPERTY(NetworkManager::Connectivity connectivity READ connectivity NOTIFY connectivityChanged)
@@ -44,6 +49,8 @@ public:
 
     explicit NetworkStatus(QObject *parent = nullptr);
     ~NetworkStatus() override;
+
+    QUrl networkCheckUrl() const;
 
     QString activeConnections() const;
     QString networkStatus() const;
