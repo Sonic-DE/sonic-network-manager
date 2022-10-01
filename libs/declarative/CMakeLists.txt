@@ -20,6 +20,7 @@ target_link_libraries(plasmanm_qmlplugins
     plasmanm_editor
     Qt::Quick
     KF5::I18n
+    KF5::NetworkManagerQt
 )
 
 if (WITH_MODEMMANAGER_SUPPORT)
