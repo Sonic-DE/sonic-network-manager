@@ -76,7 +76,7 @@ Item {
         plasmoid.action("planeModeSwitch").checked = Qt.binding(() => PlasmaNM.Configuration.airplaneModeEnabled)
 
         plasmoid.setAction("showPortal", i18n("Open Network Login Page…"), "internet-services")
-        plasmoid.action("showPortal").visible = Qt.binding(() => connectionIconProvider.needsPortal)
+        plasmoid.action("showPortal").visible = Qt.binding(() => networkStatus.connectivity === PlasmaNM.NetworkManager.Portal)
 
         plasmoid.removeAction("configure")
         if (kcmAuthorized)
@@ -97,6 +97,7 @@ Item {
 
     PlasmaNM.ConnectionIcon {
         id: connectionIconProvider
+        connectivity: networkStatus.connectivity
     }
 
     PlasmaNM.Handler {

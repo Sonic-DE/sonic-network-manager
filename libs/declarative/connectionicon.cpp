@@ -31,7 +31,6 @@ ConnectionIcon::ConnectionIcon(QObject *parent)
     connect(NetworkManager::notifier(), &NetworkManager::Notifier::primaryConnectionChanged, this, &ConnectionIcon::primaryConnectionChanged);
     connect(NetworkManager::notifier(), &NetworkManager::Notifier::activatingConnectionChanged, this, &ConnectionIcon::activatingConnectionChanged);
     connect(NetworkManager::notifier(), &NetworkManager::Notifier::activeConnectionAdded, this, &ConnectionIcon::activeConnectionAdded);
-    connect(NetworkManager::notifier(), &NetworkManager::Notifier::connectivityChanged, this, &ConnectionIcon::connectivityChanged);
     connect(NetworkManager::notifier(), &NetworkManager::Notifier::deviceAdded, this, &ConnectionIcon::deviceAdded);
     connect(NetworkManager::notifier(), &NetworkManager::Notifier::deviceRemoved, this, &ConnectionIcon::deviceRemoved);
     connect(NetworkManager::notifier(), &NetworkManager::Notifier::networkingEnabledChanged, this, &ConnectionIcon::networkingEnabledChanged);
@@ -62,16 +61,6 @@ ConnectionIcon::ConnectionIcon(QObject *parent)
     setStates();
 
     setIcons();
-
-    QDBusPendingReply<uint> pendingReply = NetworkManager::checkConnectivity();
-    auto callWatcher = new QDBusPendingCallWatcher(pendingReply);
-    connect(callWatcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher *watcher) {
-        QDBusPendingReply<uint> reply = *watcher;
-        if (reply.isValid()) {
-            connectivityChanged((NetworkManager::Connectivity)reply.value());
-        }
-        watcher->deleteLater();
-    });
 }
 
 ConnectionIcon::~ConnectionIcon() = default;
@@ -97,6 +86,27 @@ QString ConnectionIcon::connectionIcon() const
 QString ConnectionIcon::connectionTooltipIcon() const
 {
     return m_connectionTooltipIcon;
+}
+
+NetworkManager::Connectivity ConnectionIcon::connectivity() const
+{
+    return m_connectivity;
+}
+
+void ConnectionIcon::setConnectivity(NetworkManager::Connectivity connectivity)
+{
+    if (m_connectivity == connectivity) {
+        return;
+    }
+
+    m_connectivity = connectivity;
+    Q_EMIT connectivityChanged(connectivity);
+
+    const bool limited = (connectivity == NetworkManager::Portal || connectivity == NetworkManager::Limited);
+    if (m_limited != limited) {
+        m_limited = limited;
+        Q_EMIT connectionIconChanged(connectionIcon());
+    }
 }
 
 void ConnectionIcon::activatingConnectionChanged(const QString &connection)
@@ -142,16 +152,6 @@ void ConnectionIcon::carrierChanged(bool carrier)
 {
     Q_UNUSED(carrier);
     setIcons();
-}
-
-void ConnectionIcon::connectivityChanged(NetworkManager::Connectivity conn)
-{
-    const bool needsPortal = conn == NetworkManager::Portal;
-    if (needsPortal != m_needsPortal) {
-        m_needsPortal = needsPortal;
-        Q_EMIT needsPortalChanged(needsPortal);
-    }
-    setLimited(conn == NetworkManager::Portal || conn == NetworkManager::Limited);
 }
 
 void ConnectionIcon::deviceAdded(const QString &device)
@@ -619,14 +619,6 @@ void ConnectionIcon::setVpn(bool vpn)
 {
     if (m_vpn != vpn) {
         m_vpn = vpn;
-        Q_EMIT connectionIconChanged(connectionIcon());
-    }
-}
-
-void ConnectionIcon::setLimited(bool limited)
-{
-    if (m_limited != limited) {
-        m_limited = limited;
         Q_EMIT connectionIconChanged(connectionIcon());
     }
 }

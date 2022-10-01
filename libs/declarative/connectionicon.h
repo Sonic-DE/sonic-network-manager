@@ -20,7 +20,8 @@ class ConnectionIcon : public QObject
     Q_PROPERTY(bool connecting READ connecting NOTIFY connectingChanged)
     Q_PROPERTY(QString connectionIcon READ connectionIcon NOTIFY connectionIconChanged)
     Q_PROPERTY(QString connectionTooltipIcon READ connectionTooltipIcon NOTIFY connectionTooltipIconChanged)
-    Q_PROPERTY(bool needsPortal READ needsPortal NOTIFY needsPortalChanged)
+
+    Q_PROPERTY(NetworkManager::Connectivity connectivity READ connectivity WRITE setConnectivity NOTIFY connectivityChanged)
 
     Q_OBJECT
 public:
@@ -31,10 +32,9 @@ public:
     QString connectionIcon() const;
     QString connectionTooltipIcon() const;
 
-    bool needsPortal() const
-    {
-        return m_needsPortal;
-    }
+    NetworkManager::Connectivity connectivity() const;
+    void setConnectivity(NetworkManager::Connectivity connectivity);
+    Q_SIGNAL void connectivityChanged(NetworkManager::Connectivity connectivity);
 
 private Q_SLOTS:
     void activatingConnectionChanged(const QString &connection);
@@ -42,7 +42,6 @@ private Q_SLOTS:
     void activeConnectionDestroyed();
     void activeConnectionStateChanged(NetworkManager::ActiveConnection::State state);
     void carrierChanged(bool carrier);
-    void connectivityChanged(NetworkManager::Connectivity connectivity);
     void deviceAdded(const QString &device);
     void deviceRemoved(const QString &device);
     void networkingEnabledChanged(bool enabled);
@@ -62,7 +61,6 @@ Q_SIGNALS:
     void connectingChanged(bool connecting);
     void connectionIconChanged(const QString &icon);
     void connectionTooltipIconChanged(const QString &icon);
-    void needsPortalChanged(bool needsPortal);
 
 private:
     void addActiveConnection(const QString &activeConnection);
@@ -70,7 +68,6 @@ private:
     void setConnectionIcon(const QString &icon);
     void setConnectionTooltipIcon(const QString &icon);
     void setVpn(bool vpn);
-    void setLimited(bool limited);
     uint m_signal = 0;
     NetworkManager::WirelessNetwork::Ptr m_wirelessNetwork;
 
@@ -79,7 +76,7 @@ private:
     bool m_vpn = false;
     QString m_connectionIcon;
     QString m_connectionTooltipIcon;
-    bool m_needsPortal = false;
+    NetworkManager::Connectivity m_connectivity = NetworkManager::UnknownConnectivity;
 
     void setDisconnectedIcon();
     void setIcons();
