@@ -21,6 +21,8 @@ RowLayout {
     readonly property var displayWwanMessage: !wwanSwitchButton.checked && wwanSwitchButton.visible
     readonly property var displayplaneModeMessage: planeModeSwitchButton.checked && planeModeSwitchButton.visible
 
+    readonly property bool wifiSwitchButtonEnabled: enabledConnections.wirelessEnabled && availableDevices.wirelessDeviceAvailable && !PlasmaNM.Configuration.airplaneModeEnabled
+
     property alias searchTextField: searchTextField
 
     PlasmaCore.Svg {
@@ -32,19 +34,19 @@ RowLayout {
         id: enabledConnections
 
         onWirelessEnabledChanged: enabled => {
-            wifiSwitchButton.checked = wifiSwitchButton.enabled && enabled
+            wifiSwitchButton.checked = wifiSwitchButton.administrativelyEnabled && enabled
         }
 
         onWirelessHwEnabledChanged: enabled => {
-            wifiSwitchButton.enabled = enabled && availableDevices.wirelessDeviceAvailable && !PlasmaNM.Configuration.airplaneModeEnabled
+            wifiSwitchButton.administrativelyEnabled = availableDevices.wirelessDeviceAvailable && !PlasmaNM.Configuration.airplaneModeEnabled && enabled
         }
 
         onWwanEnabledChanged: enabled => {
-            wwanSwitchButton.checked = wwanSwitchButton.enabled && enabled
+            wwanSwitchButton.checked = wwanSwitchButton.administrativelyEnabled && enabled
         }
 
         onWwanHwEnabledChanged: enabled => {
-            wwanSwitchButton.enabled = enabled && availableDevices.modemDeviceAvailable && !PlasmaNM.Configuration.airplaneModeEnabled
+            wwanSwitchButton.administrativelyEnabled = availableDevices.modemDeviceAvailable && !PlasmaNM.Configuration.airplaneModeEnabled && enabled
         }
     }
 
@@ -53,10 +55,13 @@ RowLayout {
     PlasmaComponents3.CheckBox {
         id: wifiSwitchButton
 
-        checked: enabled && enabledConnections.wirelessEnabled
-        enabled: enabledConnections.wirelessHwEnabled && availableDevices.wirelessDeviceAvailable && !PlasmaNM.Configuration.airplaneModeEnabled
+        // can't overload Item::enabled, because it's being used for other things, like Edit Mode on a desktop
+        property bool administrativelyEnabled: enabledConnections.wirelessHwEnabled && availableDevices.wirelessDeviceAvailable && !PlasmaNM.Configuration.airplaneModeEnabled
 
-        icon.name: enabled ? "network-wireless-on" : "network-wireless-off"
+        checked: administrativelyEnabled && enabledConnections.wirelessEnabled
+        enabled: administrativelyEnabled
+
+        icon.name: administrativelyEnabled ? "network-wireless-on" : "network-wireless-off"
         visible: availableDevices.wirelessDeviceAvailable
 
         KeyNavigation.right: wwanSwitchButton.visible ? wwanSwitchButton : wwanSwitchButton.KeyNavigation.right
@@ -95,10 +100,13 @@ RowLayout {
     PlasmaComponents3.CheckBox {
         id: wwanSwitchButton
 
-        checked: enabled && enabledConnections.wwanEnabled
-        enabled: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable && !PlasmaNM.Configuration.airplaneModeEnabled
+        // can't overload Item::enabled, because it's being used for other things, like Edit Mode on a desktop
+        property bool administrativelyEnabled: enabledConnections.wwanHwEnabled && availableDevices.modemDeviceAvailable && !PlasmaNM.Configuration.airplaneModeEnabled
 
-        icon.name: enabled ? "network-mobile-on" : "network-mobile-off"
+        checked: administrativelyEnabled && enabledConnections.wwanEnabled
+        enabled: administrativelyEnabled
+
+        icon.name: administrativelyEnabled ? "network-mobile-on" : "network-mobile-off"
         visible: availableDevices.modemDeviceAvailable
 
         KeyNavigation.left: wifiSwitchButton
