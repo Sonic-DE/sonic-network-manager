@@ -31,19 +31,19 @@ RowLayout {
     PlasmaNM.EnabledConnections {
         id: enabledConnections
 
-        onWirelessEnabledChanged: {
+        onWirelessEnabledChanged: enabled => {
             wifiSwitchButton.checked = wifiSwitchButton.enabled && enabled
         }
 
-        onWirelessHwEnabledChanged: {
+        onWirelessHwEnabledChanged: enabled => {
             wifiSwitchButton.enabled = enabled && availableDevices.wirelessDeviceAvailable && !PlasmaNM.Configuration.airplaneModeEnabled
         }
 
-        onWwanEnabledChanged: {
+        onWwanEnabledChanged: enabled => {
             wwanSwitchButton.checked = wwanSwitchButton.enabled && enabled
         }
 
-        onWwanHwEnabledChanged: {
+        onWwanHwEnabledChanged: enabled => {
             wwanSwitchButton.enabled = enabled && availableDevices.modemDeviceAvailable && !PlasmaNM.Configuration.airplaneModeEnabled
         }
     }
