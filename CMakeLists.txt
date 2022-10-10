@@ -17,6 +17,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
+option(BUILD_MOBILE "Build Plasma Mobile WiFi and Hotspot KCMs" OFF)
+
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
@@ -43,7 +45,6 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED
     ConfigWidgets
     Completion
     CoreAddons
-    Declarative
     DBusAddons
     KIO
     I18n
@@ -58,6 +59,10 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED
     KCMUtils
     ModemManagerQt
 )
+
+if(BUILD_MOBILE)
+    find_package(KF5Declarative ${KF5_MIN_VERSION} REQUIRED)
+endif()
 
 ecm_find_qmlmodule(org.kde.prison 1.0)
 
