@@ -116,6 +116,8 @@ void Handler::activateConnection(const QString &connection, const QString &devic
                 NMVpnPluginInfo *plugin_info = nm_vpn_plugin_info_list_find_by_service(plugins, vpnSetting->serviceType().toStdString().c_str());
                 pluginMissing = !plugin_info;
                 errorMessage = i18n("NetworkManager is missing support for '%1' VPN connections. Please use the package manager to install it.", pluginBaseName);
+
+                NMVpnEditorPlugin *p = nm_vpn_plugin_info_get_editor_plugin(plugin_info);
             }
 
             if (pluginMissing) {
