@@ -25,13 +25,11 @@
 
 #include <KLocalizedString>
 
-#if WITH_MODEMMANAGER_SUPPORT
 #include <ModemManagerQt/Manager>
 #include <ModemManagerQt/Modem3Gpp>
 #include <ModemManagerQt/Modem>
 #include <ModemManagerQt/ModemCdma>
 #include <ModemManagerQt/ModemDevice>
-#endif
 
 #include <QStringBuilder>
 
@@ -619,7 +617,6 @@ void NetworkModelItem::updateDetails() const
             m_details << i18n("MAC Address") << wirelessDevice->permanentHardwareAddress();
         }
     } else if (m_type == NetworkManager::ConnectionSettings::Gsm || m_type == NetworkManager::ConnectionSettings::Cdma) {
-#if WITH_MODEMMANAGER_SUPPORT
         NetworkManager::ModemDevice::Ptr modemDevice = device.objectCast<NetworkManager::ModemDevice>();
         if (modemDevice) {
             ModemManager::ModemDevice::Ptr modem = ModemManager::findModemDevice(modemDevice->udi());
@@ -642,7 +639,6 @@ void NetworkModelItem::updateDetails() const
                 }
             }
         }
-#endif
     } else if (m_type == NetworkManager::ConnectionSettings::Vpn) {
         m_details << i18n("VPN plugin") << m_vpnType;
 
