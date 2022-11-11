@@ -416,11 +416,11 @@ void KCMNetworkmanagement::onRequestExportConnection(const QString &connectionPa
             QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + QDir::separator() + vpnPlugin->suggestedFileName(connSettings);
         const QString filename = QFileDialog::getSaveFileName(this, i18n("Export VPN Connection"), url, vpnPlugin->supportedFileExtensions());
         if (!filename.isEmpty()) {
-            if (!vpnPlugin->exportConnectionSettings(connSettings, filename)) {
-                // TODO display failure
-                qCWarning(PLASMA_NM_KCM_LOG) << "Failed to export VPN connection";
-            } else {
+            if (auto result = vpnPlugin->exportConnectionSettings(connSettings, filename)) {
                 // TODO display success
+            } else {
+                // TODO display failure
+                qCWarning(PLASMA_NM_KCM_LOG) << "Failed to export VPN connection" << result.errorMessage();
             }
         }
     } else {
@@ -565,12 +565,15 @@ void KCMNetworkmanagement::importVpn()
             if (vpnPlugin->supportedFileExtensions().contains(ext)) {
                 qCDebug(PLASMA_NM_KCM_LOG) << "Found VPN plugin" << service.name() << ", type:" << service.value("X-NetworkManager-Services");
 
-                NMVariantMapMap connection = vpnPlugin->importConnectionSettings(filename);
+                VpnUiPlugin::ImportResult result = vpnPlugin->importConnectionSettings(filename);
 
-                // qCDebug(PLASMA_NM_KCM_LOG) << "Raw connection:" << connection;
+                if (!result) {
+                    qWarning(PLASMA_NM_KCM_LOG) << "Failed to import" << filename << result.errorMessage();
+                    break;
+                }
 
                 NetworkManager::ConnectionSettings connectionSettings;
-                connectionSettings.fromMap(connection);
+                connectionSettings.fromMap(result.connection());
                 connectionSettings.setUuid(NetworkManager::ConnectionSettings::createNewUuid());
 
                 // qCDebug(PLASMA_NM_KCM_LOG) << "Converted connection:" << connectionSettings;
@@ -578,11 +581,7 @@ void KCMNetworkmanagement::importVpn()
                 m_handler->addConnection(connectionSettings.toMap());
                 // qCDebug(PLASMA_NM_KCM_LOG) << "Adding imported connection under id:" << conId;
 
-                if (connection.isEmpty()) { // the "positive" part will arrive with connectionAdded
-                    // TODO display success
-                } else {
-                    break; // stop iterating over the plugins if the import produced at least some output
-                }
+                break;
             }
         }
     }

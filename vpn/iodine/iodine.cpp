@@ -40,23 +40,4 @@ QString IodineUiPlugin::supportedFileExtensions() const
     return {};
 }
 
-NMVariantMapMap IodineUiPlugin::importConnectionSettings(const QString &fileName)
-{
-    Q_UNUSED(fileName);
-
-    // TODO : import the Iodine connection from file and return settings
-    mError = VpnUiPlugin::NotImplemented;
-    return {};
-}
-
-bool IodineUiPlugin::exportConnectionSettings(const NetworkManager::ConnectionSettings::Ptr &connection, const QString &fileName)
-{
-    Q_UNUSED(connection);
-    Q_UNUSED(fileName);
-
-    // TODO : export Iodine connection to file
-    mError = VpnUiPlugin::NotImplemented;
-    return false;
-}
-
 #include "iodine.moc"

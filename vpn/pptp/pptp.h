@@ -23,8 +23,6 @@ public:
 
     QString suggestedFileName(const NetworkManager::ConnectionSettings::Ptr &connection) const override;
     QString supportedFileExtensions() const override;
-    NMVariantMapMap importConnectionSettings(const QString &fileName) override;
-    bool exportConnectionSettings(const NetworkManager::ConnectionSettings::Ptr &connection, const QString &fileName) override;
 };
 
 #endif //  PLASMA_NM_PPTP_H

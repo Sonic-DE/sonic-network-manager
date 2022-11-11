@@ -42,19 +42,4 @@ QString L2tpUiPlugin::supportedFileExtensions() const
     return {};
 }
 
-NMVariantMapMap L2tpUiPlugin::importConnectionSettings(const QString &fileName)
-{
-    Q_UNUSED(fileName);
-    mError = VpnUiPlugin::NotImplemented;
-    return {};
-}
-
-bool L2tpUiPlugin::exportConnectionSettings(const NetworkManager::ConnectionSettings::Ptr &connection, const QString &fileName)
-{
-    Q_UNUSED(connection);
-    Q_UNUSED(fileName);
-    mError = VpnUiPlugin::NotImplemented;
-    return false;
-}
-
 #include "l2tp.moc"
