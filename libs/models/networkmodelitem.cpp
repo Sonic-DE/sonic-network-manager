@@ -448,7 +448,7 @@ void NetworkModelItem::setType(NetworkManager::ConnectionSettings::ConnectionTyp
 
     const auto it = s_connectionTypeToString.find(type);
     if (it != s_connectionTypeToString.end()) {
-        m_accessibleDescription = s_connectionTypeToString.at(type);
+        m_accessibleDescription = *it;
     } else {
         m_accessibleDescription = s_connectionTypeToString.at(NetworkManager::ConnectionSettings::ConnectionType::Unknown);
     }
