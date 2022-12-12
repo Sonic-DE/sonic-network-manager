@@ -573,13 +573,17 @@ void KCMNetworkmanagement::importVpn()
                 break;
             }
 
-            NetworkManager::ConnectionSettings connectionSettings;
-            connectionSettings.fromMap(result.connection());
-            connectionSettings.setUuid(NetworkManager::ConnectionSettings::createNewUuid());
+            auto connection = result.connection();
 
-            // qCDebug(PLASMA_NM_KCM_LOG) << "Converted connection:" << connectionSettings;
+            if (std::holds_alternative<NMVariantMapMap>(connection)) {
+                NetworkManager::ConnectionSettings connectionSettings;
+                connectionSettings.fromMap(std::get<NMVariantMapMap>(connection));
+                connectionSettings.setUuid(NetworkManager::ConnectionSettings::createNewUuid());
+                m_handler->addConnection(connectionSettings.toMap());
+            } else {
+                m_handler->addConnection(std::get<NMConnection *>(connection));
+            }
 
-            m_handler->addConnection(connectionSettings.toMap());
             // qCDebug(PLASMA_NM_KCM_LOG) << "Adding imported connection under id:" << conId;
             break;
         }

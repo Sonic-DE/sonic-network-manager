@@ -70,7 +70,7 @@ QString VpnUiPlugin::ImportResult::errorMessage() const
     return m_errorMessage;
 }
 
-NMVariantMapMap VpnUiPlugin::ImportResult::connection() const
+VpnUiPlugin::ImportResult::Connection VpnUiPlugin::ImportResult::connection() const
 {
     return m_connection;
 }
@@ -84,7 +84,7 @@ VpnUiPlugin::ImportResult VpnUiPlugin::ImportResult::fail(const QString &errorMe
     return result;
 }
 
-VpnUiPlugin::ImportResult VpnUiPlugin::ImportResult::pass(const NMVariantMapMap &connection)
+VpnUiPlugin::ImportResult VpnUiPlugin::ImportResult::pass(const Connection &connection)
 {
     ImportResult result;
     result.m_connection = connection;

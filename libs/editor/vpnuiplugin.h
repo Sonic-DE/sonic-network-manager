@@ -20,6 +20,8 @@
 
 #include "settingwidget.h"
 
+#include "nm-connection.h"
+
 /**
  * Plugin for UI elements for VPN configuration
  */
@@ -47,8 +49,10 @@ public:
     virtual QStringList supportedFileExtensions() const;
 
     struct ImportResult {
+        using Connection = std::variant<NMVariantMapMap, NMConnection *>;
+
     private:
-        NMVariantMapMap m_connection;
+        Connection m_connection;
         ErrorType m_error = NoError;
         QString m_errorMessage;
 
@@ -57,11 +61,11 @@ public:
 
         QString errorMessage() const;
 
-        NMVariantMapMap connection() const;
+        Connection connection() const;
 
         static ImportResult fail(const QString &errorMessage);
 
-        static ImportResult pass(const NMVariantMapMap &connection);
+        static ImportResult pass(const Connection &connection);
 
         static ImportResult notImplemented();
     };
