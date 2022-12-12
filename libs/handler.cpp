@@ -33,6 +33,7 @@
 #include <QIcon>
 #include <QPointer>
 
+#include <KIO/OpenUrlJob>
 #include <KLocalizedString>
 #include <KNotification>
 #include <KPluginMetaData>
@@ -123,9 +124,16 @@ void Handler::activateConnection(const QString &connection, const QString &devic
                 auto notification = new KNotification(QStringLiteral("MissingVpnPlugin"), KNotification::Persistent, this);
                 notification->setComponentName(QStringLiteral("networkmanagement"));
                 notification->setTitle(con->name());
-                notification->setText(
-                    i18n("NetworkManager is missing support for '%1' VPN connections. Please use the package manager to install it.", pluginBaseName));
+                notification->setText(i18n("NetworkManager is missing support for '%1' VPN connections.", pluginBaseName));
                 notification->setIconName(QStringLiteral("dialog-error"));
+                notification->setActions({i18n("Install")});
+
+                connect(notification, &KNotification::action1Activated, this, [notification, pluginBaseName] {
+                    auto *job = new KIO::OpenUrlJob(QUrl(QStringLiteral("appstream:network-manager-") + pluginBaseName));
+                    job->setStartupId(notification->xdgActivationToken().toUtf8());
+                    job->start();
+                });
+
                 notification->sendEvent();
                 return;
             }
