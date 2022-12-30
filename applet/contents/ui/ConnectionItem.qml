@@ -227,12 +227,8 @@ PlasmaExtras.ExpandableListItem {
         interval: 2000
         running: showSpeed
         triggeredOnStart: true
-        property real prevRxBytes
-        property real prevTxBytes
-        Component.onCompleted: {
-            prevRxBytes = 0
-            prevTxBytes = 0
-        }
+        property real prevRxBytes: 0
+        property real prevTxBytes: 0
         onTriggered: {
             rxBytes = prevRxBytes == 0 ? 0 : (RxBytes - prevRxBytes) * 1000 / interval
             txBytes = prevTxBytes == 0 ? 0 : (TxBytes - prevTxBytes) * 1000 / interval
