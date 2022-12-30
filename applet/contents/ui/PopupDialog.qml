@@ -10,6 +10,7 @@ import org.kde.plasma.components 3.0 as PlasmaComponents3
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.extras 2.0 as PlasmaExtras
 import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
+import org.kde.plasma.plasmoid 2.0
 
 PlasmaExtras.Representation {
     id: full
@@ -139,17 +140,14 @@ PlasmaExtras.Representation {
         }
     }
 
-    Connections {
-        target: plasmoid
-        function onExpandedChanged(expanded) {
-            connectionView.currentVisibleButtonIndex = -1;
+    Plasmoid.onExpandedChanged: expanded => {
+        connectionView.currentVisibleButtonIndex = -1;
 
-            if (expanded) {
-                handler.requestScan();
-                full.connectionModel = networkModelComponent.createObject(full)
-            } else {
-                full.connectionModel.destroy()
-            }
+        if (expanded) {
+            handler.requestScan();
+            full.connectionModel = networkModelComponent.createObject(full)
+        } else {
+            full.connectionModel.destroy()
         }
     }
 }
