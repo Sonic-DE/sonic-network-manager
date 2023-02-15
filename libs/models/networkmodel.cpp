@@ -14,6 +14,7 @@
 
 #include <ModemManagerQt/Manager>
 
+#include <NetworkManagerQt/GenericDevice>
 #include <NetworkManagerQt/Settings>
 
 NetworkModel::NetworkModel(QObject *parent)
@@ -211,6 +212,9 @@ void NetworkModel::initialize()
     // Initialize existing devices
     for (const NetworkManager::Device::Ptr &dev : NetworkManager::networkInterfaces()) {
         if (!dev->managed()) {
+            continue;
+        }
+        if (auto genericDevice = qobject_cast<NetworkManager::GenericDevice *>(dev.get()); genericDevice->typeDescription() == QLatin1String("loopback")) {
             continue;
         }
         addDevice(dev);
