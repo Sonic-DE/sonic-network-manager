@@ -214,7 +214,7 @@ void NetworkModel::initialize()
         if (!dev->managed()) {
             continue;
         }
-        // TODO implement loopback device in NetowrkManagerQt
+        // TODO implement loopback device in NetworkManagerQt
         if (dev->interfaceName() == QLatin1String("lo")) {
             continue;
         }
