@@ -3,7 +3,6 @@
 
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
-
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
@@ -18,35 +17,10 @@ MouseArea {
 
     property var details: []
 
-    onPressed: {
-        const item = detailsGrid.childAt(mouse.x, mouse.y);
-        if (!item || !item.isContent) {
-            return;
-        }
-        contextMenu.show(this, item.text, mouse.x, mouse.y);
-    }
-
     KQuickControlsAddons.Clipboard {
         id: clipboard
     }
 
-    PlasmaComponents.ContextMenu {
-        id: contextMenu
-        property string text
-
-        function show(item, text, x, y) {
-            contextMenu.text = text
-            visualParent = item
-            open(x, y)
-        }
-
-        PlasmaComponents.MenuItem {
-            text: i18n("Copy")
-            icon: "edit-copy"
-            enabled: contextMenu.text !== ""
-            onClicked: clipboard.content = contextMenu.text
-        }
-    }
     GridLayout {
         id: detailsGrid
         width: parent.width
@@ -68,8 +42,25 @@ MouseArea {
 
                 HoverHandler {
                     id: pointer
-                    acceptedDevices: PointerDevice.Mouse
                     cursorShape: Qt.PointingHandCursor
+                }
+                PlasmaComponents3.Button {
+                    text: i18n("Copied")
+                    id: copyButton
+                    width: parent.width
+                    height: parent.height
+                    anchors.verticalCenter: parent.verticalCenter
+                    opacity: 0
+                    Timer {
+                        id: timer
+                        interval: 1000
+                        onTriggered: copyButton.opacity = 0
+                    }
+                    onPressed: {
+                        clipboard.content = details[index];
+                        copyButton.opacity = 0.8
+                        timer.start();
+                    }
                 }
             }
         }
@@ -79,7 +70,7 @@ MouseArea {
         icon.name: "edit-copy"
         anchors.bottom: parent.bottom
         anchors.left: parent.left
-        onClicked: {
+        onPressed: {
         var content = ""
         for (var i = 0; i < details.length; i++) {
             content += details[i]
