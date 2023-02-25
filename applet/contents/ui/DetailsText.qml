@@ -49,6 +49,7 @@ MouseArea {
                     id: copyButton
                     width: parent.width
                     height: parent.height
+                    visible: isContent
                     anchors.verticalCenter: parent.verticalCenter
                     opacity: 0
                     Timer {
