@@ -9,7 +9,6 @@ import QtQuick.Layouts 1.15
 
 import org.kde.kquickcontrolsaddons 2.0 as KQuickControlsAddons
 import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents // for ContextMenu+MenuItem
 import org.kde.plasma.components 3.0 as PlasmaComponents3
 
 MouseArea {
@@ -27,7 +26,6 @@ MouseArea {
         columns: 2
         rowSpacing: PlasmaCore.Units.smallSpacing / 4
         Repeater {
-            id: repeater
             model: details.length
                 PlasmaComponents3.Label {
                 Layout.fillWidth: true
@@ -43,34 +41,47 @@ MouseArea {
                 HoverHandler {
                     id: pointer
                     cursorShape: Qt.PointingHandCursor
+                    onHoveredChanged: {
+                    if (hovered && isContent) {
+                        copyButton.opacity = 0.6;
+                        copyButton.visible = true;
+                    } else {
+                        copyButton.opacity = 0;
+                        copyButton.visible = false;
+                        }
+                    }
                 }
+
                 PlasmaComponents3.Button {
-                    text: i18n("Copied")
+                    text: i18n("Copy")
                     id: copyButton
-                    width: parent.width
+                    width: parent.width / 3
                     height: parent.height
                     visible: isContent
                     anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
                     opacity: 0
                     Timer {
                         id: timer
                         interval: 1000
-                        onTriggered: copyButton.opacity = 0
-                    }
+                        onTriggered: copyButton.text = i18n("Copy");
+                        }
                     onPressed: {
                         clipboard.content = details[index];
+                        copyButton.text = i18n("Copied!");
                         copyButton.opacity = 0.8
                         timer.start();
+                        }
                     }
                 }
             }
         }
-    }
     PlasmaComponents3.Button {
         text: i18n("Copy All")
         icon.name: "edit-copy"
         anchors.bottom: parent.bottom
         anchors.left: parent.left
+        visible: details.length > 2
         onPressed: {
         var content = ""
         for (var i = 0; i < details.length; i++) {
