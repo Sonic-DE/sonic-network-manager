@@ -36,18 +36,18 @@ MouseArea {
                 horizontalAlignment: isContent ? Text.AlignLeft : Text.AlignRight
                 text: isContent ? details[index] : `${details[index]}:`
                 textFormat: Text.PlainText
-                opacity: isContent ? (pointer.hovered ? 0.6 : 0.8) : 1.0
+                opacity: isContent ? (pointer.hovered ? 0.5 : 0.8) : 1.0
 
                 HoverHandler {
                     id: pointer
                     cursorShape: Qt.PointingHandCursor
                     onHoveredChanged: {
                     if (hovered && isContent) {
-                        copyButton.opacity = 0.6;
-                        copyButton.visible = true;
+                        copyButton.opacity = 1
+                        copyButton.visible = true
                     } else {
-                        copyButton.opacity = 0;
-                        copyButton.visible = false;
+                        copyButton.opacity = 0
+                        copyButton.visible = false
                         }
                     }
                 }
@@ -62,26 +62,35 @@ MouseArea {
                     anchors.right: parent.right
                     opacity: 0
                     Timer {
-                        id: timer
+                        id: copyTimer
                         interval: 1000
-                        onTriggered: copyButton.text = i18n("Copy");
+                        onTriggered: copyButton.text = i18n("Copy")
                         }
                     onPressed: {
-                        clipboard.content = details[index];
-                        copyButton.text = i18n("Copied!");
-                        copyButton.opacity = 0.8
-                        timer.start();
+                        clipboard.content = details[index]
+                        copyButton.text = i18n("Copied!")
+                        copyButton.opacity = 0.9
+                        copyTimer.start()
                         }
                     }
                 }
             }
         }
     PlasmaComponents3.Button {
+        id: copyAllButton
         text: i18n("Copy All")
         icon.name: "edit-copy"
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         visible: details.length > 2
+        Timer {
+            id: copyAllTimer
+            interval: 1000
+            onTriggered: {
+                copyAllButton.text = i18n("Copy All")
+                copyAllButton.opacity = 1
+                }
+            }
         onPressed: {
         var content = ""
         for (var i = 0; i < details.length; i++) {
@@ -93,6 +102,9 @@ MouseArea {
                 }
             }
         clipboard.content = content
+        text = i18n("Copied!")
+        opacity = 0.8
+        copyAllTimer.start()
         }
     }
 }
