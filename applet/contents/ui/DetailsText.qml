@@ -1,8 +1,3 @@
-/*
-    SPDX-FileCopyrightText: 2013-2017 Jan Grulich <jgrulich@redhat.com>
-
-    SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
-*/
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
@@ -11,13 +6,27 @@ import org.kde.kquickcontrolsaddons 2.0 as KQuickControlsAddons
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 3.0 as PlasmaComponents3
 
-MouseArea {
-    height: detailsGrid.implicitHeight
+Item {
+    height: detailsGrid.implicitHeight + copyAllButton.height
 
     property var details: []
 
     KQuickControlsAddons.Clipboard {
         id: clipboard
+    }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        onPressed: {
+            for (var i = 0; i < details.length; i += 2) {
+                if (mouseX >= detailsGrid.children[i].x && mouseX < detailsGrid.children[i + 1].x + detailsGrid.children[i + 1].width &&
+                    mouseY >= detailsGrid.children[i].y && mouseY < detailsGrid.children[i].y + detailsGrid.children[i].height) {
+                    clipboard.content = details[i + 1];
+                    break;
+                }
+            }
+        }
     }
 
     GridLayout {
@@ -27,7 +36,7 @@ MouseArea {
         rowSpacing: PlasmaCore.Units.smallSpacing / 4
         Repeater {
             model: details.length
-                PlasmaComponents3.Label {
+            delegate: PlasmaComponents3.Label {
                 Layout.fillWidth: true
                 readonly property bool isContent: index % 2
 
@@ -36,46 +45,19 @@ MouseArea {
                 horizontalAlignment: isContent ? Text.AlignLeft : Text.AlignRight
                 text: isContent ? details[index] : `${details[index]}:`
                 textFormat: Text.PlainText
-                opacity: isContent ? (pointer.hovered ? 0.5 : 0.8) : 1.0
+                opacity: isContent ? 0.8 : 1.0
 
                 HoverHandler {
-                    id: pointer
                     cursorShape: Qt.PointingHandCursor
                     onHoveredChanged: {
-                    if (hovered && isContent) {
-                        copyButton.opacity = 1
-                        copyButton.visible = true
-                    } else {
-                        copyButton.opacity = 0
-                        copyButton.visible = false
-                        }
-                    }
-                }
-
-                PlasmaComponents3.Button {
-                    text: i18n("Copy")
-                    id: copyButton
-                    width: parent.width / 3
-                    height: parent.height
-                    visible: isContent
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    opacity: 0
-                    Timer {
-                        id: copyTimer
-                        interval: 1000
-                        onTriggered: copyButton.text = i18n("Copy")
-                        }
-                    onPressed: {
-                        clipboard.content = details[index]
-                        copyButton.text = i18n("Copied!")
-                        copyButton.opacity = 0.9
-                        copyTimer.start()
+                        if (isContent) {
+                            opacity = hovered ? 0.5 : 0.8
                         }
                     }
                 }
             }
         }
+    }
     PlasmaComponents3.Button {
         id: copyAllButton
         text: i18n("Copy All")
