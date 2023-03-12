@@ -556,7 +556,7 @@ KCMNetworkmanagement::ImportResult KCMNetworkmanagement::importVpn()
         QFileDialog::getOpenFileName(this, i18n("Import VPN Connection"), QDir::homePath(), i18n("VPN connections (%1)", extensions.join(QLatin1Char(' '))));
 
     if (filename.isEmpty()) {
-        return ImportResult::fail(i18n("No file given"));
+        return ImportResult::fail(i18n("No file was provided"));
     }
 
     QFileInfo fi(filename);
