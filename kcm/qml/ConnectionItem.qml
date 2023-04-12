@@ -18,12 +18,11 @@ ListItem {
     checked: ConnectionPath === connectionView.currentConnectionPath
 
     signal aboutToChangeConnection(bool exportable, string name, string path)
-    signal aboutToExportConnection(string path)
     signal aboutToRemoveConnection(string name, string path)
 
     onClicked: {
         if (mouse.button === Qt.LeftButton) {
-            aboutToChangeConnection(KcmVpnConnectionExportable, Name, ConnectionPath)
+            aboutToChangeConnection(true, Name, ConnectionPath)
         } else if (mouse.button == Qt.RightButton) {
             connectionItemMenu.popup()
         }
@@ -130,7 +129,7 @@ ListItem {
             visible: KcmVpnConnectionExportable
             text: i18n("Export");
 
-            onTriggered: aboutToExportConnection(ConnectionPath)
+            onTriggered: kcm.onRequestExportConnection(ConnectionPath)
         }
     }
 
