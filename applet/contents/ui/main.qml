@@ -11,7 +11,7 @@ import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
 import org.kde.kquickcontrolsaddons 2.0
 import QtQuick.Layouts 1.1
 
-Item {
+PlasmoidItem {
     id: mainWindow
 
     readonly property string kcm: "kcm_networkmanagement"
@@ -21,8 +21,8 @@ Item {
         && Plasmoid.fullRepresentationItem.connectionModel.delayModelUpdates
     readonly property bool airplaneModeAvailable: availableDevices.modemDeviceAvailable || availableDevices.wirelessDeviceAvailable
 
-    Plasmoid.toolTipMainText: i18n("Networks")
-    Plasmoid.toolTipSubText: {
+    toolTipMainText: i18n("Networks")
+    toolTipSubText: {
         const activeConnections = networkStatus.activeConnections;
 
         if (!airplaneModeAvailable) {
@@ -39,13 +39,13 @@ Item {
 
     Plasmoid.busy: connectionIconProvider.connecting
     Plasmoid.icon: connectionIconProvider.connectionTooltipIcon
-    Plasmoid.switchWidth: PlasmaCore.Units.gridUnit * 10
-    Plasmoid.switchHeight: PlasmaCore.Units.gridUnit * 10
-    Plasmoid.compactRepresentation: CompactRepresentation {
+    switchWidth: PlasmaCore.Units.gridUnit * 10
+    switchHeight: PlasmaCore.Units.gridUnit * 10
+    compactRepresentation: CompactRepresentation {
         airplaneModeAvailable: mainWindow.airplaneModeAvailable
         iconName: connectionIconProvider.connectionIcon
     }
-    Plasmoid.fullRepresentation: PopupDialog {
+    fullRepresentation: PopupDialog {
         id: dialogItem
         nmHandler: handler
         Layout.minimumWidth: PlasmaCore.Units.iconSizes.medium * 10
