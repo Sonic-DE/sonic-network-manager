@@ -132,7 +132,7 @@ PlasmoidItem {
         id: scanTimer
         interval: 10200
         repeat: true
-        running: plasmoid.expanded && !PlasmaNM.Configuration.airplaneModeEnabled && !mainWindow.delayModelUpdates
+        running: mainWindow.expanded && !PlasmaNM.Configuration.airplaneModeEnabled && !mainWindow.delayModelUpdates
 
         onTriggered: handler.requestScan()
     }
