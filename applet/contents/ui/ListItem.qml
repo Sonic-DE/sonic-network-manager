@@ -8,6 +8,7 @@
 
 import QtQuick 2.1
 import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.ksvg 1.0 as KSvg
 
 /**
  * Ignores the theme's listItem margins, and uses custom highlight(pressed) area.
@@ -27,11 +28,11 @@ MouseArea {
     height: separator ? separatorLine.height + PlasmaCore.Units.smallSpacing * 3 : parent.height
     hoverEnabled: true
 
-    PlasmaCore.Svg {
+    KSvg.Svg {
         id: lineSvg
         imagePath: "widgets/line"
     }
-    PlasmaCore.SvgItem {
+    KSvg.SvgItem {
         id: separatorLine
         anchors {
             horizontalCenter: parent.horizontalCenter
@@ -44,7 +45,7 @@ MouseArea {
         visible: separator
     }
 
-    PlasmaCore.FrameSvgItem {
+    KSvg.SvgItem {
         id : background
         imagePath: "widgets/listitem"
         prefix: "normal"
@@ -52,7 +53,7 @@ MouseArea {
         visible: separator ? false : true
     }
 
-    PlasmaCore.FrameSvgItem {
+    KSvg.SvgItem {
         id : pressed
         imagePath: "widgets/listitem"
         prefix: "pressed"
