@@ -49,4 +49,9 @@ Kirigami.ApplicationWindow {
     ConnectionIcon {
         id: connectionIconProvider
     }
+
+    footer: Button {
+        text: "Log in!"
+        onClicked: loggedIn = true
+    }
 }
