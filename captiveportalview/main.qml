@@ -17,6 +17,7 @@ Kirigami.ApplicationWindow {
     title: i18n("Log into Network")
 
     header: TextField {
+        visible: !loggedIn
         Kirigami.Theme.colorSet: Kirigami.Theme.View
         color: Kirigami.Theme.disabledTextColor
         horizontalAlignment: Text.AlignHCenter
@@ -47,5 +48,10 @@ Kirigami.ApplicationWindow {
 
     ConnectionIcon {
         id: connectionIconProvider
+    }
+
+    footer: Button {
+        text: "Log in!"
+        onClicked: loggedIn = true
     }
 }

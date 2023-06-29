@@ -151,6 +151,7 @@ void ConnectionIcon::carrierChanged(bool carrier)
 
 void ConnectionIcon::connectivityChanged(NetworkManager::Connectivity conn)
 {
+    conn = NetworkManager::Portal;
     const bool needsPortal = conn == NetworkManager::Portal;
     if (needsPortal != m_needsPortal) {
         m_needsPortal = needsPortal;
