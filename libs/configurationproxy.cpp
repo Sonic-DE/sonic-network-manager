@@ -10,6 +10,7 @@ ConfigurationProxy::ConfigurationProxy(QObject *parent)
     : QObject(parent)
     , mConfiguration(&Configuration::self())
 {
+    qWarning() << "create it";
     connect(mConfiguration, &Configuration::airplaneModeEnabledChanged, this, &ConfigurationProxy::airplaneModeEnabledChanged);
     connect(mConfiguration, &Configuration::manageVirtualConnectionsChanged, this, &ConfigurationProxy::manageVirtualConnectionsChanged);
 }
