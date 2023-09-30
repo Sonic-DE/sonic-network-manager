@@ -226,10 +226,13 @@ Item {
 
     ConfigurationDialog {
         id: configurationDialog
+
+        handler: handler
     }
 
     function showConfigurationDialog() {
         configurationDialog.show();
+        configurationDialog.requestActivate();
     }
 
     function deselectConnections() {
