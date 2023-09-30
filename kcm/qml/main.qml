@@ -167,8 +167,6 @@ Item {
     }
 
     Row {
-        id: leftButtonRow
-
         anchors {
             bottom: parent.bottom
             left: parent.left
@@ -177,15 +175,13 @@ Item {
         spacing: Kirigami.Units.smallSpacing
 
         QQC2.ToolButton {
-            id: configureButton
-
             icon.name: "configure"
 
             QQC2.ToolTip.text: i18n("Configuration")
             QQC2.ToolTip.visible: hovered
 
             onClicked: {
-                configurationDialog.show()
+                root.showConfigurationDialog();
             }
         }
     }
@@ -222,10 +218,18 @@ Item {
 
     AddConnectionDialog {
         id: addNewConnectionDialog
+
+        onConfigurationDialogRequested: {
+            root.showConfigurationDialog();
+        }
     }
 
     ConfigurationDialog {
         id: configurationDialog
+    }
+
+    function showConfigurationDialog() {
+        configurationDialog.show();
     }
 
     function deselectConnections() {
