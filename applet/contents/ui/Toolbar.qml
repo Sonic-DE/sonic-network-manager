@@ -218,7 +218,7 @@ RowLayout {
     PlasmaComponents3.ToolButton {
         id: openEditorButton
 
-        visible: mainWindow.kcmAuthorized && !(plasmoid.containmentDisplayHints & PlasmaCore.Types.ContainmentDrawsPlasmoidHeading)
+        visible: mainWindow.kcmAuthorized && !(Plasmoid.containmentDisplayHints & PlasmaCore.Types.ContainmentDrawsPlasmoidHeading)
 
         icon.name: "configure"
 

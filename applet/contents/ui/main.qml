@@ -122,7 +122,7 @@ PlasmoidItem {
     }
 
     Component.onCompleted: {
-        plasmoid.setInternalAction("configure", configureAction);
+        Plasmoid.setInternalAction("configure", configureAction);
     }
 
     PlasmaNM.EnabledConnections {
