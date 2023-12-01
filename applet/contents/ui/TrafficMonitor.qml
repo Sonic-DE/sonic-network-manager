@@ -33,7 +33,7 @@ ColumnLayout {
             direction: QuickChartsControls.AxisLabels.VerticalBottomTop
             delegate: PlasmaComponents3.Label {
                 text: KCoreAddons.Format.formatByteSize(QuickChartsControls.AxisLabels.label) + i18n("/s")
-                font: Kirigami.Theme.smallFont
+                font: metricsLabel.font
             }
             source: QuickCharts.ChartAxisSource {
                 chart: plotter
@@ -54,7 +54,7 @@ ColumnLayout {
             id: plotter
             anchors {
                 left: parent.left
-                leftMargin: speedMetrics.width + Kirigami.Units.smallSpacing
+                leftMargin: Math.ceil(speedMetrics.advanceWidth) + Kirigami.Units.smallSpacing
                 right: parent.right
                 top: parent.top
                 // Align plotter lines with labels.
@@ -99,9 +99,15 @@ ColumnLayout {
                 itemCount: 2
             }
         }
+        PlasmaComponents3.Label {
+            id: metricsLabel
+            visible: false
+            font: Kirigami.Theme.smallFont
+        }
         TextMetrics {
             id: speedMetrics
-            font: Kirigami.Theme.smallFont
+            font: metricsLabel.font
+            renderType: metricsLabel.renderType
             // Measure 888.8 KiB/s
             text: KCoreAddons.Format.formatByteSize(910131) + i18n("/s")
         }
