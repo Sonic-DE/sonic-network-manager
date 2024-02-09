@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Import Network Configuration
+Comment=Import network connections from a file to Plasma Network Management
+Exec=plasmanm-importer %f
+Icon=network-vpn
+Type=Application
+NoDisplay=true
+MimeType=application/x-openvpn-profile;application/x-cisco-vpn-settings;
