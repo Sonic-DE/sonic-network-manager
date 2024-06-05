@@ -35,18 +35,6 @@ MouseArea {
         color: listItem.sectionDelegate ? alternateBaseColor : (listItem.checked || listItem.containsMouse ? highlightColor : baseColor)
     }
 
-    KSvg.SvgItem {
-        imagePath: "widgets/listitem"
-        elementId: "separator"
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-        }
-        height: naturalSize.height
-        visible: listItem.sectionDelegate || (typeof(index) != "undefined" && index > 0 && !listItem.checked && !listItem.pressed)
-    }
-
     Item {
         id: paddingItem
         anchors {
