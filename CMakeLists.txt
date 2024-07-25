@@ -63,6 +63,7 @@ find_package(KF6 ${KF6_MIN_VERSION} REQUIRED
     I18n
     NetworkManagerQt
     Notifications
+    Prison
     Service
     Solid
     Wallet
@@ -74,8 +75,6 @@ find_package(KF6 ${KF6_MIN_VERSION} REQUIRED
 )
 
 find_package(Plasma ${PROJECT_VERSION} REQUIRED)
-
-ecm_find_qmlmodule(org.kde.prison 1.0)
 
 find_package(KF6Kirigami ${KF6_MIN_VERSION} CONFIG)
 set_package_properties(KF6Kirigami PROPERTIES
