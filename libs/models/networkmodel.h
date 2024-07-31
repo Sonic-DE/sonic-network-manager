@@ -122,6 +122,7 @@ private:
     QQueue<QPair<ModelChangeType, NetworkModelItem *>> m_updateQueue;
 
     void addActiveConnection(const NetworkManager::ActiveConnection::Ptr &activeConnection);
+    void setPublicSettingsFromActiveConnection(const NetworkManager::ActiveConnection::Ptr &activeConnection, const NetworkManager::ConnectionSettings::Ptr &settings);
     void addAvailableConnection(const QString &connection, const NetworkManager::Device::Ptr &device);
     void addConnection(const NetworkManager::Connection::Ptr &connection);
     void addDevice(const NetworkManager::Device::Ptr &device);

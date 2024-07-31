@@ -205,6 +205,11 @@ void NetworkModel::initialize()
         addConnection(connection);
     }
 
+    // Initialize existing active connections
+    for (const NetworkManager::ActiveConnection::Ptr &active : NetworkManager::activeConnections()) {
+        addActiveConnection(active);
+    }
+
     // Initialize existing devices
     for (const NetworkManager::Device::Ptr &dev : NetworkManager::networkInterfaces()) {
         if (!dev->managed()) {
@@ -214,11 +219,6 @@ void NetworkModel::initialize()
             continue;
         }
         addDevice(dev);
-    }
-
-    // Initialize existing active connections
-    for (const NetworkManager::ActiveConnection::Ptr &active : NetworkManager::activeConnections()) {
-        addActiveConnection(active);
     }
 
     initializeSignals();
@@ -335,6 +335,18 @@ void NetworkModel::addActiveConnection(const NetworkManager::ActiveConnection::P
 
     NetworkManager::Device::Ptr device;
     NetworkManager::Connection::Ptr connection = activeConnection->connection();
+    NetworkManager::ConnectionSettings::Ptr settings = connection->settings();
+
+    // Looks like that DBus `GetSettings` has returned empty connection.
+    // So, we need to get some public settings from active connection.
+    if (connection->name().isEmpty() || connection->uuid().isEmpty()) {
+        setPublicSettingsFromActiveConnection(activeConnection, settings);
+    }
+
+    // Can't add a connection without name or uuid
+    if (settings->id().isEmpty() || settings->uuid().isEmpty()) {
+        return;
+    }
 
     // Not necessary to have device for VPN connections
     if (activeConnection && !activeConnection->vpn() && !activeConnection->devices().isEmpty()) {
@@ -342,12 +354,12 @@ void NetworkModel::addActiveConnection(const NetworkManager::ActiveConnection::P
     }
 
     // Check whether we have a base connection
-    if (!m_list.contains(NetworkItemsList::Uuid, connection->uuid())) {
+    if (!m_list.contains(NetworkItemsList::Uuid, settings->uuid())) {
         // Active connection appeared before a base connection, so we have to add its base connection first
         addConnection(connection);
     }
 
-    for (const auto items = m_list.returnItems(NetworkItemsList::NetworkItemsList::Uuid, connection->uuid()); NetworkModelItem * item : items) {
+    for (const auto items = m_list.returnItems(NetworkItemsList::NetworkItemsList::Uuid, settings->uuid()); NetworkModelItem * item : items) {
         if (((device && device->uni() == item->devicePath()) || item->devicePath().isEmpty()) || item->type() == NetworkManager::ConnectionSettings::Vpn) {
             item->setActiveConnectionPath(activeConnection->path());
             item->setConnectionState(activeConnection->state());
@@ -377,6 +389,48 @@ void NetworkModel::addActiveConnection(const NetworkManager::ActiveConnection::P
             }
         }
         updateItem(item);
+    }
+}
+
+void NetworkModel::setPublicSettingsFromActiveConnection(const NetworkManager::ActiveConnection::Ptr &activeConnection,
+                                                         const NetworkManager::ConnectionSettings::Ptr &settings)
+{
+    settings->setId(activeConnection->id());
+    settings->setUuid(activeConnection->uuid());
+    settings->setConnectionType(activeConnection->type());
+
+    if (activeConnection->type() == NetworkManager::ConnectionSettings::Wireless) {
+        NetworkManager::AccessPoint::Ptr ap;
+        NetworkManager::WirelessDevice::Ptr wifiDev;
+
+        for (const QString &devUni : activeConnection->devices()) {
+            auto dev = NetworkManager::findNetworkInterface(devUni);
+            if (dev->type() == NetworkManager::Device::Wifi) {
+                wifiDev = dev.objectCast<NetworkManager::WirelessDevice>();
+                ap = wifiDev->findAccessPoint(activeConnection->specificObject());
+                if (ap) {
+                    break;
+                }
+            }
+        }
+
+        if (!ap) {
+            return;
+        }
+
+        auto wirelessSetting = settings->setting(NetworkManager::Setting::Wireless).dynamicCast<NetworkManager::WirelessSetting>();
+
+        auto mode = NetworkManager::WirelessSetting::Infrastructure;
+        if (ap->mode() == NetworkManager::AccessPoint::Infra) {
+            mode = NetworkManager::WirelessSetting::Infrastructure;
+        } else if (ap->mode() == NetworkManager::AccessPoint::Adhoc) {
+            mode = NetworkManager::WirelessSetting::Adhoc;
+        } else if (ap->mode() == NetworkManager::AccessPoint::ApMode) {
+            mode = NetworkManager::WirelessSetting::Ap;
+        }
+
+        wirelessSetting->setSsid(ap->rawSsid());
+        wirelessSetting->setMode(mode);
     }
 }
 
@@ -440,14 +494,15 @@ void NetworkModel::addAvailableConnection(const QString &connection, const Netwo
 
 void NetworkModel::addConnection(const NetworkManager::Connection::Ptr &connection)
 {
+    NetworkManager::ConnectionSettings::Ptr settings = connection->settings();
+
     // Can't add a connection without name or uuid
-    if (connection->name().isEmpty() || connection->uuid().isEmpty()) {
+    if (settings->id().isEmpty() || settings->uuid().isEmpty()) {
         return;
     }
 
     initializeSignals(connection);
 
-    NetworkManager::ConnectionSettings::Ptr settings = connection->settings();
     NetworkManager::VpnSetting::Ptr vpnSetting;
     NetworkManager::WirelessSetting::Ptr wirelessSetting;
 
@@ -870,6 +925,16 @@ void NetworkModel::connectionUpdated()
     }
 
     NetworkManager::ConnectionSettings::Ptr settings = connectionPtr->settings();
+
+    if (settings->id().isEmpty() || settings->uuid().isEmpty()) {
+        for (const auto &active : NetworkManager::activeConnections()) {
+            if (active->connection()->path() == connectionPtr->path()) {
+                setPublicSettingsFromActiveConnection(active, settings);
+                break;
+            }
+        }
+    }
+
     for (NetworkModelItem *item : m_list.returnItems(NetworkItemsList::Connection, connectionPtr->path())) {
         item->setConnectionPath(connectionPtr->path());
         item->setName(settings->id());
