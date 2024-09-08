@@ -399,39 +399,41 @@ void NetworkModel::setPublicSettingsFromActiveConnection(const NetworkManager::A
     settings->setUuid(activeConnection->uuid());
     settings->setConnectionType(activeConnection->type());
 
-    if (activeConnection->type() == NetworkManager::ConnectionSettings::Wireless) {
-        NetworkManager::AccessPoint::Ptr ap;
-        NetworkManager::WirelessDevice::Ptr wifiDev;
+    if (activeConnection->type() != NetworkManager::ConnectionSettings::Wireless) {
+        return;
+    }
 
-        for (const QString &devUni : activeConnection->devices()) {
-            auto dev = NetworkManager::findNetworkInterface(devUni);
-            if (dev->type() == NetworkManager::Device::Wifi) {
-                wifiDev = dev.objectCast<NetworkManager::WirelessDevice>();
-                ap = wifiDev->findAccessPoint(activeConnection->specificObject());
-                if (ap) {
-                    break;
-                }
+    NetworkManager::AccessPoint::Ptr ap;
+    NetworkManager::WirelessDevice::Ptr wifiDev;
+
+    for (const QString &devUni : activeConnection->devices()) {
+        auto dev = NetworkManager::findNetworkInterface(devUni);
+        if (dev->type() == NetworkManager::Device::Wifi) {
+            wifiDev = dev.objectCast<NetworkManager::WirelessDevice>();
+            ap = wifiDev->findAccessPoint(activeConnection->specificObject());
+            if (ap) {
+                break;
             }
         }
-
-        if (!ap) {
-            return;
-        }
-
-        auto wirelessSetting = settings->setting(NetworkManager::Setting::Wireless).dynamicCast<NetworkManager::WirelessSetting>();
-
-        auto mode = NetworkManager::WirelessSetting::Infrastructure;
-        if (ap->mode() == NetworkManager::AccessPoint::Infra) {
-            mode = NetworkManager::WirelessSetting::Infrastructure;
-        } else if (ap->mode() == NetworkManager::AccessPoint::Adhoc) {
-            mode = NetworkManager::WirelessSetting::Adhoc;
-        } else if (ap->mode() == NetworkManager::AccessPoint::ApMode) {
-            mode = NetworkManager::WirelessSetting::Ap;
-        }
-
-        wirelessSetting->setSsid(ap->rawSsid());
-        wirelessSetting->setMode(mode);
     }
+
+    if (!ap) {
+        return;
+    }
+
+    auto wirelessSetting = settings->setting(NetworkManager::Setting::Wireless).dynamicCast<NetworkManager::WirelessSetting>();
+
+    auto mode = NetworkManager::WirelessSetting::Infrastructure;
+    if (ap->mode() == NetworkManager::AccessPoint::Infra) {
+        mode = NetworkManager::WirelessSetting::Infrastructure;
+    } else if (ap->mode() == NetworkManager::AccessPoint::Adhoc) {
+        mode = NetworkManager::WirelessSetting::Adhoc;
+    } else if (ap->mode() == NetworkManager::AccessPoint::ApMode) {
+        mode = NetworkManager::WirelessSetting::Ap;
+    }
+
+    wirelessSetting->setSsid(ap->rawSsid());
+    wirelessSetting->setMode(mode);
 }
 
 void NetworkModel::addAvailableConnection(const QString &connection, const NetworkManager::Device::Ptr &device)
