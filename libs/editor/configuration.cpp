@@ -129,7 +129,14 @@ QString Configuration::hotspotPassword() const
     KConfigGroup grp(config, QStringLiteral("General"));
 
     if (grp.isValid()) {
-        return grp.readEntry(QStringLiteral("HotspotPassword"), QString());
+        QString pwd = grp.readEntry(QStringLiteral("HotspotPassword"), QString());
+        if (pwd.isNull()) {
+            // Use a default non empty password for the hotspot
+            // Make it 26 characters long so it works for both WPA and WEP
+            pwd = QUuid::createUuid().toString(QUuid::Id128).left(26);
+            grp.writeEntry(QStringLiteral("HotspotPassword"), pwd);
+        }
+        return pwd;
     }
 
     return {};
