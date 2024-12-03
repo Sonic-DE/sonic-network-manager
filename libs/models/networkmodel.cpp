@@ -257,6 +257,16 @@ void NetworkModel::initializeSignals(const NetworkManager::ActiveConnection::Ptr
                 &NetworkModel::activeConnectionStateChanged,
                 Qt::UniqueConnection);
     }
+
+    NetworkManager::Connection::Ptr connection = activeConnection->connection();
+    if (connection->name().isEmpty() || connection->uuid().isEmpty()) {
+        connect(activeConnection.data(), 
+                &NetworkManager::ActiveConnection::idChanged, 
+                this, 
+                &NetworkModel::activeConnectionIdChanged, 
+                Qt::UniqueConnection);
+    }
+        
 }
 
 void NetworkModel::initializeSignals(const NetworkManager::Connection::Ptr &connection)
@@ -768,6 +778,21 @@ void NetworkModel::activeConnectionStateChanged(NetworkManager::ActiveConnection
         item->setConnectionState(state);
         updateItem(item);
         qCDebug(PLASMA_NM_LIBS_LOG) << "Item " << item->name() << ": active connection changed to " << item->connectionState();
+    }
+}
+
+void NetworkModel::activeConnectionIdChanged(const QString &id)
+{
+    auto activePtr = qobject_cast<NetworkManager::ActiveConnection *>(sender());
+
+    if (!activePtr) {
+        return;
+    }
+
+    for (NetworkModelItem *item : m_list.returnItems(NetworkItemsList::ActiveConnection, activePtr->path())) {
+        qCDebug(PLASMA_NM_LIBS_LOG) << "Item " << item->name() << ": active connection id changed to " << id;
+        item->setName(id);
+        updateItem(item);
     }
 }
 
