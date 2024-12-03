@@ -205,11 +205,6 @@ void NetworkModel::initialize()
         addConnection(connection);
     }
 
-    // Initialize existing active connections
-    for (const NetworkManager::ActiveConnection::Ptr &active : NetworkManager::activeConnections()) {
-        addActiveConnection(active);
-    }
-
     // Initialize existing devices
     for (const NetworkManager::Device::Ptr &dev : NetworkManager::networkInterfaces()) {
         if (!dev->managed()) {
@@ -219,6 +214,11 @@ void NetworkModel::initialize()
             continue;
         }
         addDevice(dev);
+    }
+
+    // Initialize existing active connections
+    for (const NetworkManager::ActiveConnection::Ptr &active : NetworkManager::activeConnections()) {
+        addActiveConnection(active);
     }
 
     initializeSignals();
@@ -336,12 +336,6 @@ void NetworkModel::addActiveConnection(const NetworkManager::ActiveConnection::P
     NetworkManager::Device::Ptr device;
     NetworkManager::Connection::Ptr connection = activeConnection->connection();
     NetworkManager::ConnectionSettings::Ptr settings = connection->settings();
-
-    // Looks like that DBus `GetSettings` has returned empty connection.
-    // So, we need to get some public settings from active connection.
-    if (connection->name().isEmpty() || connection->uuid().isEmpty()) {
-        setPublicSettingsFromActiveConnection(activeConnection, settings);
-    }
 
     // Can't add a connection without name or uuid
     if (settings->id().isEmpty() || settings->uuid().isEmpty()) {
@@ -497,6 +491,17 @@ void NetworkModel::addAvailableConnection(const QString &connection, const Netwo
 void NetworkModel::addConnection(const NetworkManager::Connection::Ptr &connection)
 {
     NetworkManager::ConnectionSettings::Ptr settings = connection->settings();
+
+    // Looks like that DBus `GetSettings` has returned empty connection.
+    // So, we need to get some public settings from active connection (if any).
+    if (connection->name().isEmpty() || connection->uuid().isEmpty()) {
+        for (const auto &active : NetworkManager::activeConnections()) {
+            if (active->connection()->path() == connection->path()) {
+                setPublicSettingsFromActiveConnection(active, settings);
+                break;
+            }
+        }
+    }
 
     // Can't add a connection without name or uuid
     if (settings->id().isEmpty() || settings->uuid().isEmpty()) {
