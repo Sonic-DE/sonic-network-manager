@@ -416,18 +416,7 @@ void NetworkModel::setPublicSettingsFromActiveConnection(const NetworkManager::A
     }
 
     auto wirelessSetting = settings->setting(NetworkManager::Setting::Wireless).dynamicCast<NetworkManager::WirelessSetting>();
-
-    auto mode = NetworkManager::WirelessSetting::Infrastructure;
-    if (ap->mode() == NetworkManager::AccessPoint::Infra) {
-        mode = NetworkManager::WirelessSetting::Infrastructure;
-    } else if (ap->mode() == NetworkManager::AccessPoint::Adhoc) {
-        mode = NetworkManager::WirelessSetting::Adhoc;
-    } else if (ap->mode() == NetworkManager::AccessPoint::ApMode) {
-        mode = NetworkManager::WirelessSetting::Ap;
-    }
-
     wirelessSetting->setSsid(ap->rawSsid());
-    wirelessSetting->setMode(mode);
 }
 
 void NetworkModel::addAvailableConnection(const QString &connection, const NetworkManager::Device::Ptr &device)
