@@ -922,13 +922,10 @@ void NetworkModel::connectionUpdated()
 
     NetworkManager::ConnectionSettings::Ptr settings = connectionPtr->settings();
 
+    // Skip the empty connection to avoid resetting the info
+    // from active connection we set during initialization.
     if (settings->id().isEmpty() || settings->uuid().isEmpty()) {
-        for (const auto &active : NetworkManager::activeConnections()) {
-            if (active->connection()->path() == connectionPtr->path()) {
-                setPublicSettingsFromActiveConnection(active, settings);
-                break;
-            }
-        }
+        return;
     }
 
     for (NetworkModelItem *item : m_list.returnItems(NetworkItemsList::Connection, connectionPtr->path())) {
