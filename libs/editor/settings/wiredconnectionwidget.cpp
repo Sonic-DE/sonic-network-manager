@@ -31,6 +31,50 @@ WiredConnectionWidget::WiredConnectionWidget(const NetworkManager::Setting::Ptr 
         m_widget->speed->setEnabled(index == LinkNegotiation::Manual);
     });
 
+    connect(m_widget->wolDefault, &QCheckBox::toggled, this, [this](bool on) {
+        m_widget->wolIgnore->setEnabled(!on);
+
+        m_widget->wolPhy->setEnabled(!on);
+        m_widget->wolUnicast->setEnabled(!on);
+        m_widget->wolMulticast->setEnabled(!on);
+        m_widget->wolBroadcast->setEnabled(!on);
+        m_widget->wolArp->setEnabled(!on);
+        m_widget->wolMagic->setEnabled(!on);
+
+        if (on) {
+            m_widget->wolPassword->setEnabled(false);
+        } else if (m_widget->wolMagic->isChecked()) {
+            m_widget->wolPassword->setEnabled(true);
+        }
+        slotWidgetChanged();
+    });
+
+    connect(m_widget->wolIgnore, &QCheckBox::toggled, this, [this](bool on) {
+        m_widget->wolDefault->setEnabled(!on);
+
+        m_widget->wolPhy->setEnabled(!on);
+        m_widget->wolUnicast->setEnabled(!on);
+        m_widget->wolMulticast->setEnabled(!on);
+        m_widget->wolBroadcast->setEnabled(!on);
+        m_widget->wolArp->setEnabled(!on);
+        m_widget->wolMagic->setEnabled(!on);
+
+        if (on) {
+            m_widget->wolPassword->setEnabled(false);
+        } else if (m_widget->wolMagic->isChecked()) {
+            m_widget->wolPassword->setEnabled(true);
+        }
+
+        slotWidgetChanged();
+    });
+
+    connect(m_widget->wolMagic, &QCheckBox::toggled, this, [this](bool on) {
+        m_widget->wolPassword->setEnabled(on);
+        slotWidgetChanged();
+    });
+
+    connect(m_widget->wolPassword, &KLineEdit::textChanged, this, &WiredConnectionWidget::slotWidgetChanged);
+
     KAcceleratorManager::manage(this);
 
     if (setting) {
@@ -97,6 +141,37 @@ void WiredConnectionWidget::loadConfig(const NetworkManager::Setting::Ptr &setti
     } else {
         m_widget->duplex->setCurrentIndex(Duplex::Half);
     }
+
+    auto wol = wiredSetting->wakeOnLan();
+
+    if (wol & NetworkManager::WiredSetting::WakeOnLanDefault) {
+        m_widget->wolDefault->setChecked(true);
+    }
+    if (wol & NetworkManager::WiredSetting::WakeOnLanPhy) {
+        m_widget->wolPhy->setChecked(true);
+    }
+    if (wol & NetworkManager::WiredSetting::WakeOnLanUnicast) {
+        m_widget->wolUnicast->setChecked(true);
+    }
+    if (wol & NetworkManager::WiredSetting::WakeOnLanMulticast) {
+        m_widget->wolMulticast->setChecked(true);
+    }
+    if (wol & NetworkManager::WiredSetting::WakeOnLanBroadcast) {
+        m_widget->wolBroadcast->setChecked(true);
+    }
+    if (wol & NetworkManager::WiredSetting::WakeOnLanArp) {
+        m_widget->wolArp->setChecked(true);
+    }
+    if (wol & NetworkManager::WiredSetting::WakeOnLanMagic) {
+        m_widget->wolMagic->setChecked(true);
+        m_widget->wolPassword->setEnabled(true);
+    }
+    if (wol & NetworkManager::WiredSetting::WakeOnLanIgnore) {
+        m_widget->wolIgnore->setChecked(true);
+    }
+    if (!wiredSetting->wakeOnLanPassword().isEmpty()) {
+        m_widget->wolPassword->setText(wiredSetting->wakeOnLanPassword());
+    }
 }
 
 QVariantMap WiredConnectionWidget::setting() const
@@ -153,6 +228,37 @@ QVariantMap WiredConnectionWidget::setting() const
 
     wiredSetting.setAutoNegotiate(m_widget->linkNegotiation->currentIndex() == LinkNegotiation::Automatic);
 
+    if (m_widget->wolDefault->isChecked()) {
+        wiredSetting.setWakeOnLan(NetworkManager::WiredSetting::WakeOnLanDefault);
+    } else if (m_widget->wolIgnore->isChecked()) {
+        wiredSetting.setWakeOnLan(NetworkManager::WiredSetting::WakeOnLanIgnore);
+    } else {
+        NetworkManager::WiredSetting::WakeOnLanFlags flags;
+        if (m_widget->wolPhy->isChecked()) {
+            flags |= NetworkManager::WiredSetting::WakeOnLanPhy;
+        }
+        if (m_widget->wolUnicast->isChecked()) {
+            flags |= NetworkManager::WiredSetting::WakeOnLanUnicast;
+        }
+        if (m_widget->wolMulticast->isChecked()) {
+            flags |= NetworkManager::WiredSetting::WakeOnLanMulticast;
+        }
+        if (m_widget->wolBroadcast->isChecked()) {
+            flags |= NetworkManager::WiredSetting::WakeOnLanBroadcast;
+        }
+        if (m_widget->wolArp->isChecked()) {
+            flags |= NetworkManager::WiredSetting::WakeOnLanArp;
+        }
+        if (m_widget->wolMagic->isChecked()) {
+            flags |= NetworkManager::WiredSetting::WakeOnLanMagic;
+            if (!m_widget->wolPassword->text().isEmpty() && m_widget->wolPassword->text() != QLatin1String(":::::")) {
+                // Use macAddressFromString to canonicalize MAC address.
+                wiredSetting.setWakeOnLanPassword(NetworkManager::macAddressAsString(NetworkManager::macAddressFromString(m_widget->wolPassword->text())));
+            }
+        }
+        wiredSetting.setWakeOnLan(flags);
+    }
+
     return wiredSetting.toMap();
 }
 
@@ -182,6 +288,14 @@ bool WiredConnectionWidget::isValid() const
     if (m_widget->clonedMacAddress->text() != QLatin1String(":::::")) {
         if (!NetworkManager::macAddressIsValid(m_widget->clonedMacAddress->text())) {
             return false;
+        }
+    }
+
+    if (m_widget->wolMagic->isChecked() && !m_widget->wolDefault->isChecked() && !m_widget->wolIgnore->isChecked()) {
+        if (m_widget->wolPassword->text() != QLatin1String(":::::")) {
+            if (!NetworkManager::macAddressIsValid(m_widget->wolPassword->text())) {
+                return false;
+            }
         }
     }
 
