@@ -16,6 +16,7 @@ ColumnLayout {
     id: page
 
     property string ssid
+    property string password
     property alias content: barcode.content
 
     spacing: Kirigami.Units.smallSpacing
@@ -29,6 +30,16 @@ ColumnLayout {
         horizontalAlignment: Text.AlignHCenter
         textFormat: Text.PlainText
         text: i18n("Scan this QR code with another device to connect to the \"%1\" network.", page.ssid)
+    }
+
+    PlasmaComponents3.Label {
+        visible: password !== ""
+        Layout.topMargin: page.spacing
+        Layout.alignment: Qt.AlignHCenter
+        wrapMode: Text.WordWrap
+        horizontalAlignment: Text.AlignHCenter
+        textFormat: Text.PlainText
+        text: i18n("Password: %1", password)
     }
 
     Prison.Barcode {
