@@ -153,7 +153,7 @@ RowLayout {
     PlasmaComponents3.ToolButton {
         id: hotspotButton
 
-        visible: handler.hotspotSupported
+        enabled: handler.hotspotSupported
         checkable: true
         checked: handler.hotspotActive
 
@@ -173,7 +173,9 @@ RowLayout {
 
         PlasmaComponents3.ToolTip {
             text: {
-                if (handler.hotspotActive) {
+                if (!handler.hotspotSupported) {
+                    return i18n("Cannot create a hotspot because all wireless radios are in use. Connect another wireless radio or disable Wi-Fi.")
+                } else if (handler.hotspotActive) {
                     return i18n("Disable Hotspot");
                 } else {
                     return i18n("Create Hotspot");
