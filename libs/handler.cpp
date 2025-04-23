@@ -67,7 +67,10 @@ Handler::Handler(QObject *parent)
     if (!Configuration::self().hotspotConnectionPath().isEmpty()) {
         NetworkManager::ActiveConnection::Ptr hotspot = NetworkManager::findActiveConnection(Configuration::self().hotspotConnectionPath());
         if (!hotspot) {
+            m_hotspotActive = false;
             Configuration::self().setHotspotConnectionPath(QString());
+        } else {
+            m_hotspotActive = true;
         }
     }
 
@@ -858,11 +861,13 @@ QCoro::Task<void> Handler::createHotspotInternal()
         connect(hotspot.data(), &NetworkManager::ActiveConnection::stateChanged, [this](NetworkManager::ActiveConnection::State state) {
             if (state > NetworkManager::ActiveConnection::Activated) {
                 Configuration::self().setHotspotConnectionPath(QString());
-                Q_EMIT hotspotDisabled();
+                m_hotspotActive = false;
+                Q_EMIT hotspotActiveChanged(m_hotspotActive);
             }
         });
 
-        Q_EMIT hotspotCreated();
+        m_hotspotActive = true;
+        Q_EMIT hotspotActiveChanged(m_hotspotActive);
     }
 }
 
@@ -883,7 +888,8 @@ void Handler::stopHotspot()
     NetworkManager::deactivateConnection(activeConnectionPath);
     Configuration::self().setHotspotConnectionPath(QString());
 
-    Q_EMIT hotspotDisabled();
+    m_hotspotActive = false;
+    Q_EMIT hotspotActiveChanged(m_hotspotActive);
 }
 
 bool Handler::checkRequestScanRateLimit(const NetworkManager::WirelessDevice::Ptr &wifiDevice)
