@@ -133,8 +133,10 @@ public Q_SLOTS:
 private Q_SLOTS:
     void secretAgentError(const QString &connectionPath, const QString &message);
     void primaryConnectionTypeChanged(NetworkManager::ConnectionSettings::ConnectionType type);
+    void wirelessEnabledChanged(bool wirelessEnabled);
     void unlockRequiredChanged(MMModemLock modemLock);
     void slotRequestWifiCode(QDBusPendingCallWatcher *watcher);
+    bool checkHotspotSupported();
 
 Q_SIGNALS:
     void connectionActivationFailed(const QString &connectionPath, const QString &message);
@@ -167,7 +169,6 @@ private:
     QCoro::Task<void> enableBluetooth(bool enable);
     void scanRequestFailed(const QString &interface);
     bool checkRequestScanRateLimit(const NetworkManager::WirelessDevice::Ptr &wifiDevice);
-    bool checkHotspotSupported();
     void scheduleRequestScan(const QString &interface, int timeout);
     void incrementScansCount();
     void decrementScansCount();
