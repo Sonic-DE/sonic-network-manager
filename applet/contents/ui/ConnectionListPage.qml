@@ -26,11 +26,9 @@ ColumnLayout {
     Kirigami.InlineMessage {
         id: connectivityMessage
         Layout.fillWidth: true
-        Layout.leftMargin: connectionView.leftMargin
-        Layout.rightMargin: connectionView.rightMargin
-        Layout.topMargin: Kirigami.Units.smallSpacing * 2
         Layout.preferredHeight: contentItem.implicitHeight + topPadding + bottomPadding
         type: Kirigami.MessageType.Information
+        position: Kirigami.InlineMessage.Position.Header
         icon.name: "dialog-password"
         text: i18n("You need to log in to this network")
         visible: connectionListPage.nmStatus.connectivity === NMQt.NetworkManager.Portal
