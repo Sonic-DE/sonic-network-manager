@@ -236,14 +236,14 @@ void Handler::requestWifiCode(const QString &connectionPath, const QString &ssid
         case NetworkManager::Wpa2Eap:
         case NetworkManager::Wpa3SuiteB192:
         case NetworkManager::Leap:
-            Q_EMIT wifiCodeReceived(QString(), ssid);
+            Q_EMIT wifiCodeReceived(QString(), ssid, QString());
             return;
         }
     }
 
     NetworkManager::Connection::Ptr connection = NetworkManager::findConnection(connectionPath);
     if (!connection) {
-        Q_EMIT wifiCodeReceived(QString(), ssid);
+        Q_EMIT wifiCodeReceived(QString(), ssid, QString());
         return;
     }
 
@@ -1022,7 +1022,7 @@ void Handler::slotRequestWifiCode(QDBusPendingCallWatcher *watcher)
     const QString ssid = watcher->property("ssid").toString();
     QDBusPendingReply<NMVariantMapMap> reply = *watcher;
     if (!reply.isValid() || reply.isError()) {
-        Q_EMIT wifiCodeReceived(ret % QLatin1Char(';'), ssid);
+        Q_EMIT wifiCodeReceived(ret % QLatin1Char(';'), ssid, QString());
         return;
     }
 
@@ -1038,14 +1038,14 @@ void Handler::slotRequestWifiCode(QDBusPendingCallWatcher *watcher)
         pass = secret[QStringLiteral("psk")].toString();
         break;
     default:
-        Q_EMIT wifiCodeReceived(QString(), ssid);
+        Q_EMIT wifiCodeReceived(QString(), ssid, QString());
         return;
     }
     if (!pass.isEmpty()) {
         ret += QStringLiteral("P:") % pass % QLatin1Char(';');
     }
 
-    Q_EMIT wifiCodeReceived(ret % QLatin1Char(';'), ssid);
+    Q_EMIT wifiCodeReceived(ret % QLatin1Char(';'), ssid, pass);
 }
 
 #include "moc_handler.cpp"
