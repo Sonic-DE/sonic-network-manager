@@ -68,7 +68,7 @@ QQC2.ItemDelegate {
 
         QQC2.MenuItem {
             text: model.ConnectionState === PlasmaNM.Enums.Deactivated ? i18n("Connect") : i18n("Disconnect")
-            enabled: model.ItemType === 1 /* available */
+            enabled: model.ItemType === PlasmaNM.NetworkModelItem.AvailableConnection
             onTriggered: {
                 if (model.ConnectionState === PlasmaNM.Enums.Deactivated) {
                     handler.activateConnection(model.ConnectionPath, model.DevicePath, model.SpecificPath);
