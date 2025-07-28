@@ -136,6 +136,23 @@ ColumnLayout {
                         }
                         return nmStatus.checkUnknownReason()
                     }
+                    explanation: {
+                        if (toolbar.searchTextField.text.length > 0) {
+                            if (toolbar.displayplaneModeMessage) {
+                                return i18n("Turn off airplane mode to search for networks")
+                            }
+                            if (toolbar.displayWifiOffMessage) {
+                                if (toolbar.displayWwanMessage) {
+                                    return i18n("Turn on Wi-Fi or mobile data to search for networks")
+                                }
+                                return i18n("Turn on Wi-Fi to search for networks")
+                            }
+                            if (toolbar.displayWwanMessage) {
+                                return i18n("Turn on mobile data to search for networks")
+                            }
+                        }
+                        return ""
+                    }
                 }
             }
         }
