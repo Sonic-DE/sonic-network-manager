@@ -65,6 +65,12 @@ void NetworkManagementService::init()
     if (!d->connectivityMonitor) {
         d->connectivityMonitor = new ConnectivityMonitor(this);
     }
+
+    connect(d->notification,
+            &Notification::deactivatedPreparingForSleep,
+            d->connectivityMonitor,
+            &ConnectivityMonitor::cancelLimitedConnectivityNotificationTimer,
+            Qt::UniqueConnection);
 }
 
 #include "service.moc"
