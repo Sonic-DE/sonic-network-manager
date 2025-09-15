@@ -219,22 +219,22 @@
        <item row="6" column="0">
         <widget class="QLabel" name="label_29">
          <property name="text">
-          <string>Connect to these servers:</string>
+          <string>Domain matches</string>
          </property>
          <property name="buddy">
-          <cstring>leTlsConnectToServers</cstring>
+          <cstring>leTlsDomainMatches</cstring>
          </property>
         </widget>
        </item>
        <item row="6" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QLineEdit" name="leTlsConnectToServers"/>
+          <widget class="QLineEdit" name="leTlsDomainMatches"/>
          </item>
          <item>
-          <widget class="QPushButton" name="btnTlsConnectToServers">
+          <widget class="QPushButton" name="btnTlsDomainMatches">
            <property name="toolTip">
-            <string>Edit the list of servers to connect to.</string>
+            <string>Edit the list of domain matches.</string>
            </property>
            <property name="icon">
             <iconset theme="QIcon::ThemeIcon::DocumentProperties"/>
@@ -779,8 +779,8 @@
   <tabstop>leTlsSubjectMatch</tabstop>
   <tabstop>leTlsAlternativeSubjectMatches</tabstop>
   <tabstop>btnTlsAltSubjectMatches</tabstop>
-  <tabstop>leTlsConnectToServers</tabstop>
-  <tabstop>btnTlsConnectToServers</tabstop>
+  <tabstop>leTlsDomainMatches</tabstop>
+  <tabstop>btnTlsDomainMatches</tabstop>
   <tabstop>tlsPrivateKey</tabstop>
   <tabstop>tlsPrivateKeyPassword</tabstop>
   <tabstop>leapUsername</tabstop>

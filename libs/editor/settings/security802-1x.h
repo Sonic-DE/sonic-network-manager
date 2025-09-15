@@ -49,7 +49,7 @@ public:
 
 private Q_SLOTS:
     void altSubjectMatchesButtonClicked();
-    void connectToServersButtonClicked();
+    void domainMatchesButtonClicked();
     void currentAuthChanged(int index);
 
 private:
