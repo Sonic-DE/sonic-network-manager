@@ -147,9 +147,9 @@
        <item row="2" column="1">
         <widget class="KUrlRequester" name="tlsUserCert">
          <property name="nameFilters">
-          <StringList>
-           <string notr="true">*.der *.pem *.crt *.cer</string>
-          </StringList>
+          <stringlist notr="true">
+           <string>*.der *.pem *.crt *.cer</string>
+          </stringlist>
          </property>
         </widget>
        </item>
@@ -166,9 +166,9 @@
        <item row="3" column="1">
         <widget class="KUrlRequester" name="tlsCACert">
          <property name="nameFilters">
-          <StringList>
-           <string notr="true">*.der *.pem *.crt *.cer</string>
-          </StringList>
+          <stringlist notr="true">
+           <string>*.der *.pem *.crt *.cer</string>
+          </stringlist>
          </property>
         </widget>
        </item>
@@ -206,8 +206,11 @@
          </item>
          <item>
           <widget class="QPushButton" name="btnTlsAltSubjectMatches">
-           <property name="text">
-            <string>…</string>
+           <property name="toolTip">
+            <string>Edit the list of alternative subject matches. Each entry must start with one of: DNS: EMAIL: URI:</string>
+           </property>
+           <property name="icon">
+            <iconset theme="QIcon::ThemeIcon::DocumentProperties"/>
            </property>
           </widget>
          </item>
@@ -230,8 +233,11 @@
          </item>
          <item>
           <widget class="QPushButton" name="btnTlsConnectToServers">
-           <property name="text">
-            <string>…</string>
+           <property name="toolTip">
+            <string>Edit the list of servers to connect to.</string>
+           </property>
+           <property name="icon">
+            <iconset theme="QIcon::ThemeIcon::DocumentProperties"/>
            </property>
           </widget>
          </item>
@@ -250,9 +256,9 @@
        <item row="7" column="1">
         <widget class="KUrlRequester" name="tlsPrivateKey">
          <property name="nameFilters">
-          <StringList>
-           <string notr="true">*.der *.pem *.p12 *.key</string>
-          </StringList>
+          <stringlist notr="true">
+           <string>*.der *.pem *.p12 *.key</string>
+          </stringlist>
          </property>
         </widget>
        </item>
@@ -406,9 +412,9 @@
        <item row="2" column="1">
         <widget class="KUrlRequester" name="pacFile">
          <property name="nameFilters">
-          <StringList>
-           <string notr="true">*.pac</string>
-          </StringList>
+          <stringlist notr="true">
+           <string>*.pac</string>
+          </stringlist>
          </property>
         </widget>
        </item>
@@ -502,9 +508,9 @@
        <item row="3" column="1">
         <widget class="KUrlRequester" name="ttlsCACert">
          <property name="nameFilters">
-          <StringList>
-           <string notr="true">*.der *.pem *.crt *.cer</string>
-          </StringList>
+          <stringlist notr="true">
+           <string>*.der *.pem *.crt *.cer</string>
+          </stringlist>
          </property>
         </widget>
        </item>
@@ -618,9 +624,9 @@
        <item row="6" column="1">
         <widget class="KUrlRequester" name="peapCACert">
          <property name="nameFilters">
-          <StringList>
-           <string notr="true">*.der *.pem *.crt *.cer</string>
-          </StringList>
+          <stringlist notr="true">
+           <string>*.der *.pem *.crt *.cer</string>
+          </stringlist>
          </property>
         </widget>
        </item>
