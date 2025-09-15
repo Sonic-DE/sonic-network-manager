@@ -48,11 +48,12 @@ public:
     void setPasswordOption(PasswordField::PasswordOption option);
 
 private Q_SLOTS:
-    void altSubjectMatchesButtonClicked();
-    void domainMatchesButtonClicked();
     void currentAuthChanged(int index);
 
 private:
+    void editAltSubjectMatches(QLineEdit *le);
+    void editDomainMatches(QLineEdit *le);
+
     NetworkManager::Security8021xSetting::Ptr m_setting;
     Ui::Security8021x *const m_ui;
     QRegularExpressionValidator *altSubjectValidator = nullptr;
