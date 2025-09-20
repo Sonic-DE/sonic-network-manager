@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>563</width>
-    <height>497</height>
+    <height>570</height>
    </rect>
   </property>
   <layout class="QFormLayout" name="formLayout_7">
@@ -162,7 +162,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="4" column="0">
         <widget class="QLabel" name="label_27">
          <property name="text">
           <string>Subject match:</string>
@@ -172,14 +172,14 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="4" column="1">
         <widget class="QLineEdit" name="leTlsSubjectMatch">
          <property name="text">
           <string/>
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
+       <item row="5" column="0">
         <widget class="QLabel" name="label_28">
          <property name="text">
           <string>Alternative subject matches:</string>
@@ -189,7 +189,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="5" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QLineEdit" name="leTlsAlternativeSubjectMatches"/>
@@ -206,7 +206,7 @@
          </item>
         </layout>
        </item>
-       <item row="5" column="0">
+       <item row="6" column="0">
         <widget class="QLabel" name="label_29">
          <property name="text">
           <string>Domain matches:</string>
@@ -216,7 +216,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
+       <item row="6" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QLineEdit" name="leTlsDomainMatches"/>
@@ -233,7 +233,7 @@
          </item>
         </layout>
        </item>
-       <item row="6" column="0">
+       <item row="7" column="0">
         <widget class="QLabel" name="label_39">
          <property name="text">
           <string>Domain suffix matches:</string>
@@ -243,7 +243,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="1">
+       <item row="7" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_8">
          <item>
           <widget class="QLineEdit" name="leTlsDomainSuffixMatches"/>
@@ -260,7 +260,7 @@
          </item>
         </layout>
        </item>
-       <item row="7" column="0">
+       <item row="8" column="0">
         <widget class="QLabel" name="label_7">
          <property name="text">
           <string>Private key:</string>
@@ -270,7 +270,7 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="1">
+       <item row="8" column="1">
         <widget class="KUrlRequester" name="tlsPrivateKey">
          <property name="nameFilters">
           <stringlist notr="true">
@@ -279,7 +279,7 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="0">
+       <item row="9" column="0">
         <widget class="QLabel" name="label_8">
          <property name="text">
           <string>Private key password:</string>
@@ -289,10 +289,17 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="1">
+       <item row="9" column="1">
         <widget class="PasswordField" name="tlsPrivateKeyPassword">
          <property name="passwordModeEnabled" stdset="0">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QCheckBox" name="chkTlsUseSystemCaCerts">
+         <property name="text">
+          <string>Use system CA certificates</string>
          </property>
         </widget>
        </item>
@@ -531,7 +538,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="4" column="0">
         <widget class="QLabel" name="label_37">
          <property name="text">
           <string>Alternative subject matches:</string>
@@ -541,7 +548,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="4" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
           <widget class="QLineEdit" name="leTtlsAlternativeSubjectMatches"/>
@@ -558,7 +565,7 @@
          </item>
         </layout>
        </item>
-       <item row="4" column="0">
+       <item row="5" column="0">
         <widget class="QLabel" name="label_38">
          <property name="text">
           <string>Domain matches:</string>
@@ -568,7 +575,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="5" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_6">
          <item>
           <widget class="QLineEdit" name="leTtlsDomainMatches"/>
@@ -585,7 +592,7 @@
          </item>
         </layout>
        </item>
-       <item row="5" column="0">
+       <item row="6" column="0">
         <widget class="QLabel" name="label_32">
          <property name="text">
           <string>Domain suffix matches:</string>
@@ -595,7 +602,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
+       <item row="6" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_9">
          <item>
           <widget class="QLineEdit" name="leTtlsDomainSuffixMatches"/>
@@ -612,7 +619,7 @@
          </item>
         </layout>
        </item>
-       <item row="6" column="0">
+       <item row="7" column="0">
         <widget class="QLabel" name="label_16">
          <property name="text">
           <string>Inner authentication:</string>
@@ -622,7 +629,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="1">
+       <item row="7" column="1">
         <widget class="KComboBox" name="ttlsInnerAuth">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -652,7 +659,7 @@
          </item>
         </widget>
        </item>
-       <item row="7" column="0">
+       <item row="8" column="0">
         <widget class="QLabel" name="label_17">
          <property name="text">
           <string>Username:</string>
@@ -662,10 +669,10 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="1">
+       <item row="8" column="1">
         <widget class="KLineEdit" name="ttlsUsername"/>
        </item>
-       <item row="8" column="0">
+       <item row="9" column="0">
         <widget class="QLabel" name="label_18">
          <property name="text">
           <string>Password:</string>
@@ -675,10 +682,17 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="1">
+       <item row="9" column="1">
         <widget class="PasswordField" name="ttlsPassword">
          <property name="passwordModeEnabled" stdset="0">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QCheckBox" name="chkTtlsUseSystemCaCerts">
+         <property name="text">
+          <string>Use system CA certificates</string>
          </property>
         </widget>
        </item>
@@ -903,6 +917,13 @@
          </property>
         </widget>
        </item>
+       <item row="6" column="1">
+        <widget class="QCheckBox" name="chkPeapUseSystemCaCerts">
+         <property name="text">
+          <string>Use system CA certificates</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -1007,12 +1028,60 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>107</x>
-     <y>129</y>
+     <x>11</x>
+     <y>60</y>
     </hint>
     <hint type="destinationlabel">
-     <x>550</x>
-     <y>139</y>
+     <x>99</x>
+     <y>60</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkPeapUseSystemCaCerts</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>peapCACert</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>364</x>
+     <y>221</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>347</x>
+     <y>194</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkTlsUseSystemCaCerts</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>tlsCACert</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>293</x>
+     <y>223</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>322</x>
+     <y>187</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkTtlsUseSystemCaCerts</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>ttlsCACert</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>332</x>
+     <y>273</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>346</x>
+     <y>248</y>
     </hint>
    </hints>
   </connection>

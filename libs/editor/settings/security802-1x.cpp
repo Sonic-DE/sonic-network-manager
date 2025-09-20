@@ -196,6 +196,7 @@ void Security8021x::loadConfig(const NetworkManager::Setting::Ptr &setting)
         m_ui->tlsIdentity->setText(securitySetting->identity());
         m_ui->tlsUserCert->setUrl(QUrl::fromLocalFile(securitySetting->clientCertificate().removeLast()));
         m_ui->tlsCACert->setUrl(QUrl::fromLocalFile(securitySetting->caCertificate().removeLast()));
+        m_ui->chkTlsUseSystemCaCerts->setChecked(securitySetting->systemCaCertificates());
         m_ui->leTlsSubjectMatch->setText(securitySetting->subjectMatch());
         m_ui->leTlsAlternativeSubjectMatches->setText(securitySetting->altSubjectMatches().join(QLatin1String(", ")));
         m_ui->leTlsDomainMatches->setText(securitySetting->domainMatch().replace(QLatin1Char(';'), QLatin1String(", ")));
@@ -226,6 +227,7 @@ void Security8021x::loadConfig(const NetworkManager::Setting::Ptr &setting)
         m_ui->leTtlsDomainMatches->setText(securitySetting->domainMatch().replace(QLatin1Char(';'), QLatin1String(", ")));
         m_ui->leTtlsDomainSuffixMatches->setText(securitySetting->domainSuffixMatch().replace(QLatin1Char(';'), QLatin1String(", ")));
         m_ui->ttlsCACert->setUrl(QUrl::fromLocalFile(securitySetting->caCertificate().removeLast()));
+        m_ui->chkTtlsUseSystemCaCerts->setChecked(securitySetting->systemCaCertificates());
         if (phase2AuthMethod == NetworkManager::Security8021xSetting::AuthMethodPap) {
             m_ui->ttlsInnerAuth->setCurrentIndex(0);
         } else if (phase2AuthMethod == NetworkManager::Security8021xSetting::AuthMethodMschap) {
@@ -240,6 +242,7 @@ void Security8021x::loadConfig(const NetworkManager::Setting::Ptr &setting)
         m_ui->auth->setCurrentIndex(m_ui->auth->findData(NetworkManager::Security8021xSetting::EapMethodPeap));
         m_ui->peapAnonIdentity->setText(securitySetting->anonymousIdentity());
         m_ui->peapCACert->setUrl(QUrl::fromLocalFile(securitySetting->caCertificate().removeLast()));
+        m_ui->chkPeapUseSystemCaCerts->setChecked(securitySetting->systemCaCertificates());
         m_ui->lePeapAlternativeSubjectMatches->setText(securitySetting->altSubjectMatches().join(QLatin1String(", ")));
         m_ui->lePeapDomainMatches->setText(securitySetting->domainMatch().replace(QLatin1Char(';'), QLatin1String(", ")));
         m_ui->lePeapDomainSuffixMatches->setText(securitySetting->domainSuffixMatch().replace(QLatin1Char(';'), QLatin1String(", ")));
@@ -327,6 +330,8 @@ QVariantMap Security8021x::setting() const
             const auto formattingOption = m_ui->tlsCACert->url().scheme() == "file" ? QUrl::PrettyDecoded : QUrl::FullyEncoded;
             setting.setCaCertificate(m_ui->tlsCACert->url().toString(formattingOption).toUtf8().append('\0'));
         }
+
+        setting.setSystemCaCertificates(m_ui->chkTlsUseSystemCaCerts->isChecked());
 
         if (!m_ui->leTlsAlternativeSubjectMatches->text().isEmpty()) {
             QStringList altsubjectmatches = m_ui->leTlsAlternativeSubjectMatches->text().remove(QLatin1Char(' ')).split(QLatin1Char(','), Qt::SkipEmptyParts);
@@ -450,6 +455,8 @@ QVariantMap Security8021x::setting() const
             setting.setCaCertificate(m_ui->ttlsCACert->url().toString().toUtf8().append('\0'));
         }
 
+        setting.setSystemCaCertificates(m_ui->chkTtlsUseSystemCaCerts->isChecked());
+
         if (!m_ui->leTtlsAlternativeSubjectMatches->text().isEmpty()) {
             QStringList altsubjectmatches = m_ui->leTtlsAlternativeSubjectMatches->text().remove(QLatin1Char(' ')).split(QLatin1Char(','), Qt::SkipEmptyParts);
             setting.setAltSubjectMatches(altsubjectmatches);
@@ -498,6 +505,8 @@ QVariantMap Security8021x::setting() const
         if (m_ui->peapCACert->url().isValid()) {
             setting.setCaCertificate(m_ui->peapCACert->url().toString().toUtf8().append('\0'));
         }
+
+        setting.setSystemCaCertificates(m_ui->chkPeapUseSystemCaCerts->isChecked());
 
         if (!m_ui->lePeapAlternativeSubjectMatches->text().isEmpty()) {
             QStringList altsubjectmatches = m_ui->lePeapAlternativeSubjectMatches->text().remove(QLatin1Char(' ')).split(QLatin1Char(','), Qt::SkipEmptyParts);
