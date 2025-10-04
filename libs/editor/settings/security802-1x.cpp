@@ -575,7 +575,7 @@ void Security8021x::editAltSubjectMatches(QLineEdit *lineEdit)
              "server.</qt>"));
     editor->setValidator(altSubjectValidator);
 
-    connect(editor.data(), &QDialog::accepted, [editor, lineEdit]() {
+    connect(editor.data(), &QDialog::accepted, lineEdit, [editor, lineEdit]() {
         lineEdit->setText(editor->items().join(QLatin1String(", ")));
     });
     editor->setModal(true);
@@ -594,7 +594,7 @@ void Security8021x::editDomainMatches(QLineEdit *lineEdit)
              "presented by the authentication server. If no DNS elements are present, it will be matched against the certificate subject common name."));
     editor->setValidator(serversValidator);
 
-    connect(editor.data(), &QDialog::accepted, [editor, lineEdit]() {
+    connect(editor.data(), &QDialog::accepted, lineEdit, [editor, lineEdit]() {
         lineEdit->setText(editor->items().join(QLatin1String(", ")));
     });
     editor->setModal(true);
