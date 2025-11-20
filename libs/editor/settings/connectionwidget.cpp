@@ -62,6 +62,12 @@ ConnectionWidget::ConnectionWidget(const NetworkManager::ConnectionSettings::Ptr
     connect(m_widget->vpnCombobox, &QComboBox::currentTextChanged, this, &ConnectionWidget::settingChanged);
     connect(m_widget->prioritySpin, QOverload<int>::of(&QSpinBox::valueChanged), this, &ConnectionWidget::settingChanged);
     connect(m_widget->metered, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ConnectionWidget::settingChanged);
+    
+    if (!NetworkManager::checkVersion(1, 12, 0)) {
+        static_cast<QFormLayout *>(layout())->removeRow(m_widget->mdns);
+    } else {
+        connect(m_widget->mdns, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ConnectionWidget::settingChanged);
+    }
 
     connect(m_widget->pushButtonPermissions, &QPushButton::clicked, this, &ConnectionWidget::openAdvancedPermissions);
 }
@@ -103,6 +109,10 @@ void ConnectionWidget::loadConfig(const NetworkManager::ConnectionSettings::Ptr 
     }
 
     m_widget->metered->setCurrentIndex(settings->metered());
+    
+    if (m_widget->mdns) {
+        m_widget->mdns->setCurrentIndex(settings->mdns() + 1); // Starts at -1.
+    }
 }
 
 NMVariantMapMap ConnectionWidget::setting() const
@@ -138,6 +148,10 @@ NMVariantMapMap ConnectionWidget::setting() const
     }
 
     settings.setMetered(static_cast<NetworkManager::ConnectionSettings::Metered>(m_widget->metered->currentIndex()));
+    
+    if (m_widget->mdns) {
+        settings.setMdns(static_cast<NetworkManager::ConnectionSettings::Mdns>(m_widget->mdns->currentIndex() - 1)); // Starts at -1
+    }
 
     return settings.toMap();
 }
