@@ -18,6 +18,19 @@
 
 #include <qqmlregistration.h>
 
+#include <QList>
+#include <QPair>
+#include <QString>
+
+#include "connectiondetailsmodel.h"
+
+// Forward declaration
+namespace ConnectionDetails
+{
+struct ConnectionDetailSection;
+}
+
+
 class PLASMANM_INTERNAL_EXPORT NetworkModelItem : public QObject
 {
     Q_OBJECT
@@ -45,8 +58,11 @@ public:
     NetworkManager::ActiveConnection::State connectionState() const;
     void setConnectionState(NetworkManager::ActiveConnection::State state);
 
-    QStringList details() const;
+    Q_INVOKABLE QList<ConnectionDetails::ConnectionDetailSection> detailsList() const;
 
+    Q_PROPERTY(ConnectionDetailsModel* detailsModel READ detailsModel CONSTANT)
+    ConnectionDetailsModel *detailsModel() const;
+    
     QString deviceName() const;
     void setDeviceName(const QString &name);
 
@@ -131,25 +147,22 @@ public:
     }
 
 public Q_SLOTS:
-    void invalidateDetails();
+    void updateConnectionDetailsModel();
 
 private:
     QString computeIcon() const;
     void refreshIcon();
-    void updateDetails() const;
-
     QString m_activeConnectionPath;
     QString m_connectionPath;
     NetworkManager::ActiveConnection::State m_connectionState;
     QString m_devicePath;
     QString m_deviceName;
     NetworkManager::Device::State m_deviceState;
-    mutable QStringList m_details;
-    mutable bool m_detailsValid;
     bool m_delayModelUpdates;
     bool m_duplicate;
     NetworkManager::WirelessSetting::NetworkMode m_mode;
     QString m_name;
+    ConnectionDetailsModel *m_connectionDetailsModel = nullptr;
     NetworkManager::WirelessSecurityType m_securityType;
     int m_signal;
     bool m_slave;

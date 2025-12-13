@@ -39,7 +39,7 @@ public:
     enum ItemRole {
         NameRole = Qt::DisplayRole,
         ConnectionIconRole = Qt::DecorationRole,
-        ConnectionDetailsRole = Qt::UserRole + 1,
+        ConnectionDetailsModelRole = Qt::UserRole + 1,
         ConnectionPathRole,
         ConnectionStateRole,
         DeviceName,
@@ -67,7 +67,7 @@ public:
         // writable roles
         DelayModelUpdatesRole,
     };
-    Q_ENUMS(ItemRole)
+    Q_ENUM(ItemRole)
 
     enum ModelChangeType {
         ItemAdded,
@@ -123,7 +123,7 @@ private:
 
     void addActiveConnection(const NetworkManager::ActiveConnection::Ptr &activeConnection);
     void addAvailableConnection(const QString &connection, const NetworkManager::Device::Ptr &device);
-    void addConnection(const NetworkManager::Connection::Ptr &connection);
+    void addConnection(const NetworkManager::Connection::Ptr &connection, const NetworkManager::Device::Ptr &device = nullptr);
     void addDevice(const NetworkManager::Device::Ptr &device);
     void addWirelessNetwork(const NetworkManager::WirelessNetwork::Ptr &network, const NetworkManager::WirelessDevice::Ptr &device);
     void checkAndCreateDuplicate(const QString &connection, const QString &deviceUni);
