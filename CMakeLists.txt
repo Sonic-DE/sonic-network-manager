@@ -12,6 +12,8 @@ set(KDE_COMPILERSETTINGS_LEVEL "5.82")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 ################# set KDE specific information #################
 
 find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
