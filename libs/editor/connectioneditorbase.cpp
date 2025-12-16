@@ -23,7 +23,6 @@
 #include "settings/teamwidget.h"
 #include "settings/vlanwidget.h"
 #include "settings/wificonnectionwidget.h"
-#include "settings/wifisecurity.h"
 #include "settings/wiredconnectionwidget.h"
 #include "settings/wiredsecurity.h"
 #include "settings/wireguardinterfacewidget.h"
@@ -97,13 +96,14 @@ NMVariantMapMap ConnectionEditorBase::setting() const
 
         // add 802.1x security if needed
         QVariantMap security8021x;
-        if (type == NetworkManager::Setting::typeAsString(NetworkManager::Setting::WirelessSecurity)) {
-            auto wifiSecurity = static_cast<WifiSecurity *>(widget);
-            if (wifiSecurity->enabled()) {
-                settings.insert(type, wifiSecurity->setting());
+        if (type == NetworkManager::Setting::typeAsString(NetworkManager::Setting::Wireless)) {
+            // WifiConnectionWidget now handles both Wireless and WirelessSecurity settings
+            auto wifiWidget = static_cast<WifiConnectionWidget *>(widget);
+            if (wifiWidget->securityEnabled()) {
+                settings.insert(NetworkManager::Setting::typeAsString(NetworkManager::Setting::WirelessSecurity), wifiWidget->securitySetting());
             }
-            if (wifiSecurity->enabled8021x()) {
-                security8021x = static_cast<WifiSecurity *>(widget)->setting8021x();
+            if (wifiWidget->enabled8021x()) {
+                security8021x = wifiWidget->setting8021x();
                 settings.insert(NetworkManager::Setting::typeAsString(NetworkManager::Setting::Security8021x), security8021x);
             }
         } else if (type == NetworkManager::Setting::typeAsString(NetworkManager::Setting::Security8021x)) {
@@ -218,14 +218,12 @@ void ConnectionEditorBase::initialize()
             new WiredSecurity(m_connection->setting(NetworkManager::Setting::Security8021x).staticCast<NetworkManager::Security8021xSetting>(), this);
         addSettingWidget(wiredSecurity, i18n("802.1x Security"));
     } else if (type == NetworkManager::ConnectionSettings::Wireless) {
-        auto wifiWidget = new WifiConnectionWidget(m_connection->setting(NetworkManager::Setting::Wireless), this);
+        auto wifiWidget = new WifiConnectionWidget(m_connection->setting(NetworkManager::Setting::Wireless),
+                                                   m_connection->setting(NetworkManager::Setting::WirelessSecurity),
+                                                   m_connection->setting(NetworkManager::Setting::Security8021x).staticCast<NetworkManager::Security8021xSetting>(),
+                                                   this);
         addSettingWidget(wifiWidget, i18n("Wi-Fi"));
-        auto wifiSecurity = new WifiSecurity(m_connection->setting(NetworkManager::Setting::WirelessSecurity),
-                                             m_connection->setting(NetworkManager::Setting::Security8021x).staticCast<NetworkManager::Security8021xSetting>(),
-                                             this);
-        addSettingWidget(wifiSecurity, i18n("Wi-Fi Security"));
-        connect(wifiWidget, QOverload<const QString &>::of(&WifiConnectionWidget::ssidChanged), wifiSecurity, &WifiSecurity::onSsidChanged);
-        m_wifiSecurity = wifiSecurity;
+        m_wifiSecurity = wifiWidget;
     } else if (type == NetworkManager::ConnectionSettings::Pppoe) { // DSL
         auto pppoeWidget = new PppoeWidget(m_connection->setting(NetworkManager::Setting::Pppoe), this);
         addSettingWidget(pppoeWidget, i18n("DSL"));
@@ -486,7 +484,11 @@ void ConnectionEditorBase::replyFinished(QDBusPendingCallWatcher *watcher)
                         const QString type = widget->type();
                         if (type == settingName
                             || (settingName == NetworkManager::Setting::typeAsString(NetworkManager::Setting::Security8021x)
-                                && type == NetworkManager::Setting::typeAsString(NetworkManager::Setting::WirelessSecurity))) {
+                                && type == NetworkManager::Setting::typeAsString(NetworkManager::Setting::WirelessSecurity))
+                            || (settingName == NetworkManager::Setting::typeAsString(NetworkManager::Setting::WirelessSecurity)
+                                && type == NetworkManager::Setting::typeAsString(NetworkManager::Setting::Wireless))
+                            || (settingName == NetworkManager::Setting::typeAsString(NetworkManager::Setting::Security8021x)
+                                && type == NetworkManager::Setting::typeAsString(NetworkManager::Setting::Wireless))) {
                             widget->loadSecrets(setting);
                         }
                     }
