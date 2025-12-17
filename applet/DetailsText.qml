@@ -22,16 +22,6 @@ MouseArea {
 
     property PlasmaNM.ConnectionDetailsModel detailsModel: null
 
-    acceptedButtons: Qt.RightButton
-
-    onPressed: mouse => {
-        const item = detailsGrid.childAt(mouse.x, mouse.y);
-        if (!item || !item.isContent) {
-            return;
-        }
-        contextMenu.show(this, item.text, mouse.x, mouse.y);
-    }
-
     KQuickControlsAddons.Clipboard {
         id: clipboard
     }
@@ -115,6 +105,7 @@ MouseArea {
 
                 // Detail Value
                 PlasmaComponents3.Label {
+                    id: detailValueItem
                     anchors.left: parent.horizontalCenter
                     anchors.leftMargin: detailsGrid.columnSpacing / 2
                     anchors.right: parent.right
@@ -126,7 +117,14 @@ MouseArea {
                     text: delegateItem.detailValue
                     textFormat: Text.PlainText
                     opacity: 1
-                    readonly property bool isContent: true
+
+                    MouseArea {
+                        anchors.fill: parent
+                        acceptedButtons: Qt.RightButton
+                        onPressed: mouse => {
+                            contextMenu.show(this, detailValueItem.text, mouse.x, mouse.y);
+                        }
+                    }
                 }
             }
         }
