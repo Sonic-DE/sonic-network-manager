@@ -48,17 +48,6 @@ target_sources(plasmanm_internal PRIVATE
 
 target_include_directories(plasmanm_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/models)
 
-find_package(UDev)
-set_package_properties(UDev PROPERTIES
-    TYPE OPTIONAL
-    PURPOSE "Human-readable hardware names for network devices"
-)
-
-if(UDev_FOUND)
-    target_link_libraries(plasmanm_internal PRIVATE UDev::UDev)
-    target_compile_definitions(plasmanm_internal PRIVATE HAVE_LIBUDEV)
-endif()
-
 target_link_libraries(plasmanm_internal
 PUBLIC
     KF6::NetworkManagerQt

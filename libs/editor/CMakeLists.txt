@@ -164,11 +164,6 @@ PRIVATE
     qca-qt6
 )
 
-if(UDev_FOUND)
-    target_link_libraries(plasmanm_editor PRIVATE UDev::UDev)
-    target_compile_definitions(plasmanm_editor PRIVATE HAVE_LIBUDEV)
-endif()
-
 target_compile_definitions(plasmanm_editor PRIVATE BROADBANDPROVIDER_DATABASE=\"${BROADBANDPROVIDER_DATABASE}\")
 
 install(TARGETS plasmanm_editor ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
