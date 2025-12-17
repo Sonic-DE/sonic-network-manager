@@ -40,6 +40,10 @@
 #include <ModemManagerQt/ModemCdma>
 #include <ModemManagerQt/ModemDevice>
 
+#ifdef HAVE_LIBUDEV
+#include <libudev.h>
+#endif
+
 namespace ConnectionDetails
 {
 
@@ -253,13 +257,46 @@ getConnectionDetails(const NetworkManager::Connection::Ptr &connection, const Ne
 
     // Add device interface name to the last section if active
     if (device && isActive && !sections.isEmpty()) {
-        sections.last().details.append({i18n("Device"), device->interfaceName()});
+        sections.last().details.append({i18n("Interface"), device->interfaceName()});
     } else if (device && isActive && sections.isEmpty()) {
         // WireGuard or other types might not have created a section yet
         QList<QPair<QString, QString>> details;
-        details.append({i18n("Device"), device->interfaceName()});
+        details.append({i18n("Interface"), device->interfaceName()});
         sections.append({i18n("General"), details});
     }
+
+    // Add human-readable device name from udev (if available)
+#ifdef HAVE_LIBUDEV
+    if (device && !device->udi().isEmpty() && !sections.isEmpty()) {
+        struct udev *udev = udev_new();
+        if (udev) {
+            struct udev_device *udevDevice = udev_device_new_from_syspath(udev, device->udi().toUtf8().constData());
+            if (udevDevice) {
+                const char *vendor = udev_device_get_property_value(udevDevice, "ID_VENDOR_FROM_DATABASE");
+                const char *model = udev_device_get_property_value(udevDevice, "ID_MODEL_FROM_DATABASE");
+
+                QString vendorStr = vendor ? QString::fromUtf8(vendor) : QString();
+                QString modelStr = model ? QString::fromUtf8(model) : QString();
+
+                QString description;
+                if (!vendorStr.isEmpty() && !modelStr.isEmpty()) {
+                    description = modelStr.toLower().contains(vendorStr.toLower()) ? modelStr : vendorStr + QLatin1String(" ") + modelStr;
+                } else if (!modelStr.isEmpty()) {
+                    description = modelStr;
+                } else if (!vendorStr.isEmpty()) {
+                    description = vendorStr;
+                }
+
+                if (!description.isEmpty()) {
+                    sections.last().details.append({i18n("Network Adapter"), description});
+                }
+
+                udev_device_unref(udevDevice);
+            }
+            udev_unref(udev);
+        }
+    }
+#endif
 
     // Get IPv4 Address and related nameservers + IPv4 default gateway
     if (device && device->ipV4Config().isValid() && isActive) {
