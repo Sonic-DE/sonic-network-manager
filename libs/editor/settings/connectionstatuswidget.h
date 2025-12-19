@@ -22,6 +22,7 @@ class QFormLayout;
 class QObject;
 class QVBoxLayout;
 class QLabel;
+class QScrollArea;
 
 namespace ConnectionDetails
 {

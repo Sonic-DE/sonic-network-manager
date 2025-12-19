@@ -34,8 +34,7 @@
 #include <KLocalizedString>
 #include <QHostAddress>
 
-#include <Solid/solid/udevqtclient.h>
-#include <Solid/solid/udevqtdevice.h>
+#include <Solid/Device>
 
 #include <ModemManagerQt/Manager>
 #include <ModemManagerQt/Modem3Gpp>
@@ -264,13 +263,33 @@ getConnectionDetails(const NetworkManager::Connection::Ptr &connection, const Ne
         sections.append({i18n("General"), details});
     }
 
-    // Add human-readable device name from Solid's UdevQt (if available)
+    // Add human-readable device name from Solid (if available)
     if (device && !device->udi().isEmpty() && !sections.isEmpty()) {
-        UdevQt::Client client;
-        UdevQt::Device udevDevice = client.deviceBySysfsPath(device->udi());
+        // NetworkManager provides sysfs paths, but Solid needs the full UDI with backend prefix
+        QString solidUdi = device->udi();
+        if (!solidUdi.startsWith(QLatin1String("/org/kde/solid/"))) {
+            solidUdi = QLatin1String("/org/kde/solid/udev") + solidUdi;
+        }
+        Solid::Device solidDevice(solidUdi);
 
-        if (udevDevice.isValid()) {
-            QString description = udevDevice.description();
+        if (solidDevice.isValid()) {
+            QString vendor = solidDevice.vendor();
+            QString product = solidDevice.product();
+            QString description;
+
+            // Build description from vendor and product
+            if (!vendor.isEmpty() && !product.isEmpty()) {
+                // Avoid redundancy: if product already contains vendor, use product alone
+                if (product.toLower().contains(vendor.toLower())) {
+                    description = product;
+                } else {
+                    description = vendor + QLatin1String(" ") + product;
+                }
+            } else if (!product.isEmpty()) {
+                description = product;
+            } else if (!vendor.isEmpty()) {
+                description = vendor;
+            }
 
             if (!description.isEmpty()) {
                 sections.last().details.append({i18n("Network Adapter"), description});
