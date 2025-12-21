@@ -75,8 +75,35 @@ Security8021x::Security8021x(const NetworkManager::Setting::Ptr &setting, Type t
         m_ui->auth->setCurrentIndex(m_ui->auth->findData(NetworkManager::Security8021xSetting::EapMethodPeap));
     }
 
-    connect(m_ui->btnTlsAltSubjectMatches, &QPushButton::clicked, this, &Security8021x::altSubjectMatchesButtonClicked);
-    connect(m_ui->btnTlsConnectToServers, &QPushButton::clicked, this, &Security8021x::connectToServersButtonClicked);
+    connect(m_ui->btnPeapAltSubjectMatches, &QPushButton::clicked, this, [this]() {
+        editAltSubjectMatches(m_ui->lePeapAlternativeSubjectMatches);
+    });
+    connect(m_ui->btnTlsAltSubjectMatches, &QPushButton::clicked, this, [this]() {
+        editAltSubjectMatches(m_ui->leTlsAlternativeSubjectMatches);
+    });
+    connect(m_ui->btnTtlsAltSubjectMatches, &QPushButton::clicked, this, [this]() {
+        editAltSubjectMatches(m_ui->leTtlsAlternativeSubjectMatches);
+    });
+
+    connect(m_ui->btnPeapDomainMatches, &QPushButton::clicked, this, [this]() {
+        editDomainMatches(m_ui->lePeapDomainMatches);
+    });
+    connect(m_ui->btnTlsDomainMatches, &QPushButton::clicked, this, [this]() {
+        editDomainMatches(m_ui->leTlsDomainMatches);
+    });
+    connect(m_ui->btnTtlsDomainMatches, &QPushButton::clicked, this, [this]() {
+        editDomainMatches(m_ui->leTtlsDomainMatches);
+    });
+
+    connect(m_ui->btnPeapDomainSuffixMatches, &QPushButton::clicked, this, [this]() {
+        editDomainMatches(m_ui->lePeapDomainSuffixMatches);
+    });
+    connect(m_ui->btnTlsDomainSuffixMatches, &QPushButton::clicked, this, [this]() {
+        editDomainMatches(m_ui->leTlsDomainSuffixMatches);
+    });
+    connect(m_ui->btnTtlsDomainSuffixMatches, &QPushButton::clicked, this, [this]() {
+        editDomainMatches(m_ui->leTtlsDomainSuffixMatches);
+    });
 
     // Connect for setting check
     watchChangedSetting();
@@ -122,11 +149,19 @@ Security8021x::Security8021x(const NetworkManager::Setting::Ptr &setting, Type t
 
     auto altSubjectListValidator = new ListValidator(this);
     altSubjectListValidator->setInnerValidator(altSubjectValidator);
-    m_ui->leTlsSubjectMatch->setValidator(altSubjectListValidator);
+    m_ui->lePeapAlternativeSubjectMatches->setValidator(altSubjectListValidator);
+    m_ui->leTlsAlternativeSubjectMatches->setValidator(altSubjectListValidator);
+    m_ui->leTtlsAlternativeSubjectMatches->setValidator(altSubjectListValidator);
 
     auto serverListValidator = new ListValidator(this);
     serverListValidator->setInnerValidator(serversValidator);
-    m_ui->leTlsConnectToServers->setValidator(serverListValidator);
+    m_ui->leTlsSubjectMatch->setValidator(serverListValidator);
+    m_ui->lePeapDomainMatches->setValidator(serverListValidator);
+    m_ui->leTlsDomainMatches->setValidator(serverListValidator);
+    m_ui->leTtlsDomainMatches->setValidator(serverListValidator);
+    m_ui->lePeapDomainSuffixMatches->setValidator(serverListValidator);
+    m_ui->leTlsDomainSuffixMatches->setValidator(serverListValidator);
+    m_ui->leTtlsDomainSuffixMatches->setValidator(serverListValidator);
 
     if (setting) {
         loadConfig(setting);
@@ -157,20 +192,15 @@ void Security8021x::loadConfig(const NetworkManager::Setting::Ptr &setting)
         m_ui->auth->setCurrentIndex(m_ui->auth->findData(NetworkManager::Security8021xSetting::EapMethodMd5));
         m_ui->md5UserName->setText(securitySetting->identity());
     } else if (eapMethods.contains(NetworkManager::Security8021xSetting::EapMethodTls)) {
-        QStringList servers;
         m_ui->auth->setCurrentIndex(m_ui->auth->findData(NetworkManager::Security8021xSetting::EapMethodTls));
         m_ui->tlsIdentity->setText(securitySetting->identity());
-        m_ui->tlsDomain->setText(securitySetting->domainSuffixMatch());
         m_ui->tlsUserCert->setUrl(QUrl::fromLocalFile(securitySetting->clientCertificate().removeLast()));
         m_ui->tlsCACert->setUrl(QUrl::fromLocalFile(securitySetting->caCertificate().removeLast()));
+        m_ui->chkTlsUseSystemCaCerts->setChecked(securitySetting->systemCaCertificates());
         m_ui->leTlsSubjectMatch->setText(securitySetting->subjectMatch());
         m_ui->leTlsAlternativeSubjectMatches->setText(securitySetting->altSubjectMatches().join(QLatin1String(", ")));
-        for (const QString &match : securitySetting->altSubjectMatches()) {
-            if (match.startsWith(QLatin1String("DNS:"))) {
-                servers.append(match.right(match.length() - 4));
-            }
-        }
-        m_ui->leTlsConnectToServers->setText(servers.join(QLatin1String(", ")));
+        m_ui->leTlsDomainMatches->setText(securitySetting->domainMatch().replace(QLatin1Char(';'), QLatin1String(", ")));
+        m_ui->leTlsDomainSuffixMatches->setText(securitySetting->domainSuffixMatch().replace(QLatin1Char(';'), QLatin1String(", ")));
         m_ui->tlsPrivateKey->setUrl(QUrl::fromLocalFile(securitySetting->privateKey().removeLast()));
     } else if (eapMethods.contains(NetworkManager::Security8021xSetting::EapMethodLeap)) {
         m_ui->auth->setCurrentIndex(m_ui->auth->findData(NetworkManager::Security8021xSetting::EapMethodLeap));
@@ -193,8 +223,11 @@ void Security8021x::loadConfig(const NetworkManager::Setting::Ptr &setting)
     } else if (eapMethods.contains(NetworkManager::Security8021xSetting::EapMethodTtls)) {
         m_ui->auth->setCurrentIndex(m_ui->auth->findData(NetworkManager::Security8021xSetting::EapMethodTtls));
         m_ui->ttlsAnonIdentity->setText(securitySetting->anonymousIdentity());
-        m_ui->ttlsDomain->setText(securitySetting->domainSuffixMatch());
+        m_ui->leTtlsAlternativeSubjectMatches->setText(securitySetting->altSubjectMatches().join(QLatin1String(", ")));
+        m_ui->leTtlsDomainMatches->setText(securitySetting->domainMatch().replace(QLatin1Char(';'), QLatin1String(", ")));
+        m_ui->leTtlsDomainSuffixMatches->setText(securitySetting->domainSuffixMatch().replace(QLatin1Char(';'), QLatin1String(", ")));
         m_ui->ttlsCACert->setUrl(QUrl::fromLocalFile(securitySetting->caCertificate().removeLast()));
+        m_ui->chkTtlsUseSystemCaCerts->setChecked(securitySetting->systemCaCertificates());
         if (phase2AuthMethod == NetworkManager::Security8021xSetting::AuthMethodPap) {
             m_ui->ttlsInnerAuth->setCurrentIndex(0);
         } else if (phase2AuthMethod == NetworkManager::Security8021xSetting::AuthMethodMschap) {
@@ -208,8 +241,11 @@ void Security8021x::loadConfig(const NetworkManager::Setting::Ptr &setting)
     } else if (eapMethods.contains(NetworkManager::Security8021xSetting::EapMethodPeap)) {
         m_ui->auth->setCurrentIndex(m_ui->auth->findData(NetworkManager::Security8021xSetting::EapMethodPeap));
         m_ui->peapAnonIdentity->setText(securitySetting->anonymousIdentity());
-        m_ui->peapDomain->setText(securitySetting->domainSuffixMatch());
         m_ui->peapCACert->setUrl(QUrl::fromLocalFile(securitySetting->caCertificate().removeLast()));
+        m_ui->chkPeapUseSystemCaCerts->setChecked(securitySetting->systemCaCertificates());
+        m_ui->lePeapAlternativeSubjectMatches->setText(securitySetting->altSubjectMatches().join(QLatin1String(", ")));
+        m_ui->lePeapDomainMatches->setText(securitySetting->domainMatch().replace(QLatin1Char(';'), QLatin1String(", ")));
+        m_ui->lePeapDomainSuffixMatches->setText(securitySetting->domainSuffixMatch().replace(QLatin1Char(';'), QLatin1String(", ")));
         m_ui->peapVersion->setCurrentIndex(securitySetting->phase1PeapVersion() + 1);
         if (phase2AuthMethod == NetworkManager::Security8021xSetting::AuthMethodMschapv2) {
             m_ui->peapInnerAuth->setCurrentIndex(0);
@@ -285,10 +321,6 @@ QVariantMap Security8021x::setting() const
             setting.setIdentity(m_ui->tlsIdentity->text());
         }
 
-        if (!m_ui->tlsDomain->text().isEmpty()) {
-            setting.setDomainSuffixMatch(m_ui->tlsDomain->text());
-        }
-
         if (m_ui->tlsUserCert->url().isValid()) {
             const auto formattingOption = m_ui->tlsUserCert->url().scheme() == "file" ? QUrl::PrettyDecoded : QUrl::FullyEncoded;
             setting.setClientCertificate(m_ui->tlsUserCert->url().toString(formattingOption).toUtf8().append('\0'));
@@ -299,15 +331,24 @@ QVariantMap Security8021x::setting() const
             setting.setCaCertificate(m_ui->tlsCACert->url().toString(formattingOption).toUtf8().append('\0'));
         }
 
-        QStringList altsubjectmatches = m_ui->leTlsAlternativeSubjectMatches->text().remove(QLatin1Char(' ')).split(QLatin1Char(','), Qt::SkipEmptyParts);
-        for (const QString &match : m_ui->leTlsConnectToServers->text().remove(QLatin1Char(' ')).split(QLatin1Char(','), Qt::SkipEmptyParts)) {
-            const QString tempstr = QLatin1String("DNS:") + match;
-            if (!altsubjectmatches.contains(tempstr)) {
-                altsubjectmatches.append(tempstr);
-            }
+        setting.setSystemCaCertificates(m_ui->chkTlsUseSystemCaCerts->isChecked());
+
+        if (!m_ui->leTlsAlternativeSubjectMatches->text().isEmpty()) {
+            QStringList altsubjectmatches = m_ui->leTlsAlternativeSubjectMatches->text().remove(QLatin1Char(' ')).split(QLatin1Char(','), Qt::SkipEmptyParts);
+            setting.setAltSubjectMatches(altsubjectmatches);
         }
-        setting.setSubjectMatch(m_ui->leTlsSubjectMatch->text());
-        setting.setAltSubjectMatches(altsubjectmatches);
+
+        if (!m_ui->leTlsSubjectMatch->text().isEmpty()) {
+            setting.setSubjectMatch(m_ui->leTlsSubjectMatch->text());
+        }
+
+        if (!m_ui->leTlsDomainMatches->text().isEmpty()) {
+            setting.setDomainMatch(m_ui->leTlsDomainMatches->text().remove(QLatin1Char(' ')).replace(QLatin1Char(','), QLatin1Char(';')));
+        }
+
+        if (!m_ui->leTlsDomainSuffixMatches->text().isEmpty()) {
+            setting.setDomainSuffixMatch(m_ui->leTlsDomainSuffixMatches->text().remove(QLatin1Char(' ')).replace(QLatin1Char(','), QLatin1Char(';')));
+        }
 
         if (m_ui->tlsPrivateKey->url().isValid()) {
             const auto formattingOption = m_ui->tlsPrivateKey->url().scheme() == "file" ? QUrl::PrettyDecoded : QUrl::FullyEncoded;
@@ -410,15 +451,27 @@ QVariantMap Security8021x::setting() const
             setting.setAnonymousIdentity(m_ui->ttlsAnonIdentity->text());
         }
 
-        if (!m_ui->ttlsDomain->text().isEmpty()) {
-            setting.setDomainSuffixMatch(m_ui->ttlsDomain->text());
-        }
-
         if (m_ui->ttlsCACert->url().isValid()) {
             setting.setCaCertificate(m_ui->ttlsCACert->url().toString().toUtf8().append('\0'));
         }
 
+        setting.setSystemCaCertificates(m_ui->chkTtlsUseSystemCaCerts->isChecked());
+
+        if (!m_ui->leTtlsAlternativeSubjectMatches->text().isEmpty()) {
+            QStringList altsubjectmatches = m_ui->leTtlsAlternativeSubjectMatches->text().remove(QLatin1Char(' ')).split(QLatin1Char(','), Qt::SkipEmptyParts);
+            setting.setAltSubjectMatches(altsubjectmatches);
+        }
+
+        if (!m_ui->leTtlsDomainMatches->text().isEmpty()) {
+            setting.setDomainMatch(m_ui->leTtlsDomainMatches->text().remove(QLatin1Char(' ')).replace(QLatin1Char(','), QLatin1Char(';')));
+        }
+
+        if (!m_ui->leTtlsDomainSuffixMatches->text().isEmpty()) {
+            setting.setDomainSuffixMatch(m_ui->leTtlsDomainSuffixMatches->text().remove(QLatin1Char(' ')).replace(QLatin1Char(','), QLatin1Char(';')));
+        }
+
         const int innerAuth = m_ui->ttlsInnerAuth->currentIndex();
+
         if (innerAuth == 0) {
             setting.setPhase2AuthMethod(NetworkManager::Security8021xSetting::AuthMethodPap);
         } else if (innerAuth == 1) {
@@ -449,12 +502,23 @@ QVariantMap Security8021x::setting() const
             setting.setAnonymousIdentity(m_ui->peapAnonIdentity->text());
         }
 
-        if (!m_ui->peapDomain->text().isEmpty()) {
-            setting.setDomainSuffixMatch(m_ui->peapDomain->text());
-        }
-
         if (m_ui->peapCACert->url().isValid()) {
             setting.setCaCertificate(m_ui->peapCACert->url().toString().toUtf8().append('\0'));
+        }
+
+        setting.setSystemCaCertificates(m_ui->chkPeapUseSystemCaCerts->isChecked());
+
+        if (!m_ui->lePeapAlternativeSubjectMatches->text().isEmpty()) {
+            QStringList altsubjectmatches = m_ui->lePeapAlternativeSubjectMatches->text().remove(QLatin1Char(' ')).split(QLatin1Char(','), Qt::SkipEmptyParts);
+            setting.setAltSubjectMatches(altsubjectmatches);
+        }
+
+        if (!m_ui->lePeapDomainMatches->text().isEmpty()) {
+            setting.setDomainMatch(m_ui->lePeapDomainMatches->text().remove(QLatin1Char(' ')).replace(QLatin1Char(','), QLatin1Char(';')));
+        }
+
+        if (!m_ui->lePeapDomainSuffixMatches->text().isEmpty()) {
+            setting.setDomainSuffixMatch(m_ui->lePeapDomainSuffixMatches->text().remove(QLatin1Char(' ')).replace(QLatin1Char(','), QLatin1Char(';')));
         }
 
         setting.setPhase1PeapVersion(static_cast<NetworkManager::Security8021xSetting::PeapVersion>(m_ui->peapVersion->currentIndex() - 1));
@@ -498,36 +562,40 @@ void Security8021x::setPasswordOption(PasswordField::PasswordOption option)
     m_ui->ttlsPassword->setPasswordOption(option);
 }
 
-void Security8021x::altSubjectMatchesButtonClicked()
+void Security8021x::editAltSubjectMatches(QLineEdit *lineEdit)
 {
     QPointer<EditListDialog> editor = new EditListDialog(this);
     editor->setAttribute(Qt::WA_DeleteOnClose);
 
-    editor->setItems(m_ui->leTlsSubjectMatch->text().remove(QLatin1Char(' ')).split(QLatin1Char(','), Qt::SkipEmptyParts));
+    editor->setItems(lineEdit->text().remove(QLatin1Char(' ')).split(QLatin1Char(','), Qt::SkipEmptyParts));
     editor->setWindowTitle(i18n("Alternative Subject Matches"));
     editor->setToolTip(
         i18n("<qt>This entry must be one of:<ul><li>DNS: &lt;name or ip address&gt;</li><li>EMAIL: &lt;email&gt;</li><li>URI: &lt;uri, e.g. "
-             "https://www.kde.org&gt;</li></ul></qt>"));
+             "https://www.kde.org&gt;</li></ul>It will be matched against the alternative subject name of the certificate presented by the authentication "
+             "server.</qt>"));
     editor->setValidator(altSubjectValidator);
 
-    connect(editor.data(), &QDialog::accepted, [editor, this]() {
-        m_ui->leTlsSubjectMatch->setText(editor->items().join(QLatin1String(", ")));
+    connect(editor.data(), &QDialog::accepted, lineEdit, [editor, lineEdit]() {
+        lineEdit->setText(editor->items().join(QLatin1String(", ")));
     });
     editor->setModal(true);
     editor->show();
 }
 
-void Security8021x::connectToServersButtonClicked()
+void Security8021x::editDomainMatches(QLineEdit *lineEdit)
 {
     QPointer<EditListDialog> editor = new EditListDialog(this);
     editor->setAttribute(Qt::WA_DeleteOnClose);
 
-    editor->setItems(m_ui->leTlsConnectToServers->text().remove(QLatin1Char(' ')).split(QLatin1Char(','), Qt::SkipEmptyParts));
-    editor->setWindowTitle(i18n("Connect to these servers only"));
+    editor->setItems(lineEdit->text().remove(QLatin1Char(' ')).split(QLatin1Char(','), Qt::SkipEmptyParts));
+    editor->setWindowTitle(i18n("Domain Matches"));
+    editor->setToolTip(
+        i18n("This entry must be a fully qualified domain name. It will be matched against the DNS element of the alternative subject name of the certificate "
+             "presented by the authentication server. If no DNS elements are present, it will be matched against the certificate subject common name."));
     editor->setValidator(serversValidator);
 
-    connect(editor.data(), &QDialog::accepted, [editor, this]() {
-        m_ui->leTlsConnectToServers->setText(editor->items().join(QLatin1String(", ")));
+    connect(editor.data(), &QDialog::accepted, lineEdit, [editor, lineEdit]() {
+        lineEdit->setText(editor->items().join(QLatin1String(", ")));
     });
     editor->setModal(true);
     editor->show();
