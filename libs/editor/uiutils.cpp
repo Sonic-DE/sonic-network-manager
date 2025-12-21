@@ -431,11 +431,11 @@ QString UiUtils::connectionSpeed(double bitrate)
 {
     QString out;
     if (bitrate < 1000) {
-        out = i18nc("connection speed", "%1 Bit/s", bitrate);
+        out = i18nc("connection speed", "%1 bit/s", bitrate);
     } else if (bitrate < 1000000) {
-        out = i18nc("connection speed", "%1 MBit/s", bitrate / 1000);
+        out = i18nc("connection speed", "%1 Mbit/s", bitrate / 1000);
     } else {
-        out = i18nc("connection speed", "%1 GBit/s", bitrate / 1000000);
+        out = i18nc("connection speed", "%1 Gbit/s", bitrate / 1000000);
     }
     return out;
 }
