@@ -7,6 +7,7 @@
 #include "fortisslvpn.h"
 #include "fortisslvpnauth.h"
 #include "fortisslvpnwidget.h"
+#include "nm-fortisslvpn-service.h"
 
 #include <KPluginFactory>
 
@@ -26,7 +27,12 @@ SettingWidget *FortisslvpnUiPlugin::widget(const NetworkManager::VpnSetting::Ptr
 
 SettingWidget *FortisslvpnUiPlugin::askUser(const NetworkManager::VpnSetting::Ptr &setting, const QStringList &hints, QWidget *parent)
 {
-    return new FortisslvpnAuthDialog(setting, hints, parent);
+    auto hasSso = setting->data().value(NM_FORTISSLVPN_KEY_SSO);
+    if (hasSso == "yes") {
+        return new FortisslvpnSamlDialog(setting, hints, parent);
+    } else {
+        return new FortisslvpnAuthDialog(setting, hints, parent);
+    }
 }
 
 QString FortisslvpnUiPlugin::suggestedFileName(const NetworkManager::ConnectionSettings::Ptr &connection) const

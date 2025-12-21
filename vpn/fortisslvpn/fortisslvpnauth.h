@@ -26,4 +26,13 @@ private:
     FortisslvpnAuthDialogPrivate *const d_ptr;
 };
 
+class FortisslvpnSamlDialog : public SettingWidget {
+    Q_OBJECT
+
+public:
+    explicit FortisslvpnSamlDialog(const NetworkManager::VpnSetting::Ptr &setting, const QStringList &hints, QWidget *parent = nullptr);
+    ~FortisslvpnSamlDialog() override;
+    QVariantMap setting() const override;
+};
+
 #endif // PLASMA_NM_FORTISSLVPN_AUTH_H

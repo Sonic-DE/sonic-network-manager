@@ -86,6 +86,11 @@ void FortisslvpnWidget::loadConfig(const NetworkManager::Setting::Ptr &setting)
         d->ui.gateway->setText(gateway);
     }
 
+    const QString sso = data.value(NM_FORTISSLVPN_KEY_SSO);
+    if (sso == "yes") {
+        d->ui.ssoButton->setChecked(true);
+    }
+
     const QString username = data.value(NM_FORTISSLVPN_KEY_USER);
     if (!username.isEmpty()) {
         d->ui.username->setText(username);
@@ -145,6 +150,11 @@ void FortisslvpnWidget::loadConfig(const NetworkManager::Setting::Ptr &setting)
         d->advUi.realm->setText(realm);
     }
 
+    const QString url = data.value(NM_FORTISSLVPN_KEY_URL_OVERRIDE);
+    if (!url.isEmpty()) {
+        d->advUi.url->setText(url);
+    }
+
     loadSecrets(setting);
 }
 
@@ -193,6 +203,12 @@ QVariantMap FortisslvpnWidget::setting() const
         data.insert(NM_FORTISSLVPN_KEY_PASSWORD "-flags", QString::number(NetworkManager::Setting::NotRequired));
     }
 
+    if (d->ui.ssoButton->isChecked()) {
+        data.insert(NM_FORTISSLVPN_KEY_SSO, "yes");
+        // We always want the agent to be called, so never claim that the password is not needed.
+        data.insert(NM_FORTISSLVPN_KEY_PASSWORD "-flags", QString::number(NetworkManager::Setting::NotSaved));
+    }
+
     if (!d->ui.caCert->url().isEmpty()) {
         data.insert(NM_FORTISSLVPN_KEY_CA, d->ui.caCert->url().toLocalFile());
     }
@@ -223,6 +239,10 @@ QVariantMap FortisslvpnWidget::setting() const
 
     if (!d->advUi.realm->text().isEmpty()) {
         data.insert(NM_FORTISSLVPN_KEY_REALM, d->advUi.realm->text());
+    }
+
+    if (!d->advUi.url->text().isEmpty()) {
+        data.insert(NM_FORTISSLVPN_KEY_URL_OVERRIDE, d->advUi.url->text());
     }
 
     setting.setData(data);

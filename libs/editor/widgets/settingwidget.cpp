@@ -15,6 +15,7 @@
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QRadioButton>
 #include <QSpinBox>
 #include <QTableView>
 
@@ -69,6 +70,12 @@ void SettingWidget::watchChangedSetting()
     const QList<QCheckBox *> checkboxes = findChildren<QCheckBox *>();
     for (QCheckBox *checkbox : checkboxes) {
         connect(checkbox, &QCheckBox::stateChanged, this, &SettingWidget::settingChanged);
+    }
+
+    // Connect all QRadioButton widgets
+    QList<QRadioButton *> radios = findChildren<QRadioButton *>();
+    for (QRadioButton *radio : radios) {
+        connect(radio, &QRadioButton::toggled, this, &SettingWidget::settingChanged);
     }
 
     // Connect all QPushButton widgets

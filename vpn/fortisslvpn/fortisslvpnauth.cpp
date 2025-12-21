@@ -9,7 +9,13 @@
 
 #include "nm-fortisslvpn-service.h"
 
+#include <QDesktopServices>
+#include <QDialog>
 #include <QString>
+#include <QStringBuilder>
+#include <QTimer>
+#include <QUrl>
+#include <QBoxLayout>
 
 class FortisslvpnAuthDialogPrivate
 {
@@ -77,6 +83,58 @@ QVariantMap FortisslvpnAuthDialog::setting() const
         secrets.insert(QLatin1String(NM_FORTISSLVPN_KEY_2FA), d->ui.otp->text());
     }
 
+    secretData.insert("secrets", QVariant::fromValue<NMStringMap>(secrets));
+    return secretData;
+}
+
+FortisslvpnSamlDialog::FortisslvpnSamlDialog(
+    const NetworkManager::VpnSetting::Ptr &setting, const QStringList &hints,
+    QWidget *parent)
+    : SettingWidget(setting, hints, parent) {
+
+    QString errorMessage;
+    if (hints.contains("sso")) {
+        auto authServer = setting->data().value(NM_FORTISSLVPN_KEY_URL_OVERRIDE);
+        if (authServer.isEmpty()) {
+            authServer = setting->data().value(NM_FORTISSLVPN_KEY_GATEWAY);
+        }
+        QString url = QStringLiteral("https://") % authServer % QStringLiteral("/remote/saml/start?redirect=1");
+        if (!QDesktopServices::openUrl(QUrl(url))) {
+            errorMessage = tr("Cannot open the default browser!");
+        }
+    } else {
+        // Nothing to do, we were called before openfortivpn is running, it's not time for SSO yet.
+    }
+
+    if (errorMessage.isEmpty()) {
+        // Auto-close this dialog at the next opportunity.
+        QTimer::singleShot(0, [this] {
+            // Find top-level widget as this should be the QDialog itself
+            QWidget *widget = parentWidget();
+            while (widget->parentWidget() != nullptr) {
+                widget = widget->parentWidget();
+            }
+
+            auto dialog = qobject_cast<QDialog *>(widget);
+            if (dialog) {
+                dialog->accept();
+            }
+        });
+    } else {
+        auto label = new QLabel(errorMessage);
+        setLayout(new QHBoxLayout);
+        layout()->addWidget(label);
+    }
+}
+
+FortisslvpnSamlDialog::~FortisslvpnSamlDialog() {}
+
+QVariantMap FortisslvpnSamlDialog::setting() const {
+    // We always need to provide a dummy password, or NM will think we failed to
+    // get secrets.
+    NMStringMap secrets;
+    QVariantMap secretData;
+    secrets.insert(QLatin1String(NM_FORTISSLVPN_KEY_PASSWORD), "saml");
     secretData.insert("secrets", QVariant::fromValue<NMStringMap>(secrets));
     return secretData;
 }
