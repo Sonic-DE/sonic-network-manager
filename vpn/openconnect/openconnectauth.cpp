@@ -663,9 +663,11 @@ void OpenconnectAuthWidget::openWebEngine(const char *loginUri, QSemaphore *wait
     webEngineView->setPage(page);
     webEngineView->load(QUrl(loginUri, QUrl::TolerantMode));
     // QWebEngineView sizeHint fails to size window correctly based on contents
-    // when QLayout::setSizeConstraint(QLayout::SetFixedSize) is set. Using same
-    // size as webkitgtk is set to in GNOME/NetworkManager-openconnect.
-    webEngineView->setFixedSize(640, 480);
+    // when QLayout::setSizeConstraint(QLayout::SetMinimumSize) is set.
+    // FIXME Use the same minimum size as webkitgtk is set to in
+    // GNOME/NetworkManager-openconnect without breaking the widget when using
+    // Wayland.
+    webEngineView->setMinimumSize(450, 450);
 
     d->ui.loginBoxLayout->addWidget(webEngineView);
 }
