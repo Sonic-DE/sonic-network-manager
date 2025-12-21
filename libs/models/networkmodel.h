@@ -94,6 +94,7 @@ private Q_SLOTS:
     void activeConnectionAdded(const QString &activeConnection);
     void activeConnectionRemoved(const QString &activeConnection);
     void activeConnectionStateChanged(NetworkManager::ActiveConnection::State state);
+    void activeConnectionIdChanged(const QString &id);
     void activeVpnConnectionStateChanged(NetworkManager::VpnConnection::State state, NetworkManager::VpnConnection::StateChangeReason reason);
     void availableConnectionAppeared(const QString &connection);
     void availableConnectionDisappeared(const QString &connection);
@@ -122,6 +123,7 @@ private:
     QQueue<QPair<ModelChangeType, NetworkModelItem *>> m_updateQueue;
 
     void addActiveConnection(const NetworkManager::ActiveConnection::Ptr &activeConnection);
+    void setPublicSettingsFromActiveConnection(const NetworkManager::ActiveConnection::Ptr &activeConnection, const NetworkManager::ConnectionSettings::Ptr &settings);
     void addAvailableConnection(const QString &connection, const NetworkManager::Device::Ptr &device);
     void addConnection(const NetworkManager::Connection::Ptr &connection, const NetworkManager::Device::Ptr &device = nullptr);
     void addDevice(const NetworkManager::Device::Ptr &device);
