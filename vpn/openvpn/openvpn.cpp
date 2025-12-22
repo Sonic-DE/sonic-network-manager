@@ -10,7 +10,6 @@
 #include "openvpn.h"
 
 #include <QLatin1Char>
-#include <QRegularExpression>
 #include <QStandardPaths>
 #include <QStringBuilder>
 
