@@ -47,7 +47,13 @@ QString ConnectionEditorTabWidget::connectionName() const
 void ConnectionEditorTabWidget::initializeTabWidget(const NetworkManager::ConnectionSettings::Ptr &connection)
 {
     if (connection->id().isEmpty()) {
-        m_ui->connectionName->setText(i18n("New %1 connection", connection->typeAsString(connection->connectionType())));
+        if (connection->connectionType() == NetworkManager::ConnectionSettings::WireGuard) {
+            // Wireguard requires the connection name to be 15 characters or less and not contain spaces
+            m_ui->connectionName->setText(i18n("New-%1", connection->typeAsString(connection->connectionType())));
+        } else {
+            m_ui->connectionName->setText(i18n("New %1 connection", connection->typeAsString(connection->connectionType())));
+        }
+        
     } else {
         m_ui->connectionName->setText(connection->id());
     }
