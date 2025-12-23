@@ -12,7 +12,9 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMetaObject>
+#include <QScrollArea>
 #include <QStackedLayout>
+#include <QTimer>
 #include <QVBoxLayout>
 #include <QVariant>
 
@@ -36,28 +38,41 @@ ConnectionStatusWidget::ConnectionStatusWidget(const QString &connectionUuid, QW
     disconnectedLayout->addStretch(1);
     m_stackedLayout->addWidget(disconnectedPage);
 
-    // Page 1: Details state
+    // Page 1: Details state with scroll area
     auto *detailsPage = new QWidget(this);
-    // Create horizontal layout to center the form
-    auto *detailsPageLayout = new QHBoxLayout(detailsPage);
-    detailsPageLayout->addStretch(1);
+    auto *detailsPageLayout = new QVBoxLayout(detailsPage);
+    detailsPageLayout->setContentsMargins(0, 0, 0, 0);
 
-    m_formContainer = new QWidget(this);
-    m_formContainer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    // Create scroll area
+    auto *scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea->setFrameShape(QFrame::NoFrame);
 
-    m_containerLayout = new QVBoxLayout(m_formContainer);
+    // Container for the form (inside scroll area)
+    m_formContainer = new QWidget();
+
+    // Horizontal layout to center the form
+    auto *horizontalLayout = new QHBoxLayout(m_formContainer);
+    horizontalLayout->addStretch(1);
+
+    auto *formWidget = new QWidget();
+    m_containerLayout = new QVBoxLayout(formWidget);
     m_containerLayout->setContentsMargins(0, 0, 0, 0);
 
     // Create QFormLayout for connection details
     m_detailsLayout = new QFormLayout();
-    m_detailsLayout->setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
+    m_detailsLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     m_detailsLayout->setFormAlignment(Qt::AlignLeft | Qt::AlignTop);
-    m_detailsLayout->setLabelAlignment(Qt::AlignRight);
+    m_detailsLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignTop);
+    m_detailsLayout->setVerticalSpacing(2); // Small spacing between rows
     m_containerLayout->addLayout(m_detailsLayout);
-    m_containerLayout->setAlignment(Qt::AlignTop);
 
-    detailsPageLayout->addWidget(m_formContainer);
-    detailsPageLayout->addStretch(1);
+    horizontalLayout->addWidget(formWidget);
+    horizontalLayout->addStretch(1);
+
+    scrollArea->setWidget(m_formContainer);
+    detailsPageLayout->addWidget(scrollArea);
 
     m_stackedLayout->addWidget(detailsPage);
 
@@ -146,11 +161,31 @@ void ConnectionStatusWidget::updateConnectionDetails()
             m_detailsLayout->addItem(new QSpacerItem(0, 4, QSizePolicy::Minimum, QSizePolicy::Fixed));
 
             for (const auto &[label, value] : items) {
-                // Create value label widget
+                // Create label widget with colon and top alignment
+                QLabel *labelWidget = new QLabel(label + QLatin1Char(':'), this);
+                labelWidget->setAlignment(Qt::AlignRight | Qt::AlignTop);
+                labelWidget->setWordWrap(false);
+
+                // Create value label widget for the field column
                 QLabel *valueLabel = new QLabel(value, this);
                 valueLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-                // Add row with label text and value widget
-                m_detailsLayout->addRow(label + QLatin1Char(':'), valueLabel);
+                valueLabel->setWordWrap(true);
+                valueLabel->setTextFormat(Qt::PlainText); // Prevent HTML interpretation
+                valueLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+                valueLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
+                // Add row with both widgets
+                m_detailsLayout->addRow(labelWidget, valueLabel);
+
+                // Fix height after layout calculates width to prevent spacing changes
+                QTimer::singleShot(0, this, [valueLabel]() {
+                    // Calculate proper height based on actual width
+                    int properHeight = valueLabel->heightForWidth(valueLabel->width());
+                    if (properHeight > 0) {
+                        // Use Fixed policy to prevent any expansion/shrinking
+                        valueLabel->setFixedHeight(properHeight);
+                    }
+                });
             }
         }
         m_stackedLayout->setCurrentIndex(1); // Show details form

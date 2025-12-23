@@ -34,6 +34,8 @@
 #include <KLocalizedString>
 #include <QHostAddress>
 
+#include <Solid/Device>
+
 #include <ModemManagerQt/Manager>
 #include <ModemManagerQt/Modem3Gpp>
 #include <ModemManagerQt/Modem>
@@ -253,12 +255,46 @@ getConnectionDetails(const NetworkManager::Connection::Ptr &connection, const Ne
 
     // Add device interface name to the last section if active
     if (device && isActive && !sections.isEmpty()) {
-        sections.last().details.append({i18n("Device"), device->interfaceName()});
+        sections.last().details.append({i18n("Interface"), device->interfaceName()});
     } else if (device && isActive && sections.isEmpty()) {
         // WireGuard or other types might not have created a section yet
         QList<QPair<QString, QString>> details;
-        details.append({i18n("Device"), device->interfaceName()});
+        details.append({i18n("Interface"), device->interfaceName()});
         sections.append({i18n("General"), details});
+    }
+
+    // Add human-readable device name from Solid (if available)
+    if (device && !device->udi().isEmpty() && !sections.isEmpty()) {
+        // NetworkManager provides sysfs paths, but Solid needs the full UDI with backend prefix
+        QString solidUdi = device->udi();
+        if (!solidUdi.startsWith(QLatin1String("/org/kde/solid/"))) {
+            solidUdi = QLatin1String("/org/kde/solid/udev") + solidUdi;
+        }
+        Solid::Device solidDevice(solidUdi);
+
+        if (solidDevice.isValid()) {
+            QString vendor = solidDevice.vendor();
+            QString product = solidDevice.product();
+            QString description;
+
+            // Build description from vendor and product
+            if (!vendor.isEmpty() && !product.isEmpty()) {
+                // Avoid redundancy: if product already contains vendor, use product alone
+                if (product.toLower().contains(vendor.toLower())) {
+                    description = product;
+                } else {
+                    description = vendor + QLatin1String(" ") + product;
+                }
+            } else if (!product.isEmpty()) {
+                description = product;
+            } else if (!vendor.isEmpty()) {
+                description = vendor;
+            }
+
+            if (!description.isEmpty()) {
+                sections.last().details.append({i18n("Network Adapter"), description});
+            }
+        }
     }
 
     // Get IPv4 Address and related nameservers + IPv4 default gateway
