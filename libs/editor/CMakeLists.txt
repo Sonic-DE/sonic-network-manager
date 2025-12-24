@@ -42,8 +42,6 @@ set(plasmanm_editor_SRCS
     settings/vlanwidget.h
     settings/wificonnectionwidget.cpp
     settings/wificonnectionwidget.h
-    settings/wifisecurity.cpp
-    settings/wifisecurity.h
     settings/wiredconnectionwidget.cpp
     settings/wiredconnectionwidget.h
     settings/wiredsecurity.cpp
@@ -117,7 +115,6 @@ ki18n_wrap_ui(plasmanm_editor_SRCS
     settings/ui/vlan.ui
     settings/ui/team.ui
     settings/ui/wificonnectionwidget.ui
-    settings/ui/wifisecurity.ui
     settings/ui/wiredconnectionwidget.ui
     settings/ui/wiredsecurity.ui
     settings/ui/wireguardinterfacewidget.ui

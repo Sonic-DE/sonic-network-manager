@@ -10,7 +10,20 @@
     <height>334</height>
    </rect>
   </property>
-  <layout class="QFormLayout" name="formLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <layout class="QFormLayout" name="formLayout">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::ExpandingFieldsGrow</enum>
+       </property>
    <item row="0" column="0">
     <widget class="QLabel" name="SSIDLabel">
      <property name="text">
@@ -308,17 +321,655 @@ a Wi-Fi network on the specified channel</string>
     </widget>
    </item>
    <item row="9" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
+      <widget class="QLabel" name="securityLabel">
+       <property name="text">
+        <string>Security:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>securityCombo</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="KComboBox" name="securityCombo">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <item>
+        <property name="text">
+         <string comment="no security">None</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>WEP key 40/128 bits (Hex or ASCII)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>WEP key 128 bits</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>LEAP</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Dynamic WEP (802.1x)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>WPA/WPA2 Personal</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>WPA/WPA2 Enterprise</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>WPA3 Personal</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>WPA3 Enterprise 192-bit</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Enhanced Open (OWE)</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="wepKeyLabel">
+       <property name="text">
+        <string>Key:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>wepKey</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="1">
+      <widget class="PasswordField" name="wepKey">
+       <property name="maxLength">
+        <number>26</number>
+       </property>
+       <property name="passwordModeEnabled" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="0">
+      <widget class="QLabel" name="wepIndexLabel">
+       <property name="text">
+        <string>WEP index:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>wepIndex</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="1">
+      <widget class="KComboBox" name="wepIndex">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <item>
+        <property name="text">
+         <string>1 (default)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>2</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>3</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>4</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="12" column="0">
+      <widget class="QLabel" name="wepAuthLabel">
+       <property name="text">
+        <string>Authentication:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>wepAuth</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="1">
+      <widget class="KComboBox" name="wepAuth">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <item>
+        <property name="text">
+         <string>Open System</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Shared Key</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="13" column="0">
+      <widget class="QLabel" name="leapUsernameLabel">
+       <property name="text">
+        <string>Username:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>leapUsername</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="1">
+      <widget class="KLineEdit" name="leapUsername"/>
+     </item>
+     <item row="14" column="0">
+      <widget class="QLabel" name="leapPasswordLabel">
+       <property name="text">
+        <string>Password:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>leapPassword</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="14" column="1">
+      <widget class="PasswordField" name="leapPassword">
+       <property name="passwordModeEnabled" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="0">
+      <widget class="QLabel" name="pskLabel">
+       <property name="text">
+        <string>Password:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>psk</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="1">
+      <widget class="PasswordField" name="psk">
+       <property name="passwordModeEnabled" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <!-- 802.1x Authentication Method -->
+     <item row="16" column="0">
+      <widget class="QLabel" name="auth8021xLabel">
+       <property name="text">
+        <string>Authentication:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>auth8021x</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="16" column="1">
+      <widget class="KComboBox" name="auth8021x">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>MD5</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>TLS</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>LEAP</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>PWD</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>FAST</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tunneled TLS (TTLS)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Protected EAP (PEAP)</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <!-- 802.1x Username/Identity -->
+     <item row="17" column="0">
+      <widget class="QLabel" name="username8021xLabel">
+       <property name="text">
+        <string>Username:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>username8021x</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="17" column="1">
+      <widget class="KLineEdit" name="username8021x"/>
+     </item>
+     <!-- 802.1x Password -->
+     <item row="18" column="0">
+      <widget class="QLabel" name="password8021xLabel">
+       <property name="text">
+        <string>Password:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>password8021x</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="18" column="1">
+      <widget class="PasswordField" name="password8021x">
+       <property name="passwordModeEnabled" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <!-- 802.1x Domain -->
+     <item row="19" column="0">
+      <widget class="QLabel" name="domain8021xLabel">
+       <property name="text">
+        <string>Domain:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>domain8021x</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="19" column="1">
+      <widget class="KLineEdit" name="domain8021x"/>
+     </item>
+     <!-- 802.1x Anonymous Identity -->
+     <item row="20" column="0">
+      <widget class="QLabel" name="anonymousIdentity8021xLabel">
+       <property name="text">
+        <string>Anonymous identity:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>anonymousIdentity8021x</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="20" column="1">
+      <widget class="KLineEdit" name="anonymousIdentity8021x"/>
+     </item>
+     <!-- 802.1x User Certificate -->
+     <item row="21" column="0">
+      <widget class="QLabel" name="userCert8021xLabel">
+       <property name="text">
+        <string>User certificate:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>userCert8021x</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="21" column="1">
+      <widget class="KUrlRequester" name="userCert8021x">
+       <property name="nameFilters">
+        <StringList>
+         <string notr="true">*.der *.pem *.crt *.cer</string>
+        </StringList>
+       </property>
+      </widget>
+     </item>
+     <!-- 802.1x CA Certificate -->
+     <item row="22" column="0">
+      <widget class="QLabel" name="caCert8021xLabel">
+       <property name="text">
+        <string>CA certificate:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>caCert8021x</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="22" column="1">
+      <widget class="KUrlRequester" name="caCert8021x">
+       <property name="nameFilters">
+        <StringList>
+         <string notr="true">*.der *.pem *.crt *.cer</string>
+        </StringList>
+       </property>
+      </widget>
+     </item>
+     <!-- 802.1x Subject Match -->
+     <item row="23" column="0">
+      <widget class="QLabel" name="subjectMatch8021xLabel">
+       <property name="text">
+        <string>Subject match:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>subjectMatch8021x</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="23" column="1">
+      <widget class="QLineEdit" name="subjectMatch8021x"/>
+     </item>
+     <!-- 802.1x Alternative Subject Matches -->
+     <item row="24" column="0">
+      <widget class="QLabel" name="altSubjectMatches8021xLabel">
+       <property name="text">
+        <string>Alternative subject matches:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>altSubjectMatches8021x</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="24" column="1">
+      <layout class="QHBoxLayout" name="altSubjectMatches8021xLayout">
+       <item>
+        <widget class="QLineEdit" name="altSubjectMatches8021x"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnAltSubjectMatches8021x">
+         <property name="text">
+          <string>…</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <!-- 802.1x Connect to Servers -->
+     <item row="25" column="0">
+      <widget class="QLabel" name="connectToServers8021xLabel">
+       <property name="text">
+        <string>Connect to these servers:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>connectToServers8021x</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="25" column="1">
+      <layout class="QHBoxLayout" name="connectToServers8021xLayout">
+       <item>
+        <widget class="QLineEdit" name="connectToServers8021x"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnConnectToServers8021x">
+         <property name="text">
+          <string>…</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <!-- 802.1x Private Key -->
+     <item row="26" column="0">
+      <widget class="QLabel" name="privateKey8021xLabel">
+       <property name="text">
+        <string>Private key:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>privateKey8021x</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="26" column="1">
+      <widget class="KUrlRequester" name="privateKey8021x">
+       <property name="nameFilters">
+        <StringList>
+         <string notr="true">*.der *.pem *.p12 *.key</string>
+        </StringList>
+       </property>
+      </widget>
+     </item>
+     <!-- 802.1x Private Key Password -->
+     <item row="27" column="0">
+      <widget class="QLabel" name="privateKeyPassword8021xLabel">
+       <property name="text">
+        <string>Private key password:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>privateKeyPassword8021x</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="27" column="1">
+      <widget class="PasswordField" name="privateKeyPassword8021x">
+       <property name="passwordModeEnabled" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <!-- 802.1x PAC Provisioning -->
+     <item row="28" column="0">
+      <widget class="QCheckBox" name="pacProvisioning8021x">
+       <property name="text">
+        <string>Automatic PAC provisioning</string>
+       </property>
+      </widget>
+     </item>
+     <item row="28" column="1">
+      <widget class="KComboBox" name="pacMethod8021x">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <item>
+        <property name="text">
+         <string>Anonymous</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Authenticated</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Both</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <!-- 802.1x PAC File -->
+     <item row="29" column="0">
+      <widget class="QLabel" name="pacFile8021xLabel">
+       <property name="text">
+        <string>PAC file:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>pacFile8021x</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="29" column="1">
+      <widget class="KUrlRequester" name="pacFile8021x">
+       <property name="nameFilters">
+        <StringList>
+         <string notr="true">*.pac</string>
+        </StringList>
+       </property>
+      </widget>
+     </item>
+     <!-- 802.1x Inner Authentication -->
+     <item row="30" column="0">
+      <widget class="QLabel" name="innerAuth8021xLabel">
+       <property name="text">
+        <string>Inner authentication:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>innerAuth8021x</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="30" column="1">
+      <widget class="KComboBox" name="innerAuth8021x">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <!-- 802.1x PEAP Version -->
+     <item row="31" column="0">
+      <widget class="QLabel" name="peapVersion8021xLabel">
+       <property name="text">
+        <string>PEAP version:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>peapVersion8021x</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="31" column="1">
+      <widget class="KComboBox" name="peapVersion8021x">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <item>
+        <property name="text">
+         <string comment="PEAP version">Automatic</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Version 0</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Version 1</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+      </layout>
+     </widget>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -348,6 +999,16 @@ a Wi-Fi network on the specified channel</string>
    <extends>QComboBox</extends>
    <header>bssidcombobox.h</header>
   </customwidget>
+  <customwidget>
+   <class>PasswordField</class>
+   <extends>QLineEdit</extends>
+   <header>passwordfield.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KUrlRequester</class>
+   <extends>QWidget</extends>
+   <header>kurlrequester.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>SSIDCombo</tabstop>
@@ -360,7 +1021,21 @@ a Wi-Fi network on the specified channel</string>
   <tabstop>btnRandomMacAddr</tabstop>
   <tabstop>mtu</tabstop>
   <tabstop>hiddenNetwork</tabstop>
+  <tabstop>securityCombo</tabstop>
+  <tabstop>wepKey</tabstop>
+  <tabstop>wepIndex</tabstop>
+  <tabstop>wepAuth</tabstop>
+  <tabstop>leapUsername</tabstop>
+  <tabstop>leapPassword</tabstop>
+  <tabstop>psk</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pacProvisioning8021x</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pacMethod8021x</receiver>
+   <slot>setEnabled(bool)</slot>
+  </connection>
+ </connections>
 </ui>
