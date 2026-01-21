@@ -3,13 +3,13 @@
 #
 # Elkana Bardugo <ttv200@gmail.com>, 2016.
 # Elkana Bardugo <ttv200@gmail.com>, 2017. #zanata
-# SPDX-FileCopyrightText: 2023, 2024, 2025, 2026 Yaron Shahrabani <sh.yaron@gmail.com>
+# SPDX-FileCopyrightText: 2023, 2024, 2025 Yaron Shahrabani <sh.yaron@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: plasmanetworkmanagement-libs\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-28 02:43+0000\n"
-"PO-Revision-Date: 2026-04-21 14:08+0300\n"
+"POT-Creation-Date: 2026-01-21 00:47+0000\n"
+"PO-Revision-Date: 2026-01-04 08:29+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Lokalize 25.12.3\n"
+"X-Generator: Lokalize 25.12.0\n"
 
 #: editor/connectiondetails.cpp:92
 #, kde-format
@@ -267,7 +267,7 @@ msgstr "שרת שמות משני ב־IPv6"
 msgid "IPv6"
 msgstr "IPv6"
 
-#: editor/connectioneditorbase.cpp:203
+#: editor/connectioneditorbase.cpp:204
 #, kde-format
 msgctxt "@title:tab Connection status and details"
 msgid "Status"
@@ -1615,7 +1615,7 @@ msgstr "תשתית"
 #: editor/settings/ui/wificonnectionwidget.ui:68
 #, kde-format
 msgid "Ad-hoc"
-msgstr "נקודה לנקודה"
+msgstr "קצה לקצה"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, modeComboBox)
 #: editor/settings/ui/wificonnectionwidget.ui:73
@@ -1689,8 +1689,8 @@ msgid ""
 "(or create for Ad-Hoc networks)\n"
 "a Wi-Fi network on the specified channel"
 msgstr ""
-"ערוץ אלחוטי לשימוש לחיבור הרשת האלחוטית. ההתקן יצטרף (או יצור רשתות נקודה "
-"לנקודה)\n"
+"ערוץ אלחוטי לשימוש לחיבור הרשת האלחוטית. ההתקן יצטרף (או יצור רשתות קצה "
+"לקצה)\n"
 "לרשת אלחוטית בערוץ שצוין"
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
@@ -1765,14 +1765,16 @@ msgstr "WEP דינמי (802.1x)"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:65
-#, kde-format
-msgid "WPA/WPA2 Personal"
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Personal"
+msgid "WPA2/WPA3 Personal"
 msgstr "WPA/WPA2 אישי"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:70
-#, kde-format
-msgid "WPA/WPA2 Enterprise"
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Enterprise"
+msgid "WPA2/WPA3 Enterprise"
 msgstr "WPA/WPA2 ארגוני"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
@@ -2253,7 +2255,7 @@ msgstr ""
 "רשות.\n"
 "            הפרש בשניות, בין 1 ל־65535 כולל, שמציין כל\n"
 "            כמה זמן לשלוח חבילה מאומתת ריקה לעמית\n"
-"            כדי לשמור על מיפוי תקף קבוע של פיענוח כתובות\n"
+"            כדי לשמור על מיפוי תקף קבוע של פענוח כתובות\n"
 "            רשת (NAT). למשל, אם הממשק בקושי שולח תעבורה\n"
 "            אבל עשוי מתישהו לקבל תעבורה מעמית, והוא מאחורי\n"
 "            כ־NAT, הממשק יכול להפיק תועלת מכך שיהיה הפרש\n"

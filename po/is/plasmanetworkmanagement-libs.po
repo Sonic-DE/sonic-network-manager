@@ -2,21 +2,20 @@
 # This file is distributed under the same license as the plasma-nm package.
 #
 # SPDX-FileCopyrightText: 2024, 2025 Gummi <gudmundure@gmail.com>
-# SPDX-FileCopyrightText: 2026 Sveinn í Felli <sv1@fellsnet.is>
 msgid ""
 msgstr ""
 "Project-Id-Version: plasma-nm\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-28 02:43+0000\n"
-"PO-Revision-Date: 2026-02-16 15:24+0000\n"
-"Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
-"Language-Team: Icelandic\n"
+"POT-Creation-Date: 2026-01-21 00:47+0000\n"
+"PO-Revision-Date: 2025-09-17 12:38+0000\n"
+"Last-Translator: Gummi <gudmundure@gmail.com>\n"
+"Language-Team: Icelandic <kde-i18n-doc@kde.org>\n"
 "Language: is\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 25.04.3\n"
 
 #: editor/connectiondetails.cpp:92
 #, kde-format
@@ -48,7 +47,9 @@ msgid "Signal Strength"
 msgstr "Styrkur merkis"
 
 #: editor/connectiondetails.cpp:136
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "WiFi signal strength percentage indicator"
+#| msgid "%1%"
 msgctxt "Wi-Fi signal strength percentage indicator"
 msgid "%1%"
 msgstr "%1%"
@@ -206,7 +207,9 @@ msgid "Device"
 msgstr "Tæki"
 
 #: editor/connectiondetails.cpp:316
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "@title:tab General configuration"
+#| msgid "General"
 msgid "General"
 msgstr "Almennt"
 
@@ -265,11 +268,11 @@ msgstr "IPv6 aukanafnþjónn"
 msgid "IPv6"
 msgstr "IPv6"
 
-#: editor/connectioneditorbase.cpp:203
+#: editor/connectioneditorbase.cpp:204
 #, kde-format
 msgctxt "@title:tab Connection status and details"
 msgid "Status"
-msgstr "Staða"
+msgstr ""
 
 #: editor/connectioneditorbase.cpp:209
 #, kde-format
@@ -437,7 +440,9 @@ msgid "PAN (personal area network)"
 msgstr "PAN (personal area network)"
 
 #: editor/settings/connectionstatuswidget.cpp:33
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "There is no active network connection"
+#| msgid "Disconnected"
 msgid "Disconnected"
 msgstr "Aftengt"
 
@@ -1773,14 +1778,16 @@ msgstr "Dynamic WEP (802.1x)"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:65
-#, kde-format
-msgid "WPA/WPA2 Personal"
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Personal"
+msgid "WPA2/WPA3 Personal"
 msgstr "WPA/WPA2 Personal"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:70
-#, kde-format
-msgid "WPA/WPA2 Enterprise"
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Enterprise"
+msgid "WPA2/WPA3 Enterprise"
 msgstr "WPA/WPA2 Enterprise"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)

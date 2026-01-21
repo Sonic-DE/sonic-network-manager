@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-28 02:43+0000\n"
-"PO-Revision-Date: 2026-01-28 21:20+0900\n"
+"POT-Creation-Date: 2026-01-21 00:47+0000\n"
+"PO-Revision-Date: 2026-01-05 01:13+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -31,7 +31,7 @@ msgstr "連線速度"
 #: editor/connectiondetails.cpp:288 editor/connectiondetails.cpp:302
 #, kde-format
 msgid "MAC Address"
-msgstr "MAC 位址"
+msgstr "硬體位址"
 
 #: editor/connectiondetails.cpp:97 editor/settings/bondwidget.cpp:36
 #: editor/settings/bridgewidget.cpp:33 editor/settings/teamwidget.cpp:36
@@ -267,7 +267,7 @@ msgstr "IPv6 第二域名伺服器"
 msgid "IPv6"
 msgstr "IPv6"
 
-#: editor/connectioneditorbase.cpp:203
+#: editor/connectioneditorbase.cpp:204
 #, kde-format
 msgctxt "@title:tab Connection status and details"
 msgid "Status"
@@ -1685,7 +1685,7 @@ msgstr ""
 #: editor/settings/ui/wiredconnectionwidget.ui:47
 #, kde-format
 msgid "Cloned MAC address:"
-msgstr "複製硬體 MAC 位址："
+msgstr "複製硬體 Mac 位址："
 
 #. i18n: ectx: property (text), widget (QPushButton, btnRandomMacAddr)
 #: editor/settings/ui/wificonnectionwidget.ui:240
@@ -1752,14 +1752,16 @@ msgstr "動態 WEP（802.1x）"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:65
-#, kde-format
-msgid "WPA/WPA2 Personal"
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Personal"
+msgid "WPA2/WPA3 Personal"
 msgstr "WPA/WPA2 Personal"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:70
-#, kde-format
-msgid "WPA/WPA2 Enterprise"
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Enterprise"
+msgid "WPA2/WPA3 Enterprise"
 msgstr "WPA/WPA2 Enterprise"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)

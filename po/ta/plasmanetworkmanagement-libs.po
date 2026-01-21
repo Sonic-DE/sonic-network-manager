@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: plasma-nm\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-28 02:43+0000\n"
-"PO-Revision-Date: 2026-01-31 18:33+0530\n"
+"POT-Creation-Date: 2026-01-21 00:47+0000\n"
+"PO-Revision-Date: 2026-01-04 15:31+0530\n"
 "Last-Translator: Kishore G <kishore96@gmail.com>\n"
 "Language-Team: Tamil <kde-l10n-ta@kde.org>\n"
 "Language: ta\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 25.12.1\n"
+"X-Generator: Lokalize 25.12.0\n"
 
 #: editor/connectiondetails.cpp:92
 #, kde-format
@@ -264,7 +264,7 @@ msgstr ""
 msgid "IPv6"
 msgstr "IPv6"
 
-#: editor/connectioneditorbase.cpp:203
+#: editor/connectioneditorbase.cpp:204
 #, kde-format
 msgctxt "@title:tab Connection status and details"
 msgid "Status"
@@ -436,7 +436,9 @@ msgid "PAN (personal area network)"
 msgstr "PAN (personal area network)"
 
 #: editor/settings/connectionstatuswidget.cpp:33
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "There is no active network connection"
+#| msgid "Disconnected"
 msgid "Disconnected"
 msgstr "இணைக்கப்படவில்லை"
 
@@ -1723,13 +1725,13 @@ msgstr ""
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:65
 #, kde-format
-msgid "WPA/WPA2 Personal"
+msgid "WPA2/WPA3 Personal"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:70
 #, kde-format
-msgid "WPA/WPA2 Enterprise"
+msgid "WPA2/WPA3 Enterprise"
 msgstr ""
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
@@ -1790,7 +1792,7 @@ msgstr "4"
 #: editor/settings/ui/wifisecurity.ui:170
 #, kde-format
 msgid "Open System"
-msgstr "பாதுகாப்பில்லாதது"
+msgstr ""
 
 #. i18n: ectx: property (text), item, widget (KComboBox, wepAuth)
 #: editor/settings/ui/wifisecurity.ui:175
@@ -2933,17 +2935,17 @@ msgstr "ஒருபோதும் பயன்படுத்தவில்�
 #: editor/vpnuiplugin.cpp:42
 #, kde-format
 msgid "No VPN plugin found for type %1"
-msgstr "%1 வகையான VPN செருகுநிரல் இல்லை"
+msgstr ""
 
 #: editor/vpnuiplugin.cpp:99
 #, kde-format
 msgid "Importing this type of VPN is not implemented"
-msgstr "இவ்வகையான VPN இணைப்பை இறக்குமதி செய்யும் அம்சம் நிரலாக்கபடவில்லை"
+msgstr ""
 
 #: editor/vpnuiplugin.cpp:123
 #, kde-format
 msgid "Not implemented"
-msgstr "நிரலாக்கப்படவில்லை"
+msgstr ""
 
 #: editor/widgets/advancedpermissionswidget.cpp:86
 #, kde-format
@@ -2955,7 +2957,7 @@ msgstr ""
 #, kde-format
 msgctxt "@info:tooltip real user name is not available"
 msgid "Not Available"
-msgstr "கிடைக்கவில்லை"
+msgstr ""
 
 #: editor/widgets/bssidcombobox.cpp:122
 #, kde-format
@@ -3096,7 +3098,7 @@ msgstr ""
 #, kde-format
 msgctxt "Mobile Connection Wizard"
 msgid "Choose your Provider's Country"
-msgstr "வழங்குநரின் நாட்டைத் தேர்ந்தெடுக்கவும்"
+msgstr ""
 
 #: editor/widgets/mobileconnectionwizard.cpp:403
 #, kde-format
@@ -3114,19 +3116,19 @@ msgstr "இப்பட்டியலில் என் நாடு இல்
 #, kde-format
 msgctxt "Mobile Connection Wizard"
 msgid "Choose your Provider"
-msgstr "வழங்குநரைத் தேர்ந்தெடுக்கவும்"
+msgstr ""
 
 #: editor/widgets/mobileconnectionwizard.cpp:426
 #, kde-format
 msgctxt "Mobile Connection Wizard"
 msgid "Select your provider from a &list:"
-msgstr "பட்டியலிலிருந்து வழுங்குநரைத் தேர்ந்தெடுக்கவும்:"
+msgstr ""
 
 #: editor/widgets/mobileconnectionwizard.cpp:435
 #, kde-format
 msgctxt "Mobile Connection Wizard"
 msgid "I cannot find my provider and I wish to enter it &manually:"
-msgstr "வழங்குநரைக் கைமுறையாக உள்ளிட விரும்புகிறேன்:"
+msgstr ""
 
 #: editor/widgets/mobileconnectionwizard.cpp:477
 #, kde-format
@@ -3173,7 +3175,7 @@ msgstr ""
 #, kde-format
 msgctxt "Mobile Connection Wizard"
 msgid "Your Provider:"
-msgstr "வழங்குநர்:"
+msgstr ""
 
 #: editor/widgets/mobileconnectionwizard.cpp:552
 #, kde-format
@@ -3184,27 +3186,27 @@ msgstr ""
 #: editor/widgets/passwordfield.cpp:32
 #, kde-format
 msgid "Change the visibility of the password"
-msgstr "கடவுச்சொல்லின் தெரிநிலையை மாற்று"
+msgstr ""
 
 #: editor/widgets/passwordfield.cpp:41
 #, kde-format
 msgid "Store password for this user only (encrypted)"
-msgstr "இப்பயனர் மட்டும் பார்க்கும்படி சேமி (மறையாக்கம் செய்து)"
+msgstr ""
 
 #: editor/widgets/passwordfield.cpp:43
 #, kde-format
 msgid "Store password for all users (not encrypted)"
-msgstr "அனைத்து பயனர்களும் பார்க்கும்படி சேமி (மறையாக்கம் செய்யாமல்)"
+msgstr ""
 
 #: editor/widgets/passwordfield.cpp:45 editor/widgets/passwordfield.cpp:91
 #, kde-format
 msgid "Ask for this password every time"
-msgstr "ஒவ்வொரு முறையும் கடவுச்சொல்லைக் கோரு"
+msgstr ""
 
 #: editor/widgets/passwordfield.cpp:106
 #, kde-format
 msgid "This password is not required"
-msgstr "கடவுச்சொல் தேவையில்லை"
+msgstr ""
 
 #: editor/widgets/ssidcombobox.cpp:131
 #, kde-format
@@ -3482,23 +3484,27 @@ msgid "Import a saved configuration file"
 msgstr "சேமித்துள்ள அமைப்புக்கோப்பை ஏற்று"
 
 #: models/networkmodelitem.cpp:339
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "description of unavailable network interface state"
+#| msgid "Unavailable"
 msgctxt "@title:column header for list of available network connections"
 msgid "Available"
-msgstr "கிடைக்கிறது"
+msgstr "பயன்படுத்த முடியாது"
 
 #: models/networkmodelitem.cpp:345
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "infiniband transport mode"
+#| msgid "Connected"
 msgctxt "@title:column header for list of connected network connections"
 msgid "Connected"
-msgstr "இணைந்துள்ளது"
+msgstr "Connected"
 
 #: models/networkmodelitem.cpp:347
 #, kde-format
 msgctxt ""
 "@title:column header for list of previously connected network connections"
 msgid "Previously Used, Unavailable"
-msgstr "முன்பு பயன்படுத்தியது, ஆனால் இப்போது கிடைக்காதது"
+msgstr ""
 
 #: networkstatus.cpp:126
 #, kde-format
@@ -3572,10 +3578,11 @@ msgid "Connected to %1"
 msgstr "%1 என்பதற்கு இணைந்துள்ளது"
 
 #: networkstatus.cpp:256
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "NetworkManager not running"
 msgctxt "@info:status"
 msgid "NetworkManager service is not running"
-msgstr "NetworkManager பின்னணி சேவை இயங்கவில்லை"
+msgstr "NetworkManager இயங்கவில்லை"
 
 #: networkstatus.cpp:261
 #, kde-format

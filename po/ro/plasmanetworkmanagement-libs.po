@@ -1,13 +1,13 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
-# SPDX-FileCopyrightText: 2013, 2014, 2020, 2021, 2022, 2025, 2026 Sergiu Bivol <sergiu@cip.md>
+# SPDX-FileCopyrightText: 2013, 2014, 2020, 2021, 2022, 2025 Sergiu Bivol <sergiu@cip.md>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-28 02:43+0000\n"
-"PO-Revision-Date: 2026-01-28 21:50+0000\n"
+"POT-Creation-Date: 2026-01-21 00:47+0000\n"
+"PO-Revision-Date: 2025-10-19 10:46+0100\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
 "Language: ro\n"
@@ -38,12 +38,14 @@ msgid "Ethernet"
 msgstr "Ethernet"
 
 #: editor/connectiondetails.cpp:132
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Access point (SSID)"
 msgid "Access Point (SSID)"
 msgstr "Punct de acces (SSID)"
 
 #: editor/connectiondetails.cpp:136
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Signal strength"
 msgid "Signal Strength"
 msgstr "Intensitate semnal"
 
@@ -51,33 +53,37 @@ msgstr "Intensitate semnal"
 #, kde-format
 msgctxt "Wi-Fi signal strength percentage indicator"
 msgid "%1%"
-msgstr "%1%"
+msgstr ""
 
 #: editor/connectiondetails.cpp:141 editor/connectiondetails.cpp:151
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Security type"
 msgid "Security Type"
 msgstr "Tip de securitate"
 
 #: editor/connectiondetails.cpp:156
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Connection speed"
 msgid "Connection Speed"
 msgstr "Viteză conexiune"
 
 #: editor/connectiondetails.cpp:163 editor/connectiondetails.cpp:165
 #, kde-format
 msgid "Frequency"
-msgstr "Frecvență"
+msgstr ""
 
 #: editor/connectiondetails.cpp:163
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Channel:"
 msgctxt "Frequency (Channel)"
 msgid "%1 (Channel %2)"
-msgstr "%1 (canal %2)"
+msgstr "Canal:"
 
 #: editor/connectiondetails.cpp:167
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "BSSID:"
 msgid "BSSID"
-msgstr "BSSID"
+msgstr "BSSID:"
 
 #: editor/connectiondetails.cpp:172 editor/connectioneditorbase.cpp:222
 #: editor/settings/bridgewidget.cpp:39 editor/settings/teamwidget.cpp:42
@@ -112,7 +118,8 @@ msgid "Mobile Broadband"
 msgstr "Bandă largă mobilă"
 
 #: editor/connectiondetails.cpp:214 editor/connectiondetails.cpp:235
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "VPN plugin"
 msgid "VPN Plugin"
 msgstr "Extensie VPN"
 
@@ -206,7 +213,9 @@ msgid "Device"
 msgstr "Dispozitiv"
 
 #: editor/connectiondetails.cpp:316
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "@title:tab General configuration"
+#| msgid "General"
 msgid "General"
 msgstr "Generale"
 
@@ -221,14 +230,16 @@ msgid "IPv4 Default Gateway"
 msgstr "Poartă implicită IPv4"
 
 #: editor/connectiondetails.cpp:338
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "IPv4 Nameserver"
 msgid "IPv4 Primary Nameserver"
-msgstr "Server de nume primar IPv4"
+msgstr "Server de nume IPv4"
 
 #: editor/connectiondetails.cpp:342
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "IPv4 Nameserver"
 msgid "IPv4 Secondary Nameserver"
-msgstr "Server de nume secundar IPv4"
+msgstr "Server de nume IPv4"
 
 #: editor/connectiondetails.cpp:347 editor/connectioneditorbase.cpp:298
 #, kde-format
@@ -241,35 +252,39 @@ msgid "IPv6 Address"
 msgstr "Adresă IPv6"
 
 #: editor/connectiondetails.cpp:359
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "IPv6 Address"
 msgid "IPv6 ULA Address"
-msgstr "Adresă ULA IPv6"
+msgstr "Adresă IPv6"
 
 #: editor/connectiondetails.cpp:365
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "IPv4 Default Gateway"
 msgid "IPv6 Default Gateway"
-msgstr "Poartă implicită IPv6"
+msgstr "Poartă implicită IPv4"
 
 #: editor/connectiondetails.cpp:372
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "IPv6 Nameserver"
 msgid "IPv6 Primary Nameserver"
-msgstr "Server de nume primar IPv6"
+msgstr "Server de nume IPv6"
 
 #: editor/connectiondetails.cpp:376
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "IPv6 Nameserver"
 msgid "IPv6 Secondary Nameserver"
-msgstr "Server de nume secundar IPv6"
+msgstr "Server de nume IPv6"
 
 #: editor/connectiondetails.cpp:381 editor/connectioneditorbase.cpp:316
 #, kde-format
 msgid "IPv6"
 msgstr "IPv6"
 
-#: editor/connectioneditorbase.cpp:203
+#: editor/connectioneditorbase.cpp:204
 #, kde-format
 msgctxt "@title:tab Connection status and details"
 msgid "Status"
-msgstr "Stare"
+msgstr ""
 
 #: editor/connectioneditorbase.cpp:209
 #, kde-format
@@ -437,7 +452,9 @@ msgid "PAN (personal area network)"
 msgstr "PAN (personal area network)"
 
 #: editor/settings/connectionstatuswidget.cpp:33
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "There is no active network connection"
+#| msgid "Disconnected"
 msgid "Disconnected"
 msgstr "Deconectat"
 
@@ -916,13 +933,13 @@ msgstr " ms"
 #: editor/settings/ui/bond.ui:192
 #, kde-format
 msgid "Link up delay:"
-msgstr "Întârzie activarea legăturii:"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_7)
 #: editor/settings/ui/bond.ui:212
 #, kde-format
 msgid "Link down delay:"
-msgstr "Întârzie dezactivarea legăturii:"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_8)
 #: editor/settings/ui/bond.ui:239
@@ -1683,7 +1700,7 @@ msgstr "Aleatoare…"
 #: editor/settings/ui/wificonnectionwidget.ui:303
 #, kde-format
 msgid "Mark this if you want to create a connection for a hidden network"
-msgstr "Bifați aici dacă doriți să creați o conexiune pentru o rețea ascunsă"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_4)
 #: editor/settings/ui/wificonnectionwidget.ui:290
@@ -1736,14 +1753,16 @@ msgstr "WEP Dinamic (802.1x)"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:65
-#, kde-format
-msgid "WPA/WPA2 Personal"
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Personal"
+msgid "WPA2/WPA3 Personal"
 msgstr "WPA/WPA2 Personal"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:70
-#, kde-format
-msgid "WPA/WPA2 Enterprise"
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Enterprise"
+msgid "WPA2/WPA3 Enterprise"
 msgstr "WPA/WPA2 Enterprise"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
@@ -1754,9 +1773,10 @@ msgstr "WPA3 Personal"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:80
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Enterprise"
 msgid "WPA3 Enterprise 192-bit"
-msgstr "WPA3 Enterprise cu 192 de biți"
+msgstr "WPA/WPA2 Enterprise"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:85
@@ -2200,7 +2220,7 @@ msgstr "%1 (%2 MHz)"
 #, kde-format
 msgctxt "@title: window wireguard peers properties"
 msgid "WireGuard peers properties"
-msgstr "Proprietățile partenerilor WireGuard"
+msgstr ""
 
 #: editor/uiutils.cpp:128
 #, kde-format
@@ -2266,7 +2286,7 @@ msgstr "Bandă largă mobilă"
 #, kde-format
 msgctxt "title of the interface widget in nm's popup"
 msgid "Loopback"
-msgstr "Buclă retur"
+msgstr ""
 
 #: editor/uiutils.cpp:174
 #, kde-format
@@ -2302,7 +2322,7 @@ msgstr "VPN WireGuard"
 #: editor/uiutils.cpp:237
 #, kde-format
 msgid "Loopback"
-msgstr "Buclă retur"
+msgstr ""
 
 #: editor/uiutils.cpp:240
 #, kde-format
@@ -2345,9 +2365,10 @@ msgid "Bridge (%1)"
 msgstr "Punte (%1)"
 
 #: editor/uiutils.cpp:273
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Wired Interface (%1)"
 msgid "Loopback Interface (%1)"
-msgstr "Interfață de buclă retur (%1)"
+msgstr "Interfață cu fir (%1)"
 
 #: editor/uiutils.cpp:286
 #, kde-format
@@ -2594,7 +2615,7 @@ msgstr "%1 Gbiți/s"
 #, kde-format
 msgctxt "Wireless connection frequency"
 msgid "%1 GHz"
-msgstr "%1 GHz"
+msgstr ""
 
 #: editor/uiutils.cpp:468
 #, kde-format
@@ -2630,7 +2651,7 @@ msgstr "Oricare"
 #, kde-format
 msgctxt "Cellular access technology"
 msgid "5G NR"
-msgstr "5G NR"
+msgstr ""
 
 #: editor/uiutils.cpp:490
 #, kde-format
@@ -2708,7 +2729,7 @@ msgstr "GPRS"
 #, kde-format
 msgctxt "Cellular access technology"
 msgid "Compact GSM"
-msgstr "Compact GSM"
+msgstr ""
 
 #: editor/uiutils.cpp:516
 #, kde-format
@@ -2962,7 +2983,7 @@ msgstr ""
 #: editor/vpnuiplugin.cpp:123
 #, kde-format
 msgid "Not implemented"
-msgstr "Neimplementat"
+msgstr ""
 
 #: editor/widgets/advancedpermissionswidget.cpp:86
 #, kde-format
@@ -3357,22 +3378,22 @@ msgstr "&Elimină"
 #: handler.cpp:140
 #, kde-format
 msgid "Plasma is missing support for '%1' VPN connections."
-msgstr "Plasma nu are suport pentru conexiuni VPN „%1”."
+msgstr ""
 
 #: handler.cpp:143
 #, kde-format
 msgid "Report Bug"
-msgstr "Raportează defect"
+msgstr ""
 
 #: handler.cpp:166
 #, kde-format
 msgid "NetworkManager is missing support for '%1' VPN connections."
-msgstr "NetworkManager nu are suport pentru conexiuni VPN „%1”."
+msgstr ""
 
 #: handler.cpp:169
 #, kde-format
 msgid "Install"
-msgstr "Instalează"
+msgstr ""
 
 #: handler.cpp:215
 #, kde-format
@@ -3522,23 +3543,27 @@ msgid "Import a saved configuration file"
 msgstr "Importă fișier cu configurări salvat"
 
 #: models/networkmodelitem.cpp:339
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "@info:tooltip real user name is not available"
+#| msgid "Not Available"
 msgctxt "@title:column header for list of available network connections"
 msgid "Available"
-msgstr "Disponibile"
+msgstr "Indisponibil"
 
 #: models/networkmodelitem.cpp:345
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "infiniband transport mode"
+#| msgid "Connected"
 msgctxt "@title:column header for list of connected network connections"
 msgid "Connected"
-msgstr "Conectate"
+msgstr "Conectat"
 
 #: models/networkmodelitem.cpp:347
 #, kde-format
 msgctxt ""
 "@title:column header for list of previously connected network connections"
 msgid "Previously Used, Unavailable"
-msgstr "Folosită anterior, indisponibilă"
+msgstr ""
 
 #: networkstatus.cpp:126
 #, kde-format
@@ -3612,10 +3637,11 @@ msgid "Connected to %1"
 msgstr "Conectat la %1"
 
 #: networkstatus.cpp:256
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "NetworkManager not running"
 msgctxt "@info:status"
 msgid "NetworkManager service is not running"
-msgstr "Serviciul NetworkManager nu rulează"
+msgstr "NetworkManager nu rulează"
 
 #: networkstatus.cpp:261
 #, kde-format

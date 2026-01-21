@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-28 02:43+0000\n"
+"POT-Creation-Date: 2026-01-21 00:47+0000\n"
 "PO-Revision-Date: 2024-04-22 15:58\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -14,9 +14,9 @@ msgstr ""
 "X-Crowdin-Project: kdeorg\n"
 "X-Crowdin-Project-ID: 269464\n"
 "X-Crowdin-Language: zh-CN\n"
-"X-Crowdin-File: /kf6-stable/messages/plasma-nm/plasmanetworkmanagement-libs."
+"X-Crowdin-File: /kf6-trunk/messages/plasma-nm/plasmanetworkmanagement-libs."
 "pot\n"
-"X-Crowdin-File-ID: 50280\n"
+"X-Crowdin-File-ID: 42533\n"
 
 #: editor/connectiondetails.cpp:92
 #, kde-format
@@ -265,7 +265,7 @@ msgstr "IPv6 副域名服务器"
 msgid "IPv6"
 msgstr "IPv6"
 
-#: editor/connectioneditorbase.cpp:203
+#: editor/connectioneditorbase.cpp:204
 #, kde-format
 msgctxt "@title:tab Connection status and details"
 msgid "Status"
@@ -1752,14 +1752,16 @@ msgstr "动态 WEP (802.1x)"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:65
-#, kde-format
-msgid "WPA/WPA2 Personal"
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Personal"
+msgid "WPA2/WPA3 Personal"
 msgstr "WPA/WPA2 个人版"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:70
-#, kde-format
-msgid "WPA/WPA2 Enterprise"
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Enterprise"
+msgid "WPA2/WPA3 Enterprise"
 msgstr "WPA/WPA2 企业版"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)

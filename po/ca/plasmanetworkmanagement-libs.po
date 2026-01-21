@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: plasma-nm\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-28 02:43+0000\n"
-"PO-Revision-Date: 2026-02-18 14:52+0100\n"
+"POT-Creation-Date: 2026-01-21 00:47+0000\n"
+"PO-Revision-Date: 2026-01-04 08:40+0100\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Lokalize 25.04.0\n"
+"X-Generator: Lokalize 25.12.0\n"
 
 #: editor/connectiondetails.cpp:92
 #, kde-format
@@ -268,7 +268,7 @@ msgstr "Servidor de noms IPv6 secundari"
 msgid "IPv6"
 msgstr "IPv6"
 
-#: editor/connectioneditorbase.cpp:203
+#: editor/connectioneditorbase.cpp:204
 #, kde-format
 msgctxt "@title:tab Connection status and details"
 msgid "Status"
@@ -1208,13 +1208,13 @@ msgstr "Mètode:"
 #, kde-format
 msgctxt "Method:"
 msgid "Automatic"
-msgstr "Automàtica"
+msgstr "Automàtic"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, method)
 #: editor/settings/ui/ipv4.ui:54 editor/settings/ui/ipv6.ui:229
 #, kde-format
 msgid "Automatic (Only addresses)"
-msgstr "Automàtica (només adreces)"
+msgstr "Automàtic (només adreces)"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, method)
 #: editor/settings/ui/ipv4.ui:59 editor/settings/ui/ipv6.ui:239
@@ -1776,14 +1776,16 @@ msgstr "WEP dinàmica (802.1x)"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:65
-#, kde-format
-msgid "WPA/WPA2 Personal"
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Personal"
+msgid "WPA2/WPA3 Personal"
 msgstr "WPA/WPA2 personal"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:70
-#, kde-format
-msgid "WPA/WPA2 Enterprise"
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Enterprise"
+msgid "WPA2/WPA3 Enterprise"
 msgstr "WPA/WPA2 corporativa"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
@@ -3735,3 +3737,82 @@ msgstr "Es requereix NetworkManager 0.9.8, però s'ha trobat el %1."
 msgctxt "global connection state"
 msgid "Unknown"
 msgstr "Desconeguda"
+
+#~ msgid "Hardware"
+#~ msgstr "Maquinari"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is Unknown"
+#~ msgstr "El tipus de connexió és desconegut"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is ADSL"
+#~ msgstr "El tipus de connexió és ADSL"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is Bluetooth"
+#~ msgstr "El tipus de connexió és Bluetooth"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is Bridge"
+#~ msgstr "El tipus de connexió és pont"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is CDMA"
+#~ msgstr "El tipus de connexió és CDMA"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is GSM"
+#~ msgstr "El tipus de connexió és GSM"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is Infiniband"
+#~ msgstr "El tipus de connexió és Infiniband"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is OLPC Mesh"
+#~ msgstr "El tipus de connexió és malla OLPC"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is PPOPE"
+#~ msgstr "El tipus de connexió és PPOPE"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is VLAN"
+#~ msgstr "El tipus de connexió és VLAN"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is VPN"
+#~ msgstr "El tipus de connexió és VPN"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is Wimax"
+#~ msgstr "El tipus de connexió és Wimax"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is Wired"
+#~ msgstr "El tipus de connexió és per cable"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is Wireless"
+#~ msgstr "El tipus de connexió és sense fil"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is Team"
+#~ msgstr "El tipus de connexió és equip"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is Generic"
+#~ msgstr "El tipus de connexió és genèrica"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is Tunnel"
+#~ msgstr "El tipus de connexió és túnel"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is IP Tunnel"
+#~ msgstr "El tipus de connexió és túnel d'IP"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "The connection type is WireGuard"
+#~ msgstr "El tipus de connexió és WireGuard"

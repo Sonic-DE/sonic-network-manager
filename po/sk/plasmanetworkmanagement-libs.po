@@ -4,21 +4,20 @@
 # SPDX-FileCopyrightText: 2019, 2020, 2021, 2022, 2023 Matej Mrenica <matejm98mthw@gmail.com>
 # Dusan Kazik <prescott66@gmail.com>, 2020.
 # Ferdinand Galko <galko.ferdinand@gmail.com>, 2023.
-# SPDX-FileCopyrightText: 2026 Lucia Mrenica <lucia.mrenica@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: plasmanetworkmanagement-libs\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-28 02:43+0000\n"
-"PO-Revision-Date: 2026-02-28 20:04+0100\n"
-"Last-Translator: Lucia Mrenica <lucia.mrenica@gmail.com>\n"
+"POT-Creation-Date: 2026-01-21 00:47+0000\n"
+"PO-Revision-Date: 2023-11-11 15:32+0100\n"
+"Last-Translator: Matej Mrenica <matejm98mthw@gmail.com>\n"
 "Language-Team: Slovak <kde-i18n-doc@kde.org>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 23.08.3\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 25.12.2\n"
 
 #: editor/connectiondetails.cpp:92
 #, kde-format
@@ -50,7 +49,9 @@ msgid "Signal Strength"
 msgstr "Sila signálu"
 
 #: editor/connectiondetails.cpp:136
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "WiFi signal strength percentage indicator"
+#| msgid "%1%"
 msgctxt "Wi-Fi signal strength percentage indicator"
 msgid "%1%"
 msgstr "%1%"
@@ -71,10 +72,11 @@ msgid "Frequency"
 msgstr "Frekvencia"
 
 #: editor/connectiondetails.cpp:163
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Channel:"
 msgctxt "Frequency (Channel)"
 msgid "%1 (Channel %2)"
-msgstr "%1 (Kanál %2)"
+msgstr "Kanál:"
 
 #: editor/connectiondetails.cpp:167
 #, kde-format
@@ -210,7 +212,7 @@ msgstr "Zariadenie"
 #: editor/connectiondetails.cpp:316
 #, kde-format
 msgid "General"
-msgstr "Všeobecné"
+msgstr ""
 
 #: editor/connectiondetails.cpp:325
 #, kde-format
@@ -267,17 +269,17 @@ msgstr "Sekundárny IPv6 nameserver"
 msgid "IPv6"
 msgstr "IPv6"
 
-#: editor/connectioneditorbase.cpp:203
+#: editor/connectioneditorbase.cpp:204
 #, kde-format
 msgctxt "@title:tab Connection status and details"
 msgid "Status"
-msgstr "Stav"
+msgstr ""
 
 #: editor/connectioneditorbase.cpp:209
 #, kde-format
 msgctxt "@title:tab General configuration"
 msgid "General"
-msgstr "Všeobecné"
+msgstr ""
 
 #: editor/connectioneditorbase.cpp:216 editor/connectioneditorbase.cpp:233
 #, kde-format
@@ -372,7 +374,7 @@ msgstr "Aktívna záloha"
 #, kde-format
 msgctxt "bond mode"
 msgid "XOR"
-msgstr "XOR"
+msgstr ""
 
 #: editor/settings/bondwidget.cpp:51
 #, kde-format
@@ -439,7 +441,9 @@ msgid "PAN (personal area network)"
 msgstr "PAN (personal area network)"
 
 #: editor/settings/connectionstatuswidget.cpp:33
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "There is no active network connection"
+#| msgid "Disconnected"
 msgid "Disconnected"
 msgstr "Odpojené"
 
@@ -1016,7 +1020,13 @@ msgstr "Pripojiť automaticky s prioritou"
 
 #. i18n: ectx: property (toolTip), widget (QSpinBox, prioritySpin)
 #: editor/settings/ui/connectionwidget.ui:38
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "If the connection is set to autoconnect, connections with higher priority "
+#| "will be preferred. Defaults to 0.\n"
+#| "The higher number means higher priority. An negative number can be used "
+#| "to indicate priority lower than the default.\n"
+#| "           "
 msgid ""
 "If the connection is set to autoconnect, connections with higher priority "
 "will be preferred. Defaults to 0.\n"
@@ -1308,9 +1318,11 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, labelRouteMetric)
 #: editor/settings/ui/ipv4.ui:217 editor/settings/ui/ipv6.ui:369
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "Header text for IPv4 route metric"
+#| msgid "Metric"
 msgid "Route Metric:"
-msgstr "Metrika trasy:"
+msgstr "Metrika"
 
 #. i18n: ectx: property (toolTip), widget (QDoubleSpinBox, routeMetric)
 #: editor/settings/ui/ipv4.ui:252 editor/settings/ui/ipv6.ui:404
@@ -1323,11 +1335,6 @@ msgid ""
 "Default value -1 means that NetworkManager gets to choose and manage the "
 "actual metric of the route."
 msgstr ""
-"Hodnota, ktorá pomáha vybrať najlepšiu cestu pre dátové pakety k ich cieľu,\n"
-"na základe faktorov ako vzdialenosť, oneskorenie a spoľahlivosť.\n"
-"\n"
-"Predvolená hodnota -1 znamená, že NetworkManager si sám zvolí a spravuje "
-"skutočnú metriku trasy."
 
 #. i18n: ectx: property (text), widget (QPushButton, btnRemove)
 #: editor/settings/ui/ipv4.ui:261 editor/settings/ui/ipv6.ui:97
@@ -1538,10 +1545,10 @@ msgid ""
 "should be left blank. It is only required if there are multiple access "
 "concentrators or a specific service is known to be required."
 msgstr ""
-"Ak je určené, nariadi PPPoE, aby iba inicializoval sedenia s prístupovými "
-"koncentrátormi, ktoré poskytujú určenú službu. Pre väčšinu poskytovateľov by "
-"to malo ostať prázdne. Vyžaduje sa to iba ak je viacero prístupových "
-"koncentrátorov alebo je známe, že sa vyžaduje určená služba."
+"Ak je určené, nariadi PPPeE, aby iba inicializoval sedenia s prístupom "
+"koncentrátorov, ktoré poskytujú určenú službu. Pre väčšinu poskytovateľov by "
+"to malo ostať prázdne. Vyžaduje sa to iba ak je viacero koncentrátorov "
+"prístupu alebo je známe, že sa vyžaduje určená služba."
 
 #. i18n: ectx: property (text), widget (QLabel, label_7)
 #: editor/settings/ui/team.ui:31
@@ -1771,14 +1778,16 @@ msgstr "Dynamický WEP (802.1x)"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:65
-#, kde-format
-msgid "WPA/WPA2 Personal"
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Personal"
+msgid "WPA2/WPA3 Personal"
 msgstr "WPA/WPA2 Personal"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
 #: editor/settings/ui/wifisecurity.ui:70
-#, kde-format
-msgid "WPA/WPA2 Enterprise"
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Enterprise"
+msgid "WPA2/WPA3 Enterprise"
 msgstr "WPA/WPA2 Enterprise"
 
 #. i18n: ectx: property (text), item, widget (KComboBox, securityCombo)
@@ -1797,7 +1806,7 @@ msgstr "WPA3 Enterprise 192-bit"
 #: editor/settings/ui/wifisecurity.ui:85
 #, kde-format
 msgid "Enhanced Open (OWE)"
-msgstr "Vylepšené otvorené (OWE)"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: editor/settings/ui/wifisecurity.ui:93
@@ -2035,13 +2044,12 @@ msgstr "Rozhranie"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, interfaceNameLineEdit)
 #: editor/settings/ui/wireguardinterfacewidget.ui:34
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "VLAN interface name:"
 msgid ""
 "Required.\n"
 "Network interface name."
-msgstr ""
-"Povinné.\n"
-"Názov sieťového rozhrania."
+msgstr "Názov rozhrania VLAN:"
 
 #. i18n: ectx: property (toolTip), widget (PasswordField, privateKeyLineEdit)
 #: editor/settings/ui/wireguardinterfacewidget.ui:49
@@ -2363,7 +2371,7 @@ msgstr "Mobilné širokopásmové pripojenie"
 #, kde-format
 msgctxt "title of the interface widget in nm's popup"
 msgid "Loopback"
-msgstr "Loopback"
+msgstr ""
 
 #: editor/uiutils.cpp:174
 #, kde-format
@@ -2399,7 +2407,7 @@ msgstr "WireGuard VPN"
 #: editor/uiutils.cpp:237
 #, kde-format
 msgid "Loopback"
-msgstr "Loopback"
+msgstr ""
 
 #: editor/uiutils.cpp:240
 #, kde-format
@@ -2442,7 +2450,8 @@ msgid "Bridge (%1)"
 msgstr "Most (%1)"
 
 #: editor/uiutils.cpp:273
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Wired Interface (%1)"
 msgid "Loopback Interface (%1)"
 msgstr "Drôtové rozhranie (%1)"
 
@@ -2997,7 +3006,7 @@ msgstr "WPA3-EAP-SUITE-B-192"
 #, kde-format
 msgctxt "@label OWE security"
 msgid "Enhanced Open (OWE)"
-msgstr "Vylepšené otvorené (OWE)"
+msgstr ""
 
 #: editor/uiutils.cpp:621
 #, kde-format
@@ -3617,13 +3626,17 @@ msgid "Import a saved configuration file"
 msgstr "Importovať uložený konfiguračný súbor"
 
 #: models/networkmodelitem.cpp:339
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "@info:tooltip real user name is not available"
+#| msgid "Not Available"
 msgctxt "@title:column header for list of available network connections"
 msgid "Available"
-msgstr "Dostupný"
+msgstr "Nedostupné"
 
 #: models/networkmodelitem.cpp:345
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "infiniband transport mode"
+#| msgid "Connected"
 msgctxt "@title:column header for list of connected network connections"
 msgid "Connected"
 msgstr "Pripojené"
@@ -3633,7 +3646,7 @@ msgstr "Pripojené"
 msgctxt ""
 "@title:column header for list of previously connected network connections"
 msgid "Previously Used, Unavailable"
-msgstr "Predtým používané, nedostupné"
+msgstr ""
 
 #: networkstatus.cpp:126
 #, kde-format
@@ -3707,10 +3720,11 @@ msgid "Connected to %1"
 msgstr "Pripojené k sieti %1"
 
 #: networkstatus.cpp:256
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "NetworkManager not running"
 msgctxt "@info:status"
 msgid "NetworkManager service is not running"
-msgstr "Služba správcu siete nie je spustená"
+msgstr "Správca siete nie je spustený"
 
 #: networkstatus.cpp:261
 #, kde-format
