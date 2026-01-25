@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: plasman-nm\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-28 02:43+0000\n"
+"POT-Creation-Date: 2026-01-25 00:46+0000\n"
 "PO-Revision-Date: 2025-07-29 11:24+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -482,12 +482,12 @@ msgstr "«%1» VPN konexioa aktibatuta."
 msgid "VPN connection '%1' failed to activate."
 msgstr "«%1» VPN konexioa konektatzea huts egin du."
 
-#: notification.cpp:433 notification.cpp:443
+#: notification.cpp:433 notification.cpp:441
 #, kde-format
 msgid "VPN connection '%1' deactivated."
 msgstr "«%1» VPN konexioa desaktibatuta."
 
-#: notification.cpp:446
+#: notification.cpp:444
 #, kde-format
 msgid ""
 "VPN connection '%1' was deactivated because the device it was using was "
@@ -496,22 +496,22 @@ msgstr ""
 "«%1» VPN konexioa deskonektatu da erabiltzen ari zen gailua deskonektatu "
 "delako."
 
-#: notification.cpp:449
+#: notification.cpp:447
 #, kde-format
 msgid "The service providing the VPN connection '%1' was stopped."
 msgstr "«%1» VPN konexioa hornitzen zuen zerbitzua gelditua zegoen."
 
-#: notification.cpp:452
+#: notification.cpp:450
 #, kde-format
 msgid "The IP config of the VPN connection '%1', was invalid."
 msgstr "«%1» VPN konexioaren IP konfigurazioa baliogabea zen."
 
-#: notification.cpp:455
+#: notification.cpp:453
 #, kde-format
 msgid "The connection attempt to the VPN service timed out."
 msgstr "VPN zerbitzura konexio saiakera denbora-muga gainditu du"
 
-#: notification.cpp:458
+#: notification.cpp:456
 #, kde-format
 msgid ""
 "A timeout occurred while starting the service providing the VPN connection "
@@ -520,32 +520,32 @@ msgstr ""
 "Denbora-muga gainditze bat eman da «%1» VPN konexioa hornitzen duen "
 "zerbitzua abiatzean."
 
-#: notification.cpp:461
+#: notification.cpp:459
 #, kde-format
 msgid "Starting the service providing the VPN connection '%1' failed."
 msgstr "«%1» VPN konexioa hornitzen duen zerbitzua abiatzea huts egin du."
 
-#: notification.cpp:464
+#: notification.cpp:462
 #, kde-format
 msgid "Necessary secrets for the VPN connection '%1' were not provided."
 msgstr "«%1» VPN konexiorako beharrezkoak diren isilpekoak ez dira hornitu."
 
-#: notification.cpp:467
+#: notification.cpp:465
 #, kde-format
 msgid "Authentication to the VPN server failed."
 msgstr "VPN zerbitzarian autentifikazioak huts egin du. "
 
-#: notification.cpp:470
+#: notification.cpp:468
 #, kde-format
 msgid "The connection was deleted."
 msgstr "Konexioa ezabatu egin da."
 
-#: notification.cpp:561
+#: notification.cpp:559
 #, kde-format
 msgid "No Network Connection"
 msgstr "Ez dago sare konexiorik"
 
-#: notification.cpp:562
+#: notification.cpp:560
 #, kde-format
 msgid "You are no longer connected to a network."
 msgstr "Ez zara luzaroago sarera konektatua egongo."
@@ -592,12 +592,12 @@ msgctxt "@info:status"
 msgid "VPN settings are missing"
 msgstr "VPN ezarpenak falta dira"
 
-#: passworddialog.cpp:134
+#: passworddialog.cpp:135
 #, kde-format
 msgid "Provide the secrets for the VPN connection \"%1\":"
 msgstr "Hornitu \"%1\" VPN konexiorako isilpekoak:"
 
-#: passworddialog.cpp:135
+#: passworddialog.cpp:136
 #, kde-format
 msgid "VPN secrets (%1) dialog"
 msgstr "(%1) VPN isilpekoen elkarrizketa-koadroa"

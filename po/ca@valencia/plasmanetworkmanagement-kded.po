@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: plasma-nm\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-28 02:43+0000\n"
+"POT-Creation-Date: 2026-01-25 00:46+0000\n"
 "PO-Revision-Date: 2025-07-29 09:38+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
@@ -481,12 +481,12 @@ msgstr "Connexió VPN «%1» activada."
 msgid "VPN connection '%1' failed to activate."
 msgstr "La connexió VPN «%1» ha fallat mentre s'activava."
 
-#: notification.cpp:433 notification.cpp:443
+#: notification.cpp:433 notification.cpp:441
 #, kde-format
 msgid "VPN connection '%1' deactivated."
 msgstr "Connexió VPN «%1» desactivada."
 
-#: notification.cpp:446
+#: notification.cpp:444
 #, kde-format
 msgid ""
 "VPN connection '%1' was deactivated because the device it was using was "
@@ -495,22 +495,22 @@ msgstr ""
 "La connexió VPN «%1» s'ha desactivat perquè el dispositiu utilitzat s'ha "
 "desconnectat."
 
-#: notification.cpp:449
+#: notification.cpp:447
 #, kde-format
 msgid "The service providing the VPN connection '%1' was stopped."
 msgstr "El servei que proporciona la connexió VPN «%1» s'ha parat."
 
-#: notification.cpp:452
+#: notification.cpp:450
 #, kde-format
 msgid "The IP config of the VPN connection '%1', was invalid."
 msgstr "La configuració IP de la connexió VPN «%1» no és vàlida."
 
-#: notification.cpp:455
+#: notification.cpp:453
 #, kde-format
 msgid "The connection attempt to the VPN service timed out."
 msgstr "L'intent de connexió amb el servei VPN ha exhaurit el temps."
 
-#: notification.cpp:458
+#: notification.cpp:456
 #, kde-format
 msgid ""
 "A timeout occurred while starting the service providing the VPN connection "
@@ -519,33 +519,33 @@ msgstr ""
 "S'ha exhaurit el temps mentre s'iniciava el servei que proporciona la "
 "connexió VPN «%1»."
 
-#: notification.cpp:461
+#: notification.cpp:459
 #, kde-format
 msgid "Starting the service providing the VPN connection '%1' failed."
 msgstr "L'inici del servei que proporciona la connexió VPN «%1» ha fallat."
 
-#: notification.cpp:464
+#: notification.cpp:462
 #, kde-format
 msgid "Necessary secrets for the VPN connection '%1' were not provided."
 msgstr ""
 "No s'han proporcionat els secrets necessaris per a la connexió VPN «%1»."
 
-#: notification.cpp:467
+#: notification.cpp:465
 #, kde-format
 msgid "Authentication to the VPN server failed."
 msgstr "L'autenticació amb el servidor VPN ha fallat."
 
-#: notification.cpp:470
+#: notification.cpp:468
 #, kde-format
 msgid "The connection was deleted."
 msgstr "S'ha suprimit la connexió."
 
-#: notification.cpp:561
+#: notification.cpp:559
 #, kde-format
 msgid "No Network Connection"
 msgstr "No hi ha cap connexió de xarxa"
 
-#: notification.cpp:562
+#: notification.cpp:560
 #, kde-format
 msgid "You are no longer connected to a network."
 msgstr "Ja no està connectat a cap xarxa."
@@ -592,12 +592,12 @@ msgctxt "@info:status"
 msgid "VPN settings are missing"
 msgstr "Falten els paràmetres de la VPN"
 
-#: passworddialog.cpp:134
+#: passworddialog.cpp:135
 #, kde-format
 msgid "Provide the secrets for the VPN connection \"%1\":"
 msgstr "Proporcioneu els secrets per a la connexió VPN «%1»:"
 
-#: passworddialog.cpp:135
+#: passworddialog.cpp:136
 #, kde-format
 msgid "VPN secrets (%1) dialog"
 msgstr "Diàleg de secrets de VPN (%1)"
