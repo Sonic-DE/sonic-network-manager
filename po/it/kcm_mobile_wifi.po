@@ -1,12 +1,12 @@
 # Copyright (C) 2023 This file is copyright:
 # This file is distributed under the same license as the plasma-nm package.
-# SPDX-FileCopyrightText: 2018, 2019, 2020, 2021, 2023, 2024, 2025, 2026 Paolo Zamponi <feus73@gmail.com>
+# SPDX-FileCopyrightText: 2018, 2019, 2020, 2021, 2023, 2024, 2025 Paolo Zamponi <feus73@gmail.com>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: plasma-nm\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-29 03:06+0000\n"
+"POT-Creation-Date: 2026-01-26 00:44+0000\n"
 "PO-Revision-Date: 2025-08-18 14:38+0200\n"
 "Last-Translator: Paolo Zamponi <feus73@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 25.12.3\n"
+"X-Generator: Lokalize 25.04.3\n"
 
 #: ui/ConnectDialog.qml:58
 #, kde-format
@@ -39,7 +39,7 @@ msgstr "Velocità di trasferimento"
 msgid "Connected, ↓ %1/s, ↑ %2/s"
 msgstr "Connesso, ↓ %1/s, ↑ %2/s"
 
-#: ui/ConnectionInfo.qml:46
+#: ui/ConnectionInfo.qml:45
 #, kde-format
 msgctxt "@title:group"
 msgid "Connection Details"
@@ -178,43 +178,43 @@ msgstr "TLS con tunnel"
 msgid "Protected EAP"
 msgstr "EAP protetto"
 
-#: ui/NetworkSettings.qml:177
+#: ui/NetworkSettings.qml:176
 #, kde-format
 msgctxt "@title:group"
 msgid "IP Settings"
 msgstr "Impostazioni IP"
 
-#: ui/NetworkSettings.qml:183
+#: ui/NetworkSettings.qml:182
 #, kde-format
 msgid "Method"
 msgstr "Metodo"
 
-#: ui/NetworkSettings.qml:184
+#: ui/NetworkSettings.qml:183
 #, kde-format
 msgid "Automatic"
 msgstr "Automatico"
 
-#: ui/NetworkSettings.qml:184
+#: ui/NetworkSettings.qml:183
 #, kde-format
 msgid "Manual"
 msgstr "Manuale"
 
-#: ui/NetworkSettings.qml:200
+#: ui/NetworkSettings.qml:199
 #, kde-format
 msgid "IP Address"
 msgstr "Indirizzo IP"
 
-#: ui/NetworkSettings.qml:218
+#: ui/NetworkSettings.qml:217
 #, kde-format
 msgid "Gateway"
 msgstr "Gateway"
 
-#: ui/NetworkSettings.qml:236
+#: ui/NetworkSettings.qml:235
 #, kde-format
 msgid "Network prefix length"
 msgstr "Lunghezza del prefisso di rete"
 
-#: ui/NetworkSettings.qml:255
+#: ui/NetworkSettings.qml:254
 #, kde-format
 msgid "DNS"
 msgstr "DNS"

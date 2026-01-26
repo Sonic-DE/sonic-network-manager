@@ -2,20 +2,19 @@
 # Roman Paholík <wizzardsk@gmail.com>, 2018, 2019.
 # Mthw <jari_45@hotmail.com>, 2018, 2019.
 # Matej Mrenica <matejm98mthw@gmail.com>, 2019, 2020, 2021.
-# SPDX-FileCopyrightText: 2026 Lucia Mrenica <lucia.mrenica@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: kcm_mobile_wifi\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-29 03:06+0000\n"
-"PO-Revision-Date: 2026-01-14 18:46+0100\n"
-"Last-Translator: Lucia Mrenica <lucia.mrenica@gmail.com>\n"
+"POT-Creation-Date: 2026-01-26 00:44+0000\n"
+"PO-Revision-Date: 2021-07-27 16:17+0200\n"
+"Last-Translator: Matej Mrenica <matejm98mthw@gmail.com>\n"
 "Language-Team: Slovak <kde-i18n-doc@kde.org>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 25.12.1\n"
+"X-Generator: Lokalize 21.07.80\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ui/ConnectDialog.qml:58
@@ -27,43 +26,46 @@ msgstr "Neplatný vstup"
 #, kde-format
 msgctxt "kcm page title"
 msgid "Connection Info for \"%1\""
-msgstr "Informácie o pripojení pre „%1“"
+msgstr ""
 
 #: ui/ConnectionInfo.qml:22
 #, kde-format
 msgctxt "@title:group"
 msgid "Transfer Rates"
-msgstr "Rýchlosť prenosu"
+msgstr ""
 
 #: ui/ConnectionInfo.qml:38
 #, kde-format
 msgid "Connected, ↓ %1/s, ↑ %2/s"
-msgstr "Pripojené, ↓ %1/s, ↑ %2/s"
+msgstr ""
 
-#: ui/ConnectionInfo.qml:46
-#, kde-format
+#: ui/ConnectionInfo.qml:45
+#, fuzzy, kde-format
+#| msgid "Connection Name"
 msgctxt "@title:group"
 msgid "Connection Details"
-msgstr "Podrobnosti pripojenia"
+msgstr "Názov pripojenia"
 
 #: ui/main.qml:26
 #, kde-format
 msgid "Edit"
-msgstr "Upraviť"
+msgstr ""
 
 #: ui/main.qml:87
 #, kde-format
 msgid "Wi-Fi"
-msgstr "Wi-Fi"
+msgstr ""
 
 #: ui/main.qml:98
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Saved networks"
 msgctxt "@title:group"
 msgid "Saved Networks"
 msgstr "Uložené siete"
 
 #: ui/main.qml:135
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Available networks"
 msgid "Available Networks"
 msgstr "Dostupné siete"
 
@@ -73,7 +75,8 @@ msgid "Add Custom Connection"
 msgstr "Pridať vlastné pripojenie"
 
 #: ui/NetworkSettings.qml:15
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Add new Connection"
 msgid "Add New Connection"
 msgstr "Pridať nové pripojenie"
 
@@ -83,7 +86,8 @@ msgid "Save"
 msgstr "Uložiť"
 
 #: ui/NetworkSettings.qml:54
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "General"
 msgctxt "@title:group"
 msgid "General"
 msgstr "Všeobecné"
@@ -94,20 +98,23 @@ msgid "SSID"
 msgstr "SSID"
 
 #: ui/NetworkSettings.qml:75
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Hidden Network:"
 msgid "Hidden Network"
-msgstr "Skrytá sieť"
+msgstr "Skrytá sieť:"
 
 #: ui/NetworkSettings.qml:82
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Security"
 msgctxt "@title:group"
 msgid "Security"
-msgstr "Zabezpečenie"
+msgstr "Bezpečnosť"
 
 #: ui/NetworkSettings.qml:89
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Security type:"
 msgid "Security type"
-msgstr "Typ zabezpečenia"
+msgstr "Typ bezpečnosti:"
 
 #: ui/NetworkSettings.qml:99
 #, kde-format
@@ -135,19 +142,22 @@ msgid "WPA/WPA2 Enterprise"
 msgstr "WPA/WPA2 Enterprise"
 
 #: ui/NetworkSettings.qml:104
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Personal"
 msgid "WPA3 Personal"
-msgstr "WPA3 Personal"
+msgstr "WPA/WPA2 Personal"
 
 #: ui/NetworkSettings.qml:105
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "WPA/WPA2 Enterprise"
 msgid "WPA3 Enterprise"
-msgstr "WPA3 Enterprise"
+msgstr "WPA/WPA2 Enterprise"
 
 #: ui/NetworkSettings.qml:143
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Password:"
 msgid "Password"
-msgstr "Heslo"
+msgstr "Heslo:"
 
 #: ui/NetworkSettings.qml:159
 #, kde-format
@@ -179,43 +189,47 @@ msgstr "Tunelovaný TLS"
 msgid "Protected EAP"
 msgstr "Chránený EAP"
 
-#: ui/NetworkSettings.qml:177
-#, kde-format
+#: ui/NetworkSettings.qml:176
+#, fuzzy, kde-format
+#| msgid "IP settings"
 msgctxt "@title:group"
 msgid "IP Settings"
 msgstr "Nastavenia IP"
 
-#: ui/NetworkSettings.qml:183
+#: ui/NetworkSettings.qml:182
 #, kde-format
 msgid "Method"
-msgstr "Metóda"
+msgstr ""
 
-#: ui/NetworkSettings.qml:184
+#: ui/NetworkSettings.qml:183
 #, kde-format
 msgid "Automatic"
 msgstr "Automatické"
 
-#: ui/NetworkSettings.qml:184
+#: ui/NetworkSettings.qml:183
 #, kde-format
 msgid "Manual"
 msgstr "Ručne"
 
-#: ui/NetworkSettings.qml:200
-#, kde-format
+#: ui/NetworkSettings.qml:199
+#, fuzzy, kde-format
+#| msgid "IP Address:"
 msgid "IP Address"
-msgstr "IP adresa"
+msgstr "IP adresa:"
 
-#: ui/NetworkSettings.qml:218
-#, kde-format
+#: ui/NetworkSettings.qml:217
+#, fuzzy, kde-format
+#| msgid "Gateway:"
 msgid "Gateway"
-msgstr "Brána"
+msgstr "Brána:"
 
-#: ui/NetworkSettings.qml:236
-#, kde-format
+#: ui/NetworkSettings.qml:235
+#, fuzzy, kde-format
+#| msgid "Network prefix length:"
 msgid "Network prefix length"
-msgstr "Dĺžka sieťovej predpony"
+msgstr "Dĺžka sieťovej predpony:"
 
-#: ui/NetworkSettings.qml:255
+#: ui/NetworkSettings.qml:254
 #, kde-format
 msgid "DNS"
 msgstr "DNS"

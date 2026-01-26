@@ -1,12 +1,12 @@
 # Copyright (C) 2024 This file is copyright:
 # This file is distributed under the same license as the plasma-nm package.
-# SPDX-FileCopyrightText: 2019, 2020, 2021, 2024, 2025, 2026 Shinjo Park <kde@peremen.name>
+# SPDX-FileCopyrightText: 2019, 2020, 2021, 2024, 2025 Shinjo Park <kde@peremen.name>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: plasma-nm\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-29 03:06+0000\n"
+"POT-Creation-Date: 2026-01-26 00:44+0000\n"
 "PO-Revision-Date: 2025-10-09 01:20+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 25.08.1\n"
+"X-Generator: Lokalize 24.12.3\n"
 
 #: ui/ConnectDialog.qml:58
 #, kde-format
@@ -39,7 +39,7 @@ msgstr "전송률"
 msgid "Connected, ↓ %1/s, ↑ %2/s"
 msgstr "연결됨, ↓ %1/초, ↑ %2/초"
 
-#: ui/ConnectionInfo.qml:46
+#: ui/ConnectionInfo.qml:45
 #, kde-format
 msgctxt "@title:group"
 msgid "Connection Details"
@@ -178,43 +178,43 @@ msgstr "터널된 TLS(TTLS)"
 msgid "Protected EAP"
 msgstr "보호된 EAP(PEAP)"
 
-#: ui/NetworkSettings.qml:177
+#: ui/NetworkSettings.qml:176
 #, kde-format
 msgctxt "@title:group"
 msgid "IP Settings"
 msgstr "IP 설정"
 
-#: ui/NetworkSettings.qml:183
+#: ui/NetworkSettings.qml:182
 #, kde-format
 msgid "Method"
 msgstr "방법"
 
-#: ui/NetworkSettings.qml:184
+#: ui/NetworkSettings.qml:183
 #, kde-format
 msgid "Automatic"
 msgstr "자동"
 
-#: ui/NetworkSettings.qml:184
+#: ui/NetworkSettings.qml:183
 #, kde-format
 msgid "Manual"
 msgstr "수동"
 
-#: ui/NetworkSettings.qml:200
+#: ui/NetworkSettings.qml:199
 #, kde-format
 msgid "IP Address"
 msgstr "IP 주소"
 
-#: ui/NetworkSettings.qml:218
+#: ui/NetworkSettings.qml:217
 #, kde-format
 msgid "Gateway"
 msgstr "게이트웨이"
 
-#: ui/NetworkSettings.qml:236
+#: ui/NetworkSettings.qml:235
 #, kde-format
 msgid "Network prefix length"
 msgstr "네트워크 접두사 길이"
 
-#: ui/NetworkSettings.qml:255
+#: ui/NetworkSettings.qml:254
 #, kde-format
 msgid "DNS"
 msgstr "DNS"
