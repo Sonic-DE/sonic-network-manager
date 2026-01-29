@@ -4,37 +4,38 @@
 # SPDX-FileCopyrightText: 2019, 2020, 2021, 2023 Matej Mrenica <matejm98mthw@gmail.com>
 # Dusan Kazik <prescott66@gmail.com>, 2020.
 # Ferdinand Galko <galko.ferdinand@gmail.com>, 2023.
-# SPDX-FileCopyrightText: 2026 Lucia Mrenica <lucia.mrenica@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: plasmanetworkmanagement-kcm\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-29 03:06+0000\n"
-"PO-Revision-Date: 2026-02-28 20:01+0100\n"
-"Last-Translator: Lucia Mrenica <lucia.mrenica@gmail.com>\n"
+"POT-Creation-Date: 2026-01-29 00:46+0000\n"
+"PO-Revision-Date: 2023-11-11 15:35+0100\n"
+"Last-Translator: Matej Mrenica <matejm98mthw@gmail.com>\n"
 "Language-Team: Slovak <kde-i18n-doc@kde.org>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 25.12.2\n"
+"X-Generator: Lokalize 23.08.3\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: kcm.cpp:269
 #, kde-format
 msgid "Import the VPN configuration from \"%1\"?"
-msgstr "Importovať konfiguráciu VPN z \"%1\"?"
+msgstr ""
 
 #: kcm.cpp:270
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Import VPN Connection"
 msgctxt "@title:window"
 msgid "Import VPN Configuration"
 msgstr "Importovať pripojenie VPN"
 
 #: kcm.cpp:271
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Export"
 msgid "Import"
-msgstr "Importovať"
+msgstr "Exportovať"
 
 #: kcm.cpp:278 kcm.cpp:351
 #, kde-format
@@ -42,9 +43,10 @@ msgid "Failed to import VPN connection: %1"
 msgstr "Nepodarilo sa importovať pripojenie VPN: %1"
 
 #: kcm.cpp:281 kcm.cpp:354
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Connected"
 msgid "Connection imported."
-msgstr "Pripojenie bolo importované."
+msgstr "Pripojené"
 
 #: kcm.cpp:423
 #, kde-format
@@ -111,7 +113,7 @@ msgstr "Zobraziť virtuálne pripojenia"
 
 #: qml/ConfigurationDialog.qml:57
 msgid "Create new connections as system connections"
-msgstr "Vytvoriť nové pripojenia ako systémové pripojenia"
+msgstr ""
 
 #: qml/ConfigurationDialog.qml:62
 msgid "Hotspot"
@@ -152,7 +154,7 @@ msgstr ""
 #: qml/ConnectionItem.qml:29
 msgctxt "@label/rich"
 msgid "%1"
-msgstr "%1"
+msgstr ""
 
 #: qml/ConnectionItem.qml:85
 msgid "Connect"
@@ -165,7 +167,7 @@ msgstr "Odpojiť"
 #: qml/ConnectionItem.qml:90
 msgctxt "@info:tooltip"
 msgid "Cannot connect to this network because it was not detected."
-msgstr "Nie je možné sa pripojiť k tejto sieti, pretože nebola detegovaná."
+msgstr ""
 
 #: qml/ConnectionItem.qml:95
 msgid "Delete"
@@ -186,7 +188,7 @@ msgstr "Pripája sa"
 #: qml/ConnectionItem.qml:124
 msgctxt "@title:column Available networks"
 msgid "Available"
-msgstr "Dostupné"
+msgstr ""
 
 #: qml/main.qml:151
 msgid "Add new connection"
@@ -214,34 +216,41 @@ msgid "Do you want to remove the connection '%1'?"
 msgstr "Chcete odstrániť pripojenie \"%1\"?"
 
 #: qml/main.qml:262
+#, fuzzy
+#| msgid "Connect"
 msgctxt "@action:button Connect to network"
 msgid "Connect"
 msgstr "Pripojiť"
 
 #: qml/main.qml:268
+#, fuzzy
+#| msgid "Cancel"
 msgctxt "@action:button Cancel connecting to network"
 msgid "Cancel"
 msgstr "Zrušiť"
 
 #: qml/main.qml:274
+#, fuzzy
+#| msgctxt "@label Hotspot password"
+#| msgid "Password:"
 msgctxt "@title:window"
 msgid "Enter Password"
-msgstr "Zadať heslo"
+msgstr "Heslo:"
 
 #: qml/main.qml:280
 msgctxt "@label %1 is the name of the network the user is connecting to"
 msgid "Network: %1"
-msgstr "Sieť: %1"
+msgstr ""
 
 #: qml/main.qml:301
 msgctxt "@label key is a passcode"
 msgid "Password must be a valid WEP key"
-msgstr "Heslo musí byť platný kľúč WEP."
+msgstr ""
 
 #: qml/main.qml:302
 msgctxt "@label password invalid length message"
 msgid "Password must be between 8 and 64 characters"
-msgstr "Heslo musí mať 8 až 64 znakov."
+msgstr ""
 
 #~ msgid "Create"
 #~ msgstr "Vytvoriť"
