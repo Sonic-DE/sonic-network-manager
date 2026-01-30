@@ -4,13 +4,13 @@
 # Franklin, 2014, 2015.
 # Jeff Huang <s8321414@gmail.com>, 2016, 2017.
 # pan93412 <pan93412@gmail.com>, 2018.
-# SPDX-FileCopyrightText: 2022-2023, 2025-2026 Kisaragi Hiu <mail@kisaragi-hiu.com>
+# SPDX-FileCopyrightText: 2022, 2023, 2025 Kisaragi Hiu <mail@kisaragi-hiu.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-12-25 00:45+0000\n"
-"PO-Revision-Date: 2026-04-22 22:24+0900\n"
+"POT-Creation-Date: 2026-01-30 00:46+0000\n"
+"PO-Revision-Date: 2025-11-20 21:38+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -18,22 +18,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 26.07.70\n"
+"X-Generator: Lokalize 26.03.70\n"
 
-#: openvpn.cpp:182
+#: openvpn.cpp:61 openvpn.cpp:106
 #, kde-format
 msgid "NetworkManager is missing support for OpenVPN"
 msgstr "NetworkManager 目前缺乏對 OpenVPN 的支援"
 
-#: openvpn.cpp:207
+#: openvpn.cpp:99
 #, kde-format
-msgid "Error saving file %1: %2"
-msgstr "儲存檔案 %1 時發生錯誤：%2"
-
-#: openvpn.cpp:235
-#, kde-format
-msgid "Error copying certificate to %1: %2"
-msgstr "複製憑證到 %1 時發生錯誤：%2"
+msgid "An unexpected error has occurred"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel3)
 #: openvpn.ui:19
@@ -600,13 +595,13 @@ msgstr ""
 #: openvpnadvanced.ui:486
 #, kde-format
 msgid "Cipher:"
-msgstr "加密法："
+msgstr "加密文字："
 
 #. i18n: ectx: property (text), item, widget (QComboBox, cboCipher)
 #: openvpnadvanced.ui:513
 #, kde-format
 msgid "Obtaining available ciphers…"
-msgstr "正在取得可用的加密法…"
+msgstr "取得可用的加密文字中…"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, chkUseCustomCipherKey)
 #. i18n: ectx: property (toolTip), widget (QSpinBox, sbCustomCipherKey)
@@ -1031,7 +1026,7 @@ msgstr "進階 OpenVPN 屬性"
 #, kde-format
 msgctxt "@item:inlistbox Item added when OpenVPN cipher lookup failed"
 msgid "OpenVPN cipher lookup failed"
-msgstr "OpenVPN 加密法查詢失敗"
+msgstr "OpenVPN 密碼搜尋失敗"
 
 #: openvpnadvancedwidget.cpp:161
 #, kde-format
@@ -1043,7 +1038,7 @@ msgstr "預設"
 #, kde-format
 msgctxt "@item:inlistbox Item added when OpenVPN cipher lookup failed"
 msgid "No OpenVPN ciphers found"
-msgstr "找不到 OpenVPN 加密法"
+msgstr "找不到 OpenVPN 密碼"
 
 #: openvpnauth.cpp:82 openvpnauth.cpp:114
 #, kde-format
@@ -1074,6 +1069,12 @@ msgstr "權杖"
 #, kde-format
 msgid "one-time password"
 msgstr "一次性動態密碼："
+
+#~ msgid "Error saving file %1: %2"
+#~ msgstr "儲存檔案 %1 時發生錯誤：%2"
+
+#~ msgid "Error copying certificate to %1: %2"
+#~ msgstr "複製憑證到 %1 時發生錯誤：%2"
 
 #~ msgid "*.pem *.crt *.key *.cer *.p12"
 #~ msgstr "*.pem *.crt *.key *.cer *.p12"

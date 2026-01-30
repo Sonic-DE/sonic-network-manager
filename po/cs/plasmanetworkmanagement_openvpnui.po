@@ -1,39 +1,34 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
-# SPDX-FileCopyrightText: 2013, 2014, 2016, 2017, 2019, 2021, 2023, 2024, 2026 Vit Pelcak <vit@pelcak.org>
+# SPDX-FileCopyrightText: 2013, 2014, 2016, 2017, 2019, 2021, 2023, 2024 Vit Pelcak <vit@pelcak.org>
 # Lukáš Tinkl <lukas@kde.org>, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-12-25 00:45+0000\n"
-"PO-Revision-Date: 2026-03-13 12:58+0100\n"
-"Last-Translator:  Vít Pelčák <vit@pelcak.org>\n"
+"POT-Creation-Date: 2026-01-30 00:46+0000\n"
+"PO-Revision-Date: 2024-08-14 09:03+0200\n"
+"Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 25.12.3\n"
+"X-Generator: Lokalize 24.05.2\n"
 "X-Language: cs_CZ\n"
 "X-Source-Language: en_US\n"
 
-#: openvpn.cpp:182
+#: openvpn.cpp:61 openvpn.cpp:106
 #, kde-format
 msgid "NetworkManager is missing support for OpenVPN"
 msgstr "NetworkManager postrádá podporu OpenVPN"
 
-#: openvpn.cpp:207
+#: openvpn.cpp:99
 #, kde-format
-msgid "Error saving file %1: %2"
-msgstr "Chyba při ukládání souboru %1: %2"
-
-#: openvpn.cpp:235
-#, kde-format
-msgid "Error copying certificate to %1: %2"
-msgstr "Chyba při kopírování certifikátu do %1: %2"
+msgid "An unexpected error has occurred"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel3)
 #: openvpn.ui:19
@@ -122,8 +117,6 @@ msgid ""
 "Local peer's signed certificate in .pem format (signed by CA of CA "
 "Certificate)."
 msgstr ""
-"Podepsaný certifikát místního uživatele ve formátu .pem (podepsaný "
-"certifikační autoritou certifikátu CA)."
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel4)
 #. i18n: ectx: property (text), widget (QLabel, textLabel4_2)
@@ -137,7 +130,7 @@ msgstr "Soukromý klíč:"
 #: openvpn.ui:167 openvpn.ui:531
 #, kde-format
 msgid "Local peer's private key in .pem format."
-msgstr "Soukromý klíč místního uživatele ve formátu .pem."
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_7)
 #. i18n: ectx: property (text), widget (QLabel, label_6)
@@ -163,7 +156,7 @@ msgstr "Statický klíč:"
 #: openvpn.ui:230
 #, kde-format
 msgid "Pre-shared file for Static Key encryption mode (non-TLS)."
-msgstr "Předem sdílený soubor pro režim šifrování statickým klíčem (bez TLS)."
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_16)
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
@@ -176,7 +169,7 @@ msgstr "Směr klíče:"
 #: openvpn.ui:255
 #, kde-format
 msgid "Direction for Static Key encryption mode (non-TLS)."
-msgstr "Pokyny pro režim statického šifrování klíčem (bez TLS)."
+msgstr ""
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, cmbKeyDirection)
 #: openvpn.ui:258
@@ -185,8 +178,6 @@ msgid ""
 "If key direction is used, it must be the opposite of that used on the VPN "
 "peer."
 msgstr ""
-"Pokud se používá nastavení směru klíče, musí být opačné než nastavení "
-"použité na straně protějšku VPN."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, cmbKeyDirection)
 #: openvpn.ui:262
@@ -217,7 +208,7 @@ msgstr "Lokální IP adresa:"
 #: openvpn.ui:293
 #, kde-format
 msgid "IP address of the remote VPN endpoint."
-msgstr "IP adresa vzdáleného koncového bodu VPN."
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel7)
 #: openvpn.ui:303
@@ -229,7 +220,7 @@ msgstr "Vzdálená IP adresa:"
 #: openvpn.ui:316
 #, kde-format
 msgid "IP address of the local VPN endpoint."
-msgstr "IP adresa lokálního koncového bodu VPN."
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, lblKeyDirection)
 #: openvpn.ui:350
@@ -239,10 +230,6 @@ msgid ""
 "peer. For example, if the peer uses '1', this connection must use '0'. If "
 "you are unsure what value to use, contact your system administrator."
 msgstr ""
-"Pokud se používá nastavení směru klíče, musí být opačné než nastavení "
-"použité na straně protějšku VPN. Například pokud protějšek používá hodnotu "
-"„1“, musí toto připojení používat hodnotu „0“. Pokud nejste jisti, jakou "
-"hodnotu použít, obraťte se na správce systému."
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel9)
 #. i18n: ectx: property (text), widget (QLabel, textLabel9_2)
@@ -257,7 +244,7 @@ msgstr "Uživatelské jméno:"
 #: openvpn.ui:414 openvpn.ui:577
 #, kde-format
 msgid "Username passed to OpenVPN when prompted for it."
-msgstr "Uživatelské jméno předané OpenVPN po jeho vyžádání."
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #. i18n: ectx: property (text), widget (QLabel, label)
@@ -272,7 +259,7 @@ msgstr "Heslo:"
 #: openvpn.ui:439 openvpn.ui:599
 #, kde-format
 msgid "Password passed to OpenVPN when prompted for it."
-msgstr "Heslo předané OpenVPN po jeho vyžádání."
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, btnAdvanced)
 #: openvpn.ui:643
@@ -294,8 +281,6 @@ msgid ""
 "TCP/UDP port number for peer. (Default value when there is no port for "
 "gateway)."
 msgstr ""
-"Číslo portu TCP/UDP pro protějšek. (Výchozí hodnota, pokud není k dispozici "
-"žádný port pro bránu)."
 
 #. i18n: ectx: property (text), widget (QCheckBox, chkCustomPort)
 #: openvpnadvanced.ui:39
@@ -318,7 +303,6 @@ msgstr "Automaticky"
 #, kde-format
 msgid "Renegotiate data channel key after the specified number of seconds."
 msgstr ""
-"Po uplynutí zadaného počtu sekund znovu vyjednejte klíč datového kanálu."
 
 #. i18n: ectx: property (text), widget (QCheckBox, chkUseCustomReneg)
 #: openvpnadvanced.ui:75
@@ -380,7 +364,7 @@ msgstr "Automaticky"
 #: openvpnadvanced.ui:148
 #, kde-format
 msgid "Use TCP for communicating with remote host."
-msgstr "Pro komunikaci se vzdáleným hostitelem použijte protokol TCP."
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, chkUseTCP)
 #: openvpnadvanced.ui:151
@@ -393,7 +377,7 @@ msgstr "Použít spojení TCP"
 #: openvpnadvanced.ui:160 openvpnadvanced.ui:173
 #, kde-format
 msgid "Explicitly set virtual device type (TUN/TAP)."
-msgstr "Explicitně nastavit typ virtuálního zařízení (TUN/TAP)."
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, chkUseVirtualDeviceType)
 #: openvpnadvanced.ui:163
@@ -438,7 +422,6 @@ msgid ""
 "Take the TUN device MTU to be specified value and derive the link MTU from "
 "it."
 msgstr ""
-"Vezměte MTU zařízení TUN jako zadanou hodnotu a odvoďte z ní MTU spojení."
 
 #. i18n: ectx: property (text), widget (QCheckBox, chkMtu)
 #: openvpnadvanced.ui:230
@@ -451,7 +434,7 @@ msgstr "Použít vlastní Maximum Transmission Unit (MTU):"
 #: openvpnadvanced.ui:263 openvpnadvanced.ui:276
 #, kde-format
 msgid "Enable internal datagram fragmentation with this maximum size."
-msgstr "Povolit fragmentaci interních datagramů s touto maximální velikostí."
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, chkCustomFragmentSize)
 #: openvpnadvanced.ui:266
@@ -463,7 +446,7 @@ msgstr "Použít vlastní velikost fragmentu UDP:"
 #: openvpnadvanced.ui:294
 #, kde-format
 msgid "Restrict tunnel TCP maximum segment size."
-msgstr "Omezit maximální velikost segmentu TCP tunelu."
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, chkMssRestrict)
 #: openvpnadvanced.ui:297
@@ -505,8 +488,6 @@ msgid ""
 "Ping remote over the TCP/UDP control channel if no packets have been sent "
 "for at least n seconds."
 msgstr ""
-"Odeslat ping na vzdálený počítač přes řídicí kanál TCP/UDP, pokud nebyly "
-"odeslány žádné pakety po dobu alespoň n sekund."
 
 #. i18n: ectx: property (text), widget (QCheckBox, chkPingInterval)
 #: openvpnadvanced.ui:330
@@ -566,18 +547,6 @@ msgid ""
 "address,\n"
 "not only the address which was specified in the --remote option."
 msgstr ""
-"Povolit vzdálenému protějšku změnit svou IP adresu a/nebo číslo portu,\n"
-"například z důvodu DHCP (toto je výchozí nastavení, pokud není\n"
-"použito--remote). --float, pokud je zadáno spolu s --remote, umožňuje\n"
-"relaci OpenVPN nejprve se připojit k protějšku na známé adrese,\n"
-"ale pokud přijdou pakety z nové adresy a projdou všemi ověřovacími\n"
-"testy, nová adresa převezme kontrolu nad relací. To je užitečné, když se\n"
-"připojujete k protějšku, který má dynamickou adresu, jako je uživatel\n"
-"dial-in nebo klient DHCP .\n"
-"\n"
-"\n"
-"V podstatě --float říká OpenVPN, aby přijímal ověřené pakety z jakékoli\n"
-"adresy, nejen z adresy, která byla zadána v možnosti --remote."
 
 #. i18n: ectx: property (text), widget (QCheckBox, chkAcceptAuthenticatedPackets)
 #: openvpnadvanced.ui:423
@@ -613,8 +582,6 @@ msgid ""
 "Cipher\n"
 "Block Chaining mode)."
 msgstr ""
-"Šifrovat pakety pomocí šifrovacího algoritmu. Výchozí nastavení je BF-CBC\n"
-"(Blowfish v režimu Cipher Block Chaining)."
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: openvpnadvanced.ui:486
@@ -636,8 +603,6 @@ msgid ""
 "Set cipher key size to a custom value. If unspecified, it defaults to cipher-"
 "specific size."
 msgstr ""
-"Nastavit velikost šifrovacího klíče na vlastní hodnotu. Pokud není zadána, "
-"použije se výchozí velikost specifická pro danou šifru."
 
 #. i18n: ectx: property (text), widget (QCheckBox, chkUseCustomCipherKey)
 #: openvpnadvanced.ui:531
@@ -653,8 +618,6 @@ msgid ""
 "Authenticate packets with HMAC using message digest algorithm. The default "
 "is SHA1."
 msgstr ""
-"Ověřovat pakety pomocí HMAC s použitím algoritmu pro výpočet kontrolního "
-"součtu zprávy. Výchozí hodnota je SHA1."
 
 #. i18n: ectx: property (text), widget (QLabel, label_4)
 #: openvpnadvanced.ui:564
@@ -745,12 +708,6 @@ msgid ""
 "fields),\n"
 "or just the Common Name (CN field).\n"
 msgstr ""
-"Ověřit identifikaci certifikátu serveru.\n"
-"\n"
-"Pokud je tato možnost povolena, připojení bude úspěšné pouze v\n"
-"případě, že certifikát serveru odpovídá některým očekávaným\n"
-"vlastnostem. Shoda se může vztahovat buď na celý předmět\n"
-"certifikátu (všechna pole), nebo pouze na obecný název (pole CN).\n"
 
 #. i18n: ectx: property (text), widget (QLabel, lblCertCheck)
 #: openvpnadvanced.ui:673
@@ -786,7 +743,7 @@ msgstr "Ověřit název podle předpony"
 #: openvpnadvanced.ui:710
 #, kde-format
 msgid "Verify subject partially (legacy mode, strongly discouraged)"
-msgstr "Ověřit předmět částečně (starší režim, důrazně nedoporučeno)"
+msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QLabel, lbSubjectMatch)
 #. i18n: ectx: property (toolTip), widget (QLineEdit, subjectMatch)
@@ -794,7 +751,7 @@ msgstr "Ověřit předmět částečně (starší režim, důrazně nedoporučen
 #, kde-format
 msgid ""
 "Subject or Common Name to verify server certificate information against."
-msgstr "Předmět nebo běžný název pro ověření informací o certifikátu serveru."
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, lbSubjectMatch)
 #: openvpnadvanced.ui:728
@@ -822,8 +779,6 @@ msgid ""
 "extended\n"
 "key usage based on RFC3280 TLS rules."
 msgstr ""
-"Vyžadujte, aby certifikát protějšku byl podepsán s explicitním použitím\n"
-"klíče a rozšířeným použitím klíče na základě pravidel RFC3280 TLS."
 
 #. i18n: ectx: property (text), widget (QCheckBox, chkRemoteCertTls)
 #: openvpnadvanced.ui:760
@@ -860,8 +815,6 @@ msgid ""
 "Require that peer certificate was signed with an explicit nsCertType "
 "designation."
 msgstr ""
-"Vyžadovat, aby certifikát protějšku byl podepsán s explicitním označením "
-"nsCertType."
 
 #. i18n: ectx: property (text), widget (QCheckBox, chkNsCertType)
 #: openvpnadvanced.ui:809
@@ -879,7 +832,7 @@ msgstr "Určení certifikátu nsCert vzdáleného protějšku:"
 #: openvpnadvanced.ui:853
 #, kde-format
 msgid "Add an additional layer of HMAC authentication."
-msgstr "Přidat další vrstvu ověřování HMAC."
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: openvpnadvanced.ui:868
@@ -915,8 +868,6 @@ msgid ""
 "channel\n"
 "to protect against DoS attacks."
 msgstr ""
-"Přidat další vrstvu ověřování HMAC nad kontrolní kanál TLS, aby byla\n"
-"zajištěna ochrana před útoky DoS."
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel4_3)
 #: openvpnadvanced.ui:898
@@ -929,7 +880,7 @@ msgstr "Soubor klíče:"
 #: openvpnadvanced.ui:922 openvpnadvanced.ui:941
 #, kde-format
 msgid "Direction parameter for static key mode."
-msgstr "Parametr směru pro statický režim klíče."
+msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, cboDirection)
 #: openvpnadvanced.ui:950
@@ -996,7 +947,6 @@ msgstr ""
 #, kde-format
 msgid "Connect to remote host through a proxy with this address."
 msgstr ""
-"Připojit se ke vzdálenému hostiteli prostřednictvím proxy s touto adresou."
 
 #. i18n: ectx: property (text), widget (QLabel, label_12)
 #: openvpnadvanced.ui:1063
@@ -1010,7 +960,6 @@ msgstr "Adresa serveru:"
 #, kde-format
 msgid "Connect to remote host through a proxy with this port."
 msgstr ""
-"Připojte se k vzdálenému hostiteli prostřednictvím proxy s tímto portem."
 
 #. i18n: ectx: property (text), widget (QLabel, label_13)
 #: openvpnadvanced.ui:1086
@@ -1023,7 +972,7 @@ msgstr "Port:"
 #: openvpnadvanced.ui:1112 openvpnadvanced.ui:1125
 #, kde-format
 msgid "HTTP/SOCKS proxy username passed to OpenVPN when prompted for it."
-msgstr "Uživatelské jméno HTTP/SOCKS proxy předané OpenVPN po vyžádání."
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_14)
 #: openvpnadvanced.ui:1115
@@ -1036,7 +985,7 @@ msgstr "Uživatelské jméno proxy:"
 #: openvpnadvanced.ui:1135 openvpnadvanced.ui:1150
 #, kde-format
 msgid "HTTP/SOCKS proxy password passed to OpenVPN when prompted for it."
-msgstr "Heslo HTTP/SOCKS proxy předané OpenVPN po vyžádání."
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_15)
 #: openvpnadvanced.ui:1138 openvpnauth.cpp:84 openvpnauth.cpp:121
@@ -1049,8 +998,6 @@ msgstr "Heslo proxy:"
 #, kde-format
 msgid "Retry indefinitely on proxy errors. It simulates a SIGUSR1 reset."
 msgstr ""
-"Opakovat pokusy o připojení k proxy serveru donekonečna. Simuluje reset "
-"SIGUSR1."
 
 #. i18n: ectx: property (text), widget (QCheckBox, chkProxyRetry)
 #: openvpnadvanced.ui:1165
@@ -1111,3 +1058,9 @@ msgstr "token"
 #, kde-format
 msgid "one-time password"
 msgstr "Jednorázové heslo"
+
+#~ msgid "Error saving file %1: %2"
+#~ msgstr "Chyba při ukládání souboru %1: %2"
+
+#~ msgid "Error copying certificate to %1: %2"
+#~ msgstr "Chyba při kopírování certifikátu do %1: %2"
