@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-17 11:54+0000\n"
-"PO-Revision-Date: 2026-02-05 16:49+0100\n"
+"PO-Revision-Date: 2026-01-30 11:39+0100\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
 "Language: ia\n"
@@ -403,7 +403,7 @@ msgstr "Verificatio de Usator Interne Blocate"
 #, kde-format
 msgid "Wrong PIN. %1 attempt remaining."
 msgid_plural "Wrong PIN. %1 attempts remaining."
-msgstr[0] "PIN errate. %1 tentativas remanente."
+msgstr[0] "PIN errate. %1 tentativa remanente."
 msgstr[1] "PIN errate. %1 tentativas remanente."
 
 #: openconnectwebauthdialog.cpp:194
