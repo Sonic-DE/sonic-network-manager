@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-04-25 02:45+0000\n"
+"POT-Creation-Date: 2026-03-12 00:45+0000\n"
 "PO-Revision-Date: 2025-11-30 15:45+0200\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
@@ -58,7 +58,7 @@ msgid ""
 "%2 kibibytes per second"
 msgstr "Nykyinen latausnopeus on %1 KB/s, nykyinen lähetysnopeus on %2 KB/s"
 
-#: ConnectionItem.qml:302
+#: ConnectionItem.qml:298
 #, kde-format
 msgctxt "Download and upload rates in some unit per second"
 msgid "↓ %1/s, ↑ %2/s"
@@ -156,7 +156,7 @@ msgctxt "@info:tooltip"
 msgid "Middle-click to turn on Airplane Mode"
 msgstr "Siirry lentokonetilaan keskinapsauttamalla"
 
-#: main.qml:71 Toolbar.qml:74
+#: main.qml:71 Toolbar.qml:82
 #, kde-format
 msgid "Enable Wi-Fi"
 msgstr "Käytä langatonta verkkoa"
@@ -181,7 +181,7 @@ msgstr "Avaa verkon kirjautumissivu…"
 msgid "&Configure Network Connections…"
 msgstr "Muokkaa &verkkoyhteyksiä…"
 
-#: PopupDialog.qml:51
+#: PopupDialog.qml:50
 #, kde-format
 msgctxt "@action:button"
 msgid "Return to Network Connections"
@@ -197,12 +197,12 @@ msgstr "Yhdistä verkkoon ”%1” lukemalla toisella laitteella tämä QR-koodi
 msgid "Wi-Fi password:"
 msgstr "Langattoman verkon salasana:"
 
-#: Toolbar.qml:124
+#: Toolbar.qml:131
 #, kde-format
 msgid "Enable mobile data"
 msgstr "Ota mobiilidata käyttöön"
 
-#: Toolbar.qml:147
+#: Toolbar.qml:156
 #, kde-kuit-format
 msgctxt "@info"
 msgid "Disable airplane mode<nl/><nl/>This will enable Wi-Fi and Bluetooth"
@@ -210,7 +210,7 @@ msgstr ""
 "Poista lentokonetila käytöstä<nl/><nl/>Tämä ottaa langattoman verkon ja "
 "Bluetoothin käyttöön"
 
-#: Toolbar.qml:148
+#: Toolbar.qml:157
 #, kde-kuit-format
 msgctxt "@info"
 msgid "Enable airplane mode<nl/><nl/>This will disable Wi-Fi and Bluetooth"
@@ -218,18 +218,18 @@ msgstr ""
 "Käytä lentokonetilaa<nl/><nl/>Tämä poistaa langattoman verkon ja Bluetoothin "
 "käytöstä"
 
-#: Toolbar.qml:176
+#: Toolbar.qml:170
 #, kde-format
 msgid "Hotspot"
 msgstr "Tukiasema"
 
-#: Toolbar.qml:193
+#: Toolbar.qml:187
 #, kde-format
 msgctxt "@info:tooltip"
 msgid "Cannot create a hotspot because Wi-Fi is disabled."
 msgstr "Tukiasemaa ei voi luoda, koska langaton verkko on poistettu käytöstä."
 
-#: Toolbar.qml:195
+#: Toolbar.qml:189
 #, kde-format
 msgctxt "@info:tooltip"
 msgid ""
@@ -239,31 +239,31 @@ msgstr ""
 "Tukiasemaa ei voida luoda, koska kaikki langattomat lähettimet ovat "
 "käytössä. Katkaise langaton verkkoyhteys tai luo uusi langaton lähetin."
 
-#: Toolbar.qml:197
+#: Toolbar.qml:191
 #, kde-format
 msgctxt "@info:tooltip"
 msgid "Disable Hotspot"
 msgstr "Poista tukiasema käytöstä"
 
-#: Toolbar.qml:199
+#: Toolbar.qml:193
 #, kde-format
 msgctxt "@info:tooltip"
 msgid "Create Hotspot"
 msgstr "Luo tukiasema"
 
-#: Toolbar.qml:227
+#: Toolbar.qml:221
 #, kde-format
 msgctxt "@action:button"
 msgid "Scan Wi-Fi QR Code"
 msgstr "Lue langattoman verkon QR-koodi"
 
-#: Toolbar.qml:232
+#: Toolbar.qml:226
 #, kde-format
 msgctxt "@info:tooltip"
 msgid "Scan QR Code to connect to a Wi-Fi network"
 msgstr "Lue langattomaan verkkoon yhdistävä QR-koodi"
 
-#: Toolbar.qml:234
+#: Toolbar.qml:228
 #, kde-format
 msgctxt "@info:tooltip"
 msgid ""
@@ -273,7 +273,7 @@ msgstr ""
 "Asenna QRCA-viivakoodinlukija, jotta langattomaan verkkoon yhdistävän QR-"
 "koodin voisi lukea"
 
-#: Toolbar.qml:253
+#: Toolbar.qml:247
 #, kde-format
 msgid "Configure network connections…"
 msgstr "Muokkaa verkkoyhteyksiä…"

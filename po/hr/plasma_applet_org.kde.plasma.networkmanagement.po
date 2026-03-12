@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-04-25 02:45+0000\n"
+"POT-Creation-Date: 2026-03-12 00:45+0000\n"
 "PO-Revision-Date: 2011-06-27 14:57+0200\n"
 "Last-Translator: Marko Dimjašević <marko@dimjasevic.net>\n"
 "Language-Team: Croatian <kde-croatia-list@lists.sourceforge.net>\n"
@@ -65,7 +65,7 @@ msgid ""
 "%2 kibibytes per second"
 msgstr ""
 
-#: ConnectionItem.qml:302
+#: ConnectionItem.qml:298
 #, fuzzy, kde-format
 msgctxt "Download and upload rates in some unit per second"
 msgid "↓ %1/s, ↑ %2/s"
@@ -171,7 +171,7 @@ msgctxt "@info:tooltip"
 msgid "Middle-click to turn on Airplane Mode"
 msgstr ""
 
-#: main.qml:71 Toolbar.qml:74
+#: main.qml:71 Toolbar.qml:82
 #, kde-format
 msgid "Enable Wi-Fi"
 msgstr ""
@@ -199,7 +199,7 @@ msgstr ""
 msgid "&Configure Network Connections…"
 msgstr "Konfiguriraj obavijesti…"
 
-#: PopupDialog.qml:51
+#: PopupDialog.qml:50
 #, fuzzy, kde-format
 #| msgctxt "Edit connection dialog caption"
 #| msgid "Edit Network Connection"
@@ -218,36 +218,36 @@ msgstr ""
 msgid "Wi-Fi password:"
 msgstr "Zaporka:"
 
-#: Toolbar.qml:124
+#: Toolbar.qml:131
 #, fuzzy, kde-format
 #| msgid "User name on this network"
 msgid "Enable mobile data"
 msgstr "Korisničko ime na ovoj mreži"
 
-#: Toolbar.qml:147
+#: Toolbar.qml:156
 #, kde-kuit-format
 msgctxt "@info"
 msgid "Disable airplane mode<nl/><nl/>This will enable Wi-Fi and Bluetooth"
 msgstr ""
 
-#: Toolbar.qml:148
+#: Toolbar.qml:157
 #, kde-kuit-format
 msgctxt "@info"
 msgid "Enable airplane mode<nl/><nl/>This will disable Wi-Fi and Bluetooth"
 msgstr ""
 
-#: Toolbar.qml:176
+#: Toolbar.qml:170
 #, kde-format
 msgid "Hotspot"
 msgstr ""
 
-#: Toolbar.qml:193
+#: Toolbar.qml:187
 #, kde-format
 msgctxt "@info:tooltip"
 msgid "Cannot create a hotspot because Wi-Fi is disabled."
 msgstr ""
 
-#: Toolbar.qml:195
+#: Toolbar.qml:189
 #, kde-format
 msgctxt "@info:tooltip"
 msgid ""
@@ -255,33 +255,33 @@ msgid ""
 "from the current Wi-Fi network or connect another wireless radio."
 msgstr ""
 
-#: Toolbar.qml:197
+#: Toolbar.qml:191
 #, fuzzy, kde-format
 #| msgid "Disabled"
 msgctxt "@info:tooltip"
 msgid "Disable Hotspot"
 msgstr "Onemogućeno"
 
-#: Toolbar.qml:199
+#: Toolbar.qml:193
 #, fuzzy, kde-format
 #| msgid "Disabled"
 msgctxt "@info:tooltip"
 msgid "Create Hotspot"
 msgstr "Onemogućeno"
 
-#: Toolbar.qml:227
+#: Toolbar.qml:221
 #, kde-format
 msgctxt "@action:button"
 msgid "Scan Wi-Fi QR Code"
 msgstr ""
 
-#: Toolbar.qml:232
+#: Toolbar.qml:226
 #, kde-format
 msgctxt "@info:tooltip"
 msgid "Scan QR Code to connect to a Wi-Fi network"
 msgstr ""
 
-#: Toolbar.qml:234
+#: Toolbar.qml:228
 #, kde-format
 msgctxt "@info:tooltip"
 msgid ""
@@ -289,7 +289,7 @@ msgid ""
 "network"
 msgstr ""
 
-#: Toolbar.qml:253
+#: Toolbar.qml:247
 #, fuzzy, kde-format
 #| msgid "Configure notifications..."
 msgid "Configure network connections…"
