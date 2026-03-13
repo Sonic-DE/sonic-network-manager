@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plasmanetworkmanagement_l2tpui\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-29 00:46+0000\n"
-"PO-Revision-Date: 2025-11-29 17:33+0100\n"
+"PO-Revision-Date: 2026-03-06 16:07+0100\n"
 "Last-Translator: Philipp Kiemle <l10n.daphipz@fastmail.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
 "Language: de\n"
@@ -372,7 +372,7 @@ msgstr "IP-Komprimierung verwenden"
 #: l2tpipsec.ui:322
 #, kde-format
 msgid "Use IKEv2 key exchange"
-msgstr ""
+msgstr "„IKEv2“-Schlüsselaustausch verwenden"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, cbPFS)
 #: l2tpipsec.ui:329
