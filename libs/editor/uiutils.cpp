@@ -16,7 +16,7 @@
 #include <KLocalizedString>
 #include <KSharedConfig>
 #include <KUser>
-#include <KWallet>
+#include <qt6keychain/keychain.h>
 
 #include <NetworkManagerQt/Manager>
 #include <NetworkManagerQt/Security8021xSetting>
@@ -658,6 +658,32 @@ QString UiUtils::formatLastUsedDateRelative(const QDateTime &lastUsed)
     return lastUsedText;
 }
 
+bool UiUtils::isLiveImage()
+{
+    static std::optional<bool> liveImage = std::nullopt;
+    if (liveImage.has_value()) {
+        return liveImage.value();
+    }
+
+    QFile cmdFile(QStringLiteral("/proc/cmdline"));
+    cmdFile.open(QIODevice::ReadOnly);
+
+    if (!cmdFile.isOpen()) {
+        return false;
+    }
+
+    const QString cmdFileOutput = cmdFile.readAll();
+    cmdFile.close();
+
+    if (cmdFileOutput.contains(QStringLiteral("rd.live.image"))) {
+        liveImage = true;
+        return true;
+    }
+
+    liveImage = false;
+    return false;
+}
+
 void UiUtils::setConnectionDefaultPermissions(NetworkManager::ConnectionSettings::Ptr &settings)
 {
     auto wifiSecurity = settings->setting(NetworkManager::Setting::WirelessSecurity).dynamicCast<NetworkManager::WirelessSecuritySetting>();
@@ -667,7 +693,7 @@ void UiUtils::setConnectionDefaultPermissions(NetworkManager::ConnectionSettings
         return;
     }
 
-    if (Configuration::self().systemConnectionsByDefault() || !KWallet::Wallet::isEnabled()) {
+    if (Configuration::self().systemConnectionsByDefault() || !QKeychain::isAvailable() || isLiveImage()) {
         auto modifySystem = NetworkManager::permissions().value(QStringLiteral("org.freedesktop.NetworkManager.settings.modify.system"));
         if (modifySystem == QLatin1String("yes")) {
             wifiSecurity->setLeapPasswordFlags(NetworkManager::Setting::SecretFlagType::None);
