@@ -326,6 +326,7 @@ PlasmaExtras.ExpandableListItem {
     }
 
     Component.onDestruction: {
+        showSpeed = false;
         setDelayModelUpdates(false);
     }
 }
