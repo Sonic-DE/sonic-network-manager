@@ -3,21 +3,20 @@
 # SPDX-FileCopyrightText: 2019, 2020, 2021, 2023 Matej Mrenica <matejm98mthw@gmail.com>
 # Dusan Kazik <prescott66@gmail.com>, 2020.
 # Ferdinand Galko <galko.ferdinand@gmail.com>, 2023.
-# SPDX-FileCopyrightText: 2026 Lucia Mrenica <lucia.mrenica@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: plasmanetworkmanagement_openconnectui\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:54+0000\n"
-"PO-Revision-Date: 2026-02-28 20:05+0100\n"
-"Last-Translator: Lucia Mrenica <lucia.mrenica@gmail.com>\n"
+"POT-Creation-Date: 2026-04-01 00:47+0000\n"
+"PO-Revision-Date: 2023-11-11 15:35+0100\n"
+"Last-Translator: Matej Mrenica <matejm98mthw@gmail.com>\n"
 "Language-Team: Slovak <kde-i18n-doc@kde.org>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 23.08.3\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 25.12.2\n"
 
 #: openconnectauth.cpp:345
 #, kde-format
@@ -85,7 +84,7 @@ msgstr "Uložiť heslá"
 #: openconnectauth.ui:116
 #, kde-format
 msgid "Store browser cookies in plain-text"
-msgstr "Ukladať súbory cookie prehliadača v podobe obyčajného textu"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, viewServerLog)
 #: openconnectauth.ui:160
@@ -277,15 +276,16 @@ msgstr "Overenie totožnosti certifikátu"
 
 #. i18n: ectx: property (text), widget (QLabel, leMcaCertLabel)
 #: openconnectprop.ui:242
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "User Certificate:"
 msgid "Machine Certificate:"
-msgstr "Certifikát počítača:"
+msgstr "Certifikát používateľa:"
 
 #. i18n: ectx: property (text), widget (QLabel, leMcaPrivateKeyLabel)
-#. i18n: ectx: property (text), widget (QLabel, label_6)
-#: openconnectprop.ui:261 openconnectprop.ui:299
-#, kde-format
-msgid "Private Key:"
+#: openconnectprop.ui:261
+#, fuzzy, kde-format
+#| msgid "Private Key:"
+msgid "Machine Private Key:"
 msgstr "Súkromný kľúč:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_5)
@@ -293,6 +293,13 @@ msgstr "Súkromný kľúč:"
 #, kde-format
 msgid "User Certificate:"
 msgstr "Certifikát používateľa:"
+
+#. i18n: ectx: property (text), widget (QLabel, label_6)
+#: openconnectprop.ui:299
+#, fuzzy, kde-format
+#| msgid "Private Key:"
+msgid "User Private Key:"
+msgstr "Súkromný kľúč:"
 
 #. i18n: ectx: property (text), widget (QCheckBox, chkUseFsid)
 #: openconnectprop.ui:318
@@ -339,119 +346,119 @@ msgstr "Tajomstvo tokenu:"
 #: openconnectwebauthdialog.cpp:111
 #, kde-format
 msgid "Choose a Passkey"
-msgstr "Vyberte a Passkey"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:112
 #, kde-format
 msgid "Which passkey do you want to use for %1?"
-msgstr "Which passkey do chcete to use for %1?"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:129
 #, kde-format
 msgid "Ok"
-msgstr "Ok"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:140
 #, kde-format
 msgid "Use your security key with %1"
-msgstr "Use your security key with %1"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:141
 #, kde-format
 msgid "Touch your security key again to complete the request."
-msgstr "Touch your security key again to complete the request."
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:158
 #, kde-format
 msgid "Next"
-msgstr "Nasledujúci"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:167
 #, kde-format
 msgid "PIN Required"
-msgstr "PIN Required"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:168
 #, kde-format
 msgid "Enter the PIN for your security key"
-msgstr "Zadajte the PIN for your security key"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:173
 #, kde-format
 msgid "New PIN Required"
-msgstr "New PIN Required"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:174
 #, kde-format
 msgid "Set new PIN for your security key"
-msgstr "Nastaviť nový PIN pre váš bezpečnostný kľúč"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:176
 #, kde-format
 msgid "Change PIN Required"
-msgstr "Change PIN Required"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:177
 #, kde-format
 msgid "Change PIN for your security key"
-msgstr "Change PIN for your security key"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:188
 #, kde-format
 msgid "Internal User Verification Locked"
-msgstr "Internal User Verification Locked"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:191
 #, kde-format
 msgid "Wrong PIN. %1 attempt remaining."
 msgid_plural "Wrong PIN. %1 attempts remaining."
-msgstr[0] "Wrong PIN. %1 attempt remaining."
-msgstr[1] "Wrong PIN. %1 attempts remaining."
-msgstr[2] "Wrong PIN. %1 attempts remaining."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: openconnectwebauthdialog.cpp:194
 #, kde-format
 msgid "Too Short. %1 attempt remaining."
 msgid_plural "Too Short. %1 attempts remaining."
-msgstr[0] "Too Short. %1 attempt remaining."
-msgstr[1] "Too Short. %1 attempts remaining."
-msgstr[2] "Too Short. %1 attempts remaining."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: openconnectwebauthdialog.cpp:197
 #, kde-format
 msgid "Invalid Characters. %1 attempt remaining."
 msgid_plural "Invalid Characters. %1 attempts remaining."
-msgstr[0] "Invalid Characters. %1 attempt remaining."
-msgstr[1] "Invalid Characters. %1 attempts remaining."
-msgstr[2] "Invalid Characters. %1 attempts remaining."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: openconnectwebauthdialog.cpp:201
 #, kde-format
 msgid "Same as current PIN. %1 attempt remaining."
 msgid_plural "Same as current PIN. %1 attempts remaining."
-msgstr[0] "Same as current PIN. %1 attempt remaining."
-msgstr[1] "Same as current PIN. %1 attempts remaining."
-msgstr[2] "Same as current PIN. %1 attempts remaining."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: openconnectwebauthdialog.cpp:239
 #, kde-format
 msgid "Something went wrong"
-msgstr "Something went wrong"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:243
 #, kde-format
 msgid "Request Timeout"
-msgstr "Request Timeout"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:246
 #, kde-format
 msgid "Key not registered"
-msgstr "Key not registered"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:250
 #, kde-format
 msgid "You already registered this device.Try again with device"
-msgstr "You already registered this device.Try again with device"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:256
 #, kde-format
@@ -459,8 +466,6 @@ msgid ""
 "The security key is locked because the wrong PIN was entered too many times."
 "To unlock it, remove and reinsert it."
 msgstr ""
-"The security key is locked because the wrong PIN was entered too many times."
-"To unlock it, remove and reinsert it."
 
 #: openconnectwebauthdialog.cpp:262
 #, kde-format
@@ -468,30 +473,27 @@ msgid ""
 "The security key is locked because the wrong PIN was entered too many times. "
 "You'll need to reset the security key."
 msgstr ""
-"The security key is locked because the wrong PIN was entered too many times. "
-"You'll need to reset the security key."
 
 #: openconnectwebauthdialog.cpp:266
 #, kde-format
 msgid ""
 "Authenticator removed during verification. Please reinsert and try again"
 msgstr ""
-"Authenticator removed during verification. Please reinsert and try again"
 
 #: openconnectwebauthdialog.cpp:269
 #, kde-format
 msgid "Authenticator doesn't have resident key support"
-msgstr "Authenticator doesn't have resident key support"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:272
 #, kde-format
 msgid "Authenticator missing user verification"
-msgstr "Authenticator missing user verification"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:275
 #, kde-format
 msgid "Authenticator missing Large Blob support"
-msgstr "Authenticator missing Large Blob support"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:278
 #, kde-format
@@ -499,64 +501,62 @@ msgid ""
 "The security token does not support the server’s required authentication "
 "method."
 msgstr ""
-"The security token does not support server’s vyžadované authentication "
-"method."
 
 #: openconnectwebauthdialog.cpp:281
 #, kde-format
 msgid "Storage Full"
-msgstr "Storage Full"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:284
 #, kde-format
 msgid "User consent denied"
-msgstr "User consent denied"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:287
 #, kde-format
 msgid "User Cancelled Request"
-msgstr "User Cancelled Request"
+msgstr ""
 
 #: openconnectwebauthdialog.cpp:300
 #, kde-format
 msgid "Close"
-msgstr "Zavrieť"
+msgstr ""
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, Dialog)
 #: openconnectwebauthdialog.ui:20
 #, kde-format
 msgid "WebAuth"
-msgstr "WebAuth"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, headingLabel)
 #: openconnectwebauthdialog.ui:32
 #, kde-format
 msgid "Heading"
-msgstr "Nadpis"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, description)
 #: openconnectwebauthdialog.ui:48
 #, kde-format
 msgid "Description"
-msgstr "Popis"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, pinLabel)
 #: openconnectwebauthdialog.ui:84
 #, kde-format
 msgid "PIN"
-msgstr "PIN"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, confirmPinLabel)
 #: openconnectwebauthdialog.ui:107
 #, kde-format
 msgid "Confirm PIN"
-msgstr "Potvrdiť PIN"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, pinEntryErrorLabel)
 #: openconnectwebauthdialog.ui:130
 #, kde-format
 msgid "TextLabel"
-msgstr "TextLabel"
+msgstr ""
 
 #~ msgid "*.pem *.crt *.key"
 #~ msgstr "*.pem *.crt *.key"
