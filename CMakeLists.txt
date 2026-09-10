@@ -2,16 +2,15 @@ cmake_minimum_required(VERSION 3.16)
 
 project(plasma-networkmanagement)
 
-set(PROJECT_VERSION "6.7.5")
+set(PROJECT_VERSION "6.7.80")
 
-set(PROJECT_DEP_VERSION "6.7.0")
-set(QT_MIN_VERSION "6.10.0")
+set(PROJECT_DEP_VERSION "6.6.90")
+set(QT_MIN_VERSION "6.11.0")
 set(KF6_MIN_VERSION "6.30.0")
 set(KDE_COMPILERSETTINGS_LEVEL "5.82")
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 ################# set KDE specific information #################
 
@@ -72,7 +71,6 @@ find_package(KF6 ${KF6_MIN_VERSION} REQUIRED
     WidgetsAddons
     WindowSystem
     KCMUtils
-    Svg
     ModemManagerQt
 )
 
@@ -132,7 +130,6 @@ install(FILES org.kde.vpnimport.desktop DESTINATION ${KDE_INSTALL_APPDIR})
 
 # add clang-format target for all our real source files
 file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES *.cpp *.h)
-list(FILTER ALL_CLANG_FORMAT_SOURCE_FILES EXCLUDE REGEX ".*\\.ccls-cache/.*")
 kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
 kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
 
